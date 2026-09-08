@@ -2,6 +2,11 @@ export type RatingPlayer = { id: string; primary: string; secondary: string[]; b
 export type PolicyEffect = { label: string; short: string; matchStrength: number; fatigue: number; morale: number; burnout: number };
 export const POLICY_EFFECTS: Record<string, PolicyEffect>;
 export function clamp(value: number, min: number, max: number): number;
+export function normalizeStartingLicense(value: unknown): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
+export function pressureDeltaForResult(result: "win" | "draw" | "loss", multiplier: number): number;
+export function capReadiness(current: number, gain: number, cap: number): number;
+export function environmentIncidentOccurs(roll: number, risk: number): boolean;
+export function resolveProfileScores<T extends string>(profiles: readonly T[], questions: Array<{ id: string; choices: Array<{ scores: Partial<Record<T, number>> }> }>, answers: Record<string, number>): T;
 export function rngNext(seed: number): { value: number; seed: number };
 export function normalizeSlot(slot: string): string;
 export function positionPenalty(player: Pick<RatingPlayer, "primary" | "secondary">, slot: string): number;

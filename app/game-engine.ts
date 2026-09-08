@@ -1,7 +1,8 @@
 import {
   BUILD, DEVELOPMENT_GOALS, FIRST_NAMES, FORMATIONS, GameState, LAST_NAMES,
-  LeaguePack, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
+  LeaguePack, LICENSE_CHALLENGES, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
   buildSchedule, positionPenalty, randomInt, selectBestLineup,
+  environmentForTier, environmentIncidentOccurs,
 } from "./game-data";
 import type { Coach, CoachProfile } from "./game-data";
 
@@ -38,27 +39,60 @@ function makePlayers(seed: number, base: number) {
 
 export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goals: string[]): GameState {
   let seed = Math.abs(Array.from(`${coach.name}-${clubName}`).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) | 0, 202627)) >>> 0;
+  const environment = environmentForTier(pack.tier);
+  const careerChallenge = LICENSE_CHALLENGES[coach.license];
   const teams: Team[] = pack.teams.map((name, index) => {
     const quality = randomInt(seed, -4, 4); seed = quality.seed;
     return { id: `team-${index}`, name, ovr: (TIER_OVR[pack.tier] ?? 42) + quality.value, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0 };
   });
   const clubTeam = teams.find((team) => team.name === clubName) ?? teams[0];
   const generated = makePlayers(seed, clubTeam.ovr); seed = generated.seed;
+  const humorRoll = randomInt(seed, 0, 55); seed = humorRoll.seed;
+  const worldHumor = Math.max(12, Math.min(94, Math.round(environment.humorBase * .45) + humorRoll.value));
+  const challengedCoach = { ...coach, reputation: Math.min(100, coach.reputation + careerChallenge.reputationBonus) };
   const assignments = selectBestLineup(generated.players, FORMATIONS["4-2-3-1"]);
   return {
-    build: BUILD, seed, coach,
+    build: BUILD, seed, coach: challengedCoach,
     club: { id: clubTeam.id, name: clubTeam.name, association: pack.association, district: pack.district, competition: pack.competition, group: pack.group, tier: pack.tier },
     season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures: buildSchedule(teams.map((team) => team.id)), players: generated.players,
     tactic: { formation: "4-2-3-1", mentality: "Zrównoważona", tempo: "Normalne", pressing: "Średni", line: "Średnia", width: "Standardowa", buildUp: "Mieszane", passingRisk: "Umiarkowane", assignments },
-    training: { focus: "Taktyka", intensity: "Normalna", recovery: true, readiness: 62, completedRound: null }, squadPolicy: "BALANCED",
-    pressures: { board: 18, fans: 20, media: 12, dressing: 15, personal: 16 }, burnout: 8,
-    president: { ambition: 58, patience: 54, ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
+    training: { focus: "Taktyka", intensity: "Normalna", recovery: true, readiness: Math.min(environment.readinessCap, 62), completedRound: null }, squadPolicy: "BALANCED",
+    pressures: { board: 18 + careerChallenge.pressureBonus, fans: 20 + Math.round(careerChallenge.pressureBonus * .8), media: Math.round((12 + careerChallenge.pressureBonus) * environment.mediaScale), dressing: 15, personal: 16 + Math.round(careerChallenge.pressureBonus * .7) }, burnout: 8 + Math.round(careerChallenge.pressureBonus * .15),
+    careerChallenge, environment, worldHumor,
+    president: { ambition: 58 + Math.round(careerChallenge.pressureBonus * .4), patience: Math.max(22, 54 - Math.round(careerChallenge.pressureBonus * .65)), ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
     presidentName: `Prezes ${LAST_NAMES[(seed + 11) % LAST_NAMES.length]}`,
     finances: { monthlySalary: Math.max(1800, 14000 - pack.tier * 1200), personalFunds: 9000 },
     developmentGoals: DEVELOPMENT_GOALS.filter((goal) => goals.includes(goal.id)).map((goal) => ({ ...goal, progress: 0 })),
-    history: [`13.07.2026 — ${coach.name} podpisał kontrakt z ${clubName}.`],
-    inbox: [{ id: "welcome", title: `Witamy w ${clubName}`, body: `${coach.name.split(" ")[0] || "Trenerze"}, zarząd oczekuje spokojnego wejścia w sezon i miejsca w górnej połowie tabeli. Zakres transferów: SHARED.`, resolved: false }],
+    history: [`13.07.2026 — ${coach.name} podpisał kontrakt z ${clubName}. Profil: ${coach.profile}. Świat kariery: humor ${worldHumor}/100.`],
+    inbox: [{ id: "welcome", title: `Witamy w ${clubName}`, body: `${coach.name.split(" ")[0] || "Trenerze"}, zarząd oczekuje ${careerChallenge.expectation}. To ${environment.status}: ${environment.work.toLowerCase()} Zakres transferów: SHARED.`, resolved: false }],
   };
+}
+
+export function environmentIncident(game: GameState) {
+  const roll = randomInt(game.seed, 0, 999); let seed = roll.seed;
+  if (!environmentIncidentOccurs(roll.value / 1000, game.environment.absenceRisk)) return { seed, penalty: 0, text: undefined as string | undefined };
+  const pick = randomInt(seed, 0, 2); seed = pick.seed;
+  const humorous = game.worldHumor >= 60;
+  const lower = game.club.tier >= 7;
+  const texts = lower
+    ? humorous
+      ? ["Jeden z podstawowych zawodników kończy zmianę w pracy tuż przed zbiórką. Dojedzie, ale rozgrzewka będzie ekspresowa.", "Kierownik melduje, że linia boczna wygląda dziś pewniej niż fragment murawy. Trzeba uprościć pierwsze podania.", "Bus utknął po drodze po dwóch zawodników. Obaj są w kadrze, lecz przygotowanie nie będzie podręcznikowe."]
+      : ["Obowiązki zawodowe ograniczyły przygotowanie jednego z podstawowych graczy.", "Stan boiska wymusza prostszy plan rozegrania niż zakładano.", "Opóźniony transport skrócił zespołowi rozgrzewkę."]
+    : ["Drobny problem mięśniowy wykryty na rozgrzewce ogranicza gotowość jednego z liderów.", "Opóźnienie w podróży skróciło odprawę przedmeczową.", "Nagła infekcja w kadrze zmusza sztab do korekty obciążeń."];
+  return { seed, penalty: lower ? 2.2 : 1.4, text: texts[pick.value] };
+}
+
+export function environmentDecision(game: GameState, result: "win" | "draw" | "loss") {
+  const humorous = game.worldHumor >= 60;
+  if (game.club.tier >= 8) return result === "loss"
+    ? { title: "Pytanie lokalnego portalu", body: humorous ? "Portal pyta, czy problemem był plan meczu, czy fakt, że trzech piłkarzy poznało skład między pracą a rozgrzewką." : "Lokalny portal pyta, czy bierzesz odpowiedzialność za przygotowanie zespołu." }
+    : { title: "Głos z szatni", body: humorous ? "Rezerwowy napastnik twierdzi, że jest w formie. Na dowód przypomina hat-tricka z zakładowego turnieju, którego nikt ze sztabu nie widział." : "Rezerwowy napastnik oczekuje rozmowy o swojej roli i minutach." };
+  if (game.club.tier >= 5) return result === "loss"
+    ? { title: "Sponsor oczekuje wyjaśnień", body: "Lokalny sponsor chce wiedzieć, czy słabszy wynik wymaga wzmocnień, czy zmiany planu pracy." }
+    : { title: "Napięcie o rolę w zespole", body: "Doświadczony zawodnik chce publicznego potwierdzenia swojej pozycji w drużynie." };
+  return result === "loss"
+    ? { title: "Konferencja po meczu", body: "Media żądają wskazania odpowiedzialnego za wynik, a zarząd obserwuje ton odpowiedzi." }
+    : { title: "Pytanie o hierarchię", body: "Dziennikarze pytają, czy ostatni wybór składu oznacza trwałą zmianę hierarchii w zespole." };
 }
 
 export function teamForId(game: GameState, id: string) { return game.teams.find((team) => team.id === id); }

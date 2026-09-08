@@ -1,12 +1,19 @@
 import {
-  buildSchedule, effectiveOVR, liveBreakdown, liveOVR, normalizeSlot, POLICY_EFFECTS,
-  positionPenalty, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult,
+  buildSchedule, capReadiness, effectiveOVR, environmentIncidentOccurs, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, POLICY_EFFECTS,
+  positionPenalty, pressureDeltaForResult, resolveProfileScores, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult,
 } from "../lib/game-rules.mjs";
 
 export type Screen = "start" | "creator" | "club" | "goals" | "dashboard" | "squad" | "tactics" | "training" | "match" | "table" | "career";
 export type Position = "BR" | "PO" | "ŚO" | "LO" | "DP" | "ŚP" | "PP" | "ŚPO" | "LP" | "N";
-export type License = "Grassroots D" | "UEFA C" | "UEFA B" | "UEFA A" | "UEFA PRO";
+export type License = "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
 export type CoachProfile = "Mentor" | "Generał" | "Taktyczny obsesyjny" | "Wynikowiec" | "Dyplomata" | "Trener od zapierdolu" | "Hazardzista" | "Spokojny pragmatyk";
+export type CareerChallenge = { label: string; description: string; expectation: string; pressureMultiplier: number; pressureBonus: number; reputationBonus: number };
+export type LevelEnvironment = {
+  tier: number; label: string; status: string; work: string; positives: string[]; risks: string[];
+  trainingSessions: number; readinessCap: number; absenceRisk: number; mediaScale: number; humorBase: number;
+};
+export type PsychChoice = { label: string; scores: Partial<Record<CoachProfile, number>> };
+export type PsychQuestion = { id: string; question: string; context: string; choices: PsychChoice[] };
 
 export type LeaguePack = { id: string; association: string; district: string; competition: string; group: string; tier: number; teams: string[]; source?: string };
 export type Player = { id: string; name: string; age: number; primary: Position; secondary: Position[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number; potential: number; personality: string; status: string };
@@ -22,6 +29,7 @@ export type GameState = {
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
   training: { focus: string; intensity: string; recovery: boolean; readiness: number; completedRound: number | null };
   squadPolicy: string; pressures: Record<string, number>; burnout: number; president: Record<string, number>; presidentName: string;
+  careerChallenge: CareerChallenge; environment: LevelEnvironment; worldHumor: number;
   finances: { monthlySalary: number; personalFunds: number };
   licenseCourse?: { target: License; weeksRemaining: number; totalWeeks: number; funding: "self" | "club" };
   licenseMessage?: string;
@@ -29,11 +37,17 @@ export type GameState = {
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 1.1";
-export const LICENSES: License[] = ["Grassroots D", "UEFA C", "UEFA B", "UEFA A", "UEFA PRO"];
-export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots D": 9, "UEFA C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
+export const BUILD = "TEN TRENER Build 1.2";
+export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
+export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
 export const LICENSE_COURSES: Partial<Record<License, { weeks: number; cost: number }>> = {
-  "UEFA C": { weeks: 12, cost: 1500 }, "UEFA B": { weeks: 20, cost: 3500 }, "UEFA A": { weeks: 28, cost: 6500 }, "UEFA PRO": { weeks: 40, cost: 12000 },
+  "UEFA B": { weeks: 20, cost: 3200 }, "UEFA A": { weeks: 28, cost: 6000 }, "UEFA PRO": { weeks: 40, cost: 18000 },
+};
+export const LICENSE_CHALLENGES: Record<License, CareerChallenge> = {
+  "Grassroots C": { label: "Od szatni i wapna", description: "Mało mediów, dużo pracy u podstaw. Wynik nie przykryje problemów z frekwencją i boiskiem.", expectation: "zbudowania wiarygodnej drużyny i walki o górną połowę", pressureMultiplier: 1, pressureBonus: 0, reputationBonus: 0 },
+  "UEFA B": { label: "Ambicja od pierwszej kolejki", description: "Szerszy rynek, ale zarząd płaci za kompetencje i szybciej pyta o postęp.", expectation: "miejsca w górnej połowie i widocznego stylu gry", pressureMultiplier: 1.15, pressureBonus: 7, reputationBonus: 7 },
+  "UEFA A": { label: "Licencja nie daje alibi", description: "Półprofesjonalne i centralne realia: kontrakty, wyjazdy, analiza oraz presja awansu.", expectation: "realnej walki o czołówkę bez okresu ochronnego", pressureMultiplier: 1.35, pressureBonus: 14, reputationBonus: 15 },
+  "UEFA PRO": { label: "Nazwisko pod lupą", description: "Największe kluby są dostępne, lecz każdy remis ma nagłówek, a następca już siedzi na trybunie.", expectation: "natychmiastowego wyniku zgodnego z budżetem i reputacją", pressureMultiplier: 1.6, pressureBonus: 22, reputationBonus: 24 },
 };
 export const COACH_PROFILES: CoachProfile[] = ["Mentor", "Generał", "Taktyczny obsesyjny", "Wynikowiec", "Dyplomata", "Trener od zapierdolu", "Hazardzista", "Spokojny pragmatyk"];
 export const PROFILE_NOTE: Record<CoachProfile, string> = {
@@ -42,6 +56,63 @@ export const PROFILE_NOTE: Record<CoachProfile, string> = {
   Dyplomata: "Lepsze relacje z prezesem i mediami. Mniej ostrych reakcji.", "Trener od zapierdolu": "Wysoka intensywność i energia. Więcej zmęczenia oraz urazów.",
   Hazardzista: "Większy sufit odważnych decyzji. Duża zmienność konsekwencji.", "Spokojny pragmatyk": "Stabilność i odporność. Mniej gwałtownych skoków formy.",
 };
+export const PSYCH_QUESTIONS: PsychQuestion[] = [
+  { id: "mistake", context: "Derby, 0:1. Młody stoper zawalił bramkę i nie patrzy nikomu w oczy.", question: "Co robisz w przerwie?", choices: [
+    { label: "Daję mu prostą wskazówkę i zostawiam w grze.", scores: { Mentor: 3, Dyplomata: 1 } },
+    { label: "Zmieniam go. Zespół musi znać granice.", scores: { Generał: 3, Wynikowiec: 1 } },
+    { label: "Koryguję asekurację całej linii, nie jednego człowieka.", scores: { "Taktyczny obsesyjny": 3, "Spokojny pragmatyk": 1 } },
+    { label: "Przesuwam go wyżej i odwracam problem w przewagę.", scores: { Hazardzista: 3, Mentor: 1 } },
+  ] },
+  { id: "rain", context: "Ostatni trening przed meczem. Leje, boisko ciężkie, połowa kadry rano pracowała.", question: "Jak kończysz mikrocykl?", choices: [
+    { label: "Krótko i konkretnie. Świeżość jest częścią planu.", scores: { "Spokojny pragmatyk": 3, Dyplomata: 1 } },
+    { label: "Robimy pełną jednostkę. Charakter nie rośnie pod dachem.", scores: { "Trener od zapierdolu": 3, Generał: 1 } },
+    { label: "Przenoszę akcent na odprawę i warianty rozegrania.", scores: { "Taktyczny obsesyjny": 3, Mentor: 1 } },
+    { label: "Trenujemy jeden ryzykowny schemat, który może wygrać mecz.", scores: { Hazardzista: 3, Wynikowiec: 1 } },
+  ] },
+  { id: "board", context: "Prezes obiecał spokój, po dwóch remisach oczekuje publicznej deklaracji awansu.", question: "Jak odpowiadasz?", choices: [
+    { label: "Ustalamy wspólny komunikat i konkretne warunki oceny.", scores: { Dyplomata: 3, "Spokojny pragmatyk": 1 } },
+    { label: "Biorę cel. Presja ma napędzać zespół.", scores: { Wynikowiec: 3, Generał: 1 } },
+    { label: "Odmawiam pustych deklaracji i pokazuję dane z meczów.", scores: { "Taktyczny obsesyjny": 2, "Spokojny pragmatyk": 2 } },
+    { label: "Deklaruję awans, ale proszę o jednego konkretnego piłkarza.", scores: { Hazardzista: 2, Dyplomata: 2 } },
+  ] },
+  { id: "captain", context: "Kapitan spóźnia się trzeci raz. Jest najlepszy w zespole i lubiany w szatni.", question: "Jaka jest reakcja?", choices: [
+    { label: "Taka sama kara jak dla każdego.", scores: { Generał: 3, Wynikowiec: 1 } },
+    { label: "Najpierw rozmowa: chcę znać przyczynę, potem decyzja.", scores: { Mentor: 2, Dyplomata: 2 } },
+    { label: "Traci opaskę, ale skład ustalam pod wynik.", scores: { Wynikowiec: 3, "Spokojny pragmatyk": 1 } },
+    { label: "Daję mu odpowiedzialność za część odprawy.", scores: { Mentor: 3, Hazardzista: 1 } },
+  ] },
+  { id: "minute80", context: "80. minuta, 1:1. Zarząd chce zwycięstwa, rywal groźnie kontruje.", question: "Wybierasz…", choices: [
+    { label: "Drugiego napastnika i bardzo wysoki pressing.", scores: { Hazardzista: 3, "Trener od zapierdolu": 1 } },
+    { label: "Jedną przygotowaną zmianę struktury bez otwierania środka.", scores: { "Taktyczny obsesyjny": 3, "Spokojny pragmatyk": 1 } },
+    { label: "Najlepszego zmiennika, niezależnie od pozycji. Potrzebuję gola.", scores: { Wynikowiec: 3, Hazardzista: 1 } },
+    { label: "Uspokajam mecz. Punkt też buduje sezon.", scores: { "Spokojny pragmatyk": 3, Dyplomata: 1 } },
+  ] },
+  { id: "crisis", context: "Po słabej serii zespół jest fizycznie zdrowy, ale mentalnie pusty.", question: "Pierwszy ruch w nowym tygodniu?", choices: [
+    { label: "Indywidualne rozmowy i odbudowa odpowiedzialności.", scores: { Mentor: 3, Dyplomata: 1 } },
+    { label: "Najcięższa jednostka miesiąca. Reset przez pracę.", scores: { "Trener od zapierdolu": 3, Generał: 1 } },
+    { label: "Zamykam grupę i jasno wskazuję standardy.", scores: { Generał: 3, Wynikowiec: 1 } },
+    { label: "Upraszczam plan do dwóch zachowań, które umiemy najlepiej.", scores: { "Spokojny pragmatyk": 2, "Taktyczny obsesyjny": 2 } },
+  ] },
+];
+
+export function resolveCoachProfile(answers: Record<string, number>): CoachProfile {
+  return resolveProfileScores(COACH_PROFILES, PSYCH_QUESTIONS, answers);
+}
+
+export const LEVEL_ENVIRONMENTS: Record<number, LevelEnvironment> = {
+  1: { tier: 1, label: "Ekstraklasa", status: "pełny profesjonalizm", work: "Zarządzasz sztabem, danymi, agentami i kalendarzem pod stałą obserwacją mediów.", positives: ["najlepsza infrastruktura", "pełny sztab i analiza"], risks: ["ultrasi i telewizja", "wynik wymagany natychmiast"], trainingSessions: 6, readinessCap: 96, absenceRisk: .005, mediaScale: 1.8, humorBase: 24 },
+  2: { tier: 2, label: "I liga", status: "pełny profesjonalizm", work: "Łączysz walkę o awans z kontraktami, rotacją i presją właściciela.", positives: ["profesjonalny rytm", "duża widoczność trenera"], risks: ["karuzela trenerska", "agenci i budżet płac"], trainingSessions: 6, readinessCap: 95, absenceRisk: .007, mediaScale: 1.6, humorBase: 28 },
+  3: { tier: 3, label: "II liga", status: "profesjonalna liga centralna", work: "Logistyka całej Polski, analiza rywali i utrzymanie szerokiej kadry są codziennością.", positives: ["regularny trening", "centralny rynek pracy"], risks: ["długie wyjazdy", "mały margines finansowy"], trainingSessions: 5, readinessCap: 94, absenceRisk: .01, mediaScale: 1.35, humorBase: 32 },
+  4: { tier: 4, label: "III liga", status: "półprofesjonalizm", work: "Godzisz ambicje awansu z międzyregionalnymi wyjazdami i nierównymi warunkami klubów.", positives: ["rozwój młodych", "wyraźna ścieżka w górę"], risks: ["koszty transportu", "wąska kadra"], trainingSessions: 5, readinessCap: 92, absenceRisk: .025, mediaScale: 1.1, humorBase: 40 },
+  5: { tier: 5, label: "IV liga", status: "próg profesjonalizacji", work: "Pilnujesz treningu, budżetu, licencji i zawodników łączących futbol z pracą.", positives: ["duży wpływ trenera", "silne lokalne derby"], risks: ["nierówna infrastruktura", "presja sponsora"], trainingSessions: 4, readinessCap: 90, absenceRisk: .05, mediaScale: .9, humorBase: 50 },
+  6: { tier: 6, label: "V liga", status: "półamatorstwo", work: "Budujesz jakość przy regionalnych wyjazdach, ograniczonych płacach i trzech–czterech treningach.", positives: ["bliskość szatni", "lokalny scouting"], risks: ["krótka ławka", "praca zawodowa piłkarzy"], trainingSessions: 4, readinessCap: 88, absenceRisk: .07, mediaScale: .75, humorBase: 58 },
+  7: { tier: 7, label: "Klasa okręgowa", status: "futbol regionalny", work: "Ustalasz wieczorne treningi, transport i skład zależny od dostępności zawodników.", positives: ["lokalna tożsamość", "bezpośredni wpływ"], risks: ["absencje w pracy", "ograniczona regeneracja"], trainingSessions: 3, readinessCap: 86, absenceRisk: .09, mediaScale: .6, humorBase: 66 },
+  8: { tier: 8, label: "Klasa A", status: "amatorstwo z ambicją", work: "Rekrutujesz lokalnie, pilnujesz frekwencji i przekładasz taktykę na dwa treningi wieczorem.", positives: ["wyraźna wspólnota", "szybko widać pracę trenera"], risks: ["zmiany i praca", "mała głębia składu"], trainingSessions: 2, readinessCap: 84, absenceRisk: .12, mediaScale: .45, humorBase: 73 },
+  9: { tier: 9, label: "Klasa B", status: "futbol społecznościowy", work: "Najpierw zbierasz jedenastu dostępnych, potem dopiero dopasowujesz plan do murawy i rywala.", positives: ["autentyczna szatnia", "lokalne derby znaczą wszystko"], risks: ["praca zawodowa", "boisko i sprzęt bywają dwunastym rywalem"], trainingSessions: 2, readinessCap: 82, absenceRisk: .16, mediaScale: .32, humorBase: 82 },
+  10: { tier: 10, label: "Klasa C", status: "najniższy szczebel", work: "Trener bywa analitykiem, kierownikiem i człowiekiem od chorągiewek w jednej osobie.", positives: ["pełna swoboda budowy", "najbliżej lokalnej piłki"], risks: ["skrajna dostępność", "minimalna infrastruktura"], trainingSessions: 2, readinessCap: 80, absenceRisk: .2, mediaScale: .22, humorBase: 88 },
+};
+
+export function environmentForTier(tier: number): LevelEnvironment { return LEVEL_ENVIRONMENTS[Math.max(1, Math.min(10, tier))]; }
 export const DEVELOPMENT_GOALS: Omit<DevelopmentGoal, "progress">[] = [
   { id: "tactics", label: "Taktyka", description: "Osiągnij 72% przygotowania taktycznego w 8 meczach.", target: 8 },
   { id: "motivation", label: "Motywacja", description: "Utrzymuj średnie morale pierwszej XI powyżej 68.", target: 10 },
@@ -67,14 +138,6 @@ export const FORMATION_COORDS: Record<keyof typeof FORMATIONS, Array<{ left: num
   "4-4-2": [{ left: 50, top: 90 }, { left: 84, top: 73 }, { left: 62, top: 76 }, { left: 38, top: 76 }, { left: 16, top: 73 }, { left: 82, top: 46 }, { left: 62, top: 52 }, { left: 38, top: 52 }, { left: 18, top: 46 }, { left: 37, top: 15 }, { left: 63, top: 15 }],
   "3-5-2": [{ left: 50, top: 90 }, { left: 74, top: 73 }, { left: 50, top: 78 }, { left: 26, top: 73 }, { left: 86, top: 48 }, { left: 66, top: 51 }, { left: 50, top: 61 }, { left: 34, top: 51 }, { left: 14, top: 48 }, { left: 37, top: 15 }, { left: 63, top: 15 }],
 };
-
-export function maxStartingLicense(coachingExperience: string, playingExperience: string): License {
-  if (coachingExperience === "Ponad 10 lat" && ["Zawodowiec", "Reprezentant"].includes(playingExperience)) return "UEFA PRO";
-  if (coachingExperience === "Ponad 10 lat") return "UEFA A";
-  if (coachingExperience === "4–10 lat") return "UEFA B";
-  if (coachingExperience === "1–3 lata") return "UEFA C";
-  return "Grassroots D";
-}
 
 export function nextLicense(current: License): License | undefined { return LICENSES[LICENSES.indexOf(current) + 1]; }
 
@@ -114,4 +177,4 @@ export const LAST_NAMES = ["Adamski", "Bąk", "Bednarek", "Bielecki", "Błaszczy
 export const TIER_OVR: Record<number, number> = { 1: 76, 2: 69, 3: 63, 4: 58, 5: 54, 6: 50, 7: 46, 8: 42, 9: 38, 10: 34 };
 
 export function randomInt(seed: number, min: number, max: number) { const r = rngNext(seed); return { value: Math.floor(r.value * (max - min + 1)) + min, seed: r.seed }; }
-export { buildSchedule, effectiveOVR, liveBreakdown, liveOVR, normalizeSlot, POLICY_EFFECTS, positionPenalty, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult };
+export { buildSchedule, capReadiness, effectiveOVR, environmentIncidentOccurs, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult };

@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  buildSchedule, effectiveOVR, liveBreakdown, liveOVR, POLICY_EFFECTS, positionPenalty,
-  selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult,
+  buildSchedule, capReadiness, effectiveOVR, environmentIncidentOccurs, liveBreakdown, liveOVR, normalizeStartingLicense,
+  POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, resolveProfileScores, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult,
 } from "../lib/game-rules.mjs";
 
 const player = (id, primary, baseOVR = 50, secondary = []) => ({ id, primary, secondary, baseOVR, form: 50, morale: 50, fatigue: 10, relation: 50 });
@@ -65,6 +65,36 @@ test("każda polityka kadry ma koszt, jeśli daje premię", () => {
     if (id !== "BALANCED" && effect.matchStrength > 0) assert.ok(effect.fatigue > 0 || effect.burnout > 0 || effect.morale < 0);
   }
   assert.ok(POLICY_EFFECTS.ROTATION.fatigue < 0 && POLICY_EFFECTS.ROTATION.matchStrength < 0);
+});
+
+test("stare licencje migrują do Grassroots C, a wyższy start zwiększa koszt wyniku", () => {
+  assert.equal(normalizeStartingLicense("Grassroots D"), "Grassroots C");
+  assert.equal(normalizeStartingLicense("UEFA C"), "Grassroots C");
+  assert.equal(normalizeStartingLicense("UEFA A"), "UEFA A");
+  assert.equal(normalizeStartingLicense("nieznana"), "Grassroots C");
+  assert.ok(pressureDeltaForResult("loss", 1.6) > pressureDeltaForResult("loss", 1));
+  assert.ok(pressureDeltaForResult("draw", 1.6) > pressureDeltaForResult("draw", 1));
+  assert.ok(pressureDeltaForResult("win", 1.6) > pressureDeltaForResult("win", 1));
+});
+
+test("środowisko ogranicza gotowość i ma kontrolowane ryzyko absencji", () => {
+  assert.equal(capReadiness(80, 8, 82), 82);
+  assert.equal(capReadiness(60, 5, 96), 65);
+  assert.equal(environmentIncidentOccurs(.05, .16), true);
+  assert.equal(environmentIncidentOccurs(.5, .16), false);
+  assert.equal(environmentIncidentOccurs(.5, 0), false);
+});
+
+test("ankieta przypisuje profil deterministycznie i ignoruje nieznane punkty", () => {
+  const profiles = ["Mentor", "Generał", "Hazardzista"];
+  const questions = [
+    { id: "q1", choices: [{ scores: { Mentor: 3 } }, { scores: { Generał: 3 } }] },
+    { id: "q2", choices: [{ scores: { Hazardzista: 4 } }, { scores: { Mentor: 2, Inny: 99 } }] },
+  ];
+  const answers = { q1: 0, q2: 0 };
+  assert.equal(resolveProfileScores(profiles, questions, answers), "Hazardzista");
+  assert.equal(resolveProfileScores(profiles, questions, answers), resolveProfileScores(profiles, questions, answers));
+  assert.equal(resolveProfileScores(profiles, questions, { q1: 1, q2: 1 }), "Generał");
 });
 
 test("pełny sezon ligi zachowuje wszystkie inwarianty tabeli", () => {

@@ -80,6 +80,33 @@ button:disabled { cursor: not-allowed; }
 .choice-card { padding: .95rem; display: grid; gap: .4rem; }
 .choice-card strong { font-size: .98rem; }
 .choice-card span { color: #849991; font-size: .8rem; line-height: 1.45; }
+.license-choice-grid { display: grid; gap: .65rem; }
+.license-choice { min-height: 8.2rem; display: grid; align-content: start; gap: .32rem; padding: .85rem; border: 1px solid #2a4039; border-radius: .8rem; background: #0f1d19; color: #eef7f3; text-align: left; }
+.license-choice > span { color: #baf516; font-size: .72rem; font-weight: 950; letter-spacing: .08em; text-transform: uppercase; }
+.license-choice strong { font-size: .95rem; }
+.license-choice p { margin: 0; color: #8ca198; font-size: .76rem; line-height: 1.45; }
+.license-choice small { margin-top: auto; color: #c3d1cb; font-size: .67rem; }
+.license-choice.selected { border-color: #baf516; background: linear-gradient(145deg, rgba(186,245,22,.13), #0f1d19 70%); box-shadow: inset 3px 0 #baf516; }
+.setup-note { margin: .7rem 0 0; padding: .7rem .8rem; border-left: 3px solid #ffb547; background: rgba(255,181,71,.06); color: #98aaa3; font-size: .76rem; line-height: 1.5; }
+.psych-test { padding: .9rem; border: 1px solid #2a4039; border-radius: 1rem; background: linear-gradient(145deg, #12231d, #0b1814); }
+.psych-progress { height: .3rem; overflow: hidden; margin-bottom: 1rem; border-radius: 99px; background: #293c35; }
+.psych-progress span { display: block; height: 100%; background: #baf516; transition: width .25s ease; }
+.psych-test > small { color: #baf516; font-size: .67rem; font-weight: 950; letter-spacing: .11em; }
+.psych-test > p { margin: .55rem 0 .3rem; color: #91a59d; font-size: .8rem; line-height: 1.5; }
+.psych-test > h2 { margin: 0 0 1rem; font-size: 1.18rem; }
+.psych-answers { display: grid; gap: .5rem; }
+.psych-answers button { min-height: 3.4rem; display: grid; grid-template-columns: 2rem 1fr; align-items: center; gap: .55rem; padding: .55rem .7rem; border: 1px solid #2b423a; border-radius: .65rem; background: #101f1a; color: #dce8e2; text-align: left; }
+.psych-answers button b { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: #23372f; color: #baf516; font-size: .72rem; }
+.psych-answers button span { font-size: .78rem; line-height: 1.35; }
+.psych-answers button.selected { border-color: #baf516; background: rgba(186,245,22,.09); }
+.psych-answers button.selected b { background: #baf516; color: #07110f; }
+.psych-navigation { display: flex; align-items: center; justify-content: space-between; margin-top: .65rem; color: #71867e; font-size: .72rem; }
+.profile-result { display: flex; align-items: flex-start; gap: .65rem; margin-top: .9rem; padding: .8rem; border: 1px solid rgba(186,245,22,.45); border-radius: .7rem; background: rgba(186,245,22,.07); }
+.profile-result > svg { flex: 0 0 auto; width: 1.2rem; color: #baf516; }
+.profile-result > span { display: grid; gap: .18rem; }
+.profile-result small { color: #82978e; font-size: .62rem; letter-spacing: .08em; }
+.profile-result strong { color: #baf516; }
+.profile-result p { margin: 0; color: #a5b5af; font-size: .73rem; line-height: 1.45; }
 .setup-footer { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid #1d312b; }
 .setup-footer button:last-child { min-height: 3rem; }
 .cascade { margin: 1.4rem 0; }
@@ -95,6 +122,15 @@ button:disabled { cursor: not-allowed; }
 .club-crest.away { background: linear-gradient(145deg, #f2f5f4, #8ba19a); }
 .club-crest.large { width: 3.5rem; height: 3.5rem; font-size: .86rem; }
 .source-note { color: #72877f; font-size: .77rem; line-height: 1.5; margin: .8rem 0 0; }
+.environment-preview { display: grid; gap: .8rem; margin-top: .8rem; padding: .9rem; border: 1px solid #314a41; border-radius: .85rem; background: radial-gradient(circle at 100% 0%, rgba(186,245,22,.09), transparent 45%), #0d1b17; }
+.environment-preview small { color: #7f948c; font-size: .7rem; }
+.environment-preview h3 { margin: .25rem 0; font-size: 1rem; }
+.environment-preview p { margin: 0; color: #94a79f; font-size: .77rem; line-height: 1.5; }
+.environment-columns { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+.environment-columns > span { display: grid; align-content: start; gap: .3rem; padding: .6rem; border: 1px solid #273d35; border-radius: .55rem; background: #101f1a; }
+.environment-columns b { color: #baf516; font-size: .66rem; letter-spacing: .08em; }
+.environment-preview footer { display: flex; flex-wrap: wrap; gap: .4rem; }
+.environment-preview footer span { padding: .35rem .5rem; border-radius: 99px; background: #22372f; color: #bdcbc5; font-size: .67rem; }
 .goal-counter { display: flex; align-items: center; gap: .7rem; width: max-content; margin: 1.5rem 0; padding: .65rem .85rem; border: 1px solid #345047; border-radius: .7rem; background: #0f1d19; }
 .goal-counter svg { color: #baf516; }
 .goal-counter span { color: #83988f; font-size: .8rem; }
@@ -166,6 +202,10 @@ button:disabled { cursor: not-allowed; }
 .metric span, .metric small { color: #789087; font-size: .7rem; }
 .metric strong { font-size: 1.65rem; line-height: 1.1; }
 .metric.green svg { color: #baf516; } .metric.amber svg { color: #ffb547; } .metric.red svg { color: #ff6565; } .metric.blue svg { color: #5bc7ff; } .metric.violet svg { color: #a98cff; }
+.world-environment > p { margin: -.35rem 0 .85rem; color: #94a79f; font-size: .78rem; line-height: 1.5; }
+.world-environment > div:last-child { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; }
+.world-environment > div:last-child span { display: grid; gap: .15rem; padding: .55rem; border-radius: .55rem; background: #10201b; color: #738a81; font-size: .67rem; }
+.world-environment > div:last-child b { color: #e9f3ee; font-size: .78rem; }
 .dashboard-columns { display: grid; gap: 1rem; }
 .decision-card > small { color: #ffb547; font-weight: 900; letter-spacing: .1em; }
 .decision-card h3 { margin: .45rem 0; font-size: 1.12rem; }
@@ -243,7 +283,7 @@ button:disabled { cursor: not-allowed; }
 .match-week small { color: #758b83; font-size: .62rem; font-weight: 900; letter-spacing: .08em; }
 .match-week strong { overflow: hidden; text-overflow: ellipsis; font-size: .8rem; white-space: nowrap; }
 .match-week.locked { border-color: rgba(186,245,22,.4); }
-.microcycle-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; }
+.microcycle-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: .45rem; }
 .microcycle-strip > div { display: grid; gap: .18rem; min-height: 4.2rem; padding: .65rem; border: 1px solid #294139; border-radius: .65rem; background: #0f1d19; }
 .microcycle-strip b { color: #baf516; font-size: .7rem; }
 .microcycle-strip span { color: #a0b1aa; font-size: .7rem; line-height: 1.3; }
@@ -320,7 +360,7 @@ button:disabled { cursor: not-allowed; }
 @media (min-width: 640px) {
   .start-screen { align-items: center; padding: 2rem 5vw; } .start-panel { padding: 2rem; }
   .form-grid, .cascade { grid-template-columns: repeat(2, 1fr); } .field.wide { grid-column: 1 / -1; }
-  .profile-grid, .goals-grid, .club-grid { grid-template-columns: repeat(2, 1fr); } .league-strip { grid-template-columns: repeat(4, 1fr); } .league-strip > div { border-bottom: 0; }
+  .profile-grid, .goals-grid, .club-grid, .license-choice-grid { grid-template-columns: repeat(2, 1fr); } .league-strip { grid-template-columns: repeat(4, 1fr); } .league-strip > div { border-bottom: 0; }
   .policy-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .course-actions { grid-template-columns: repeat(2, 1fr); }
   .metric-grid { grid-template-columns: repeat(4, 1fr); } .decision-actions { grid-template-columns: repeat(3, 1fr); } .quick-actions > div:last-child { grid-template-columns: repeat(2, 1fr); }
@@ -335,5 +375,5 @@ button:disabled { cursor: not-allowed; }
   .career-layout { grid-template-columns: repeat(2, 1fr); } .metric { min-height: 8rem; } .setup-content { padding-top: 3rem; }
 }
 @media (min-width: 1180px) {
-  .profile-grid { grid-template-columns: repeat(4, 1fr); } .club-grid { grid-template-columns: repeat(3, 1fr); } .goals-grid { grid-template-columns: repeat(4, 1fr); } .assignment-grid { grid-template-columns: repeat(3, 1fr); }
+  .profile-grid, .license-choice-grid { grid-template-columns: repeat(4, 1fr); } .club-grid { grid-template-columns: repeat(3, 1fr); } .goals-grid { grid-template-columns: repeat(4, 1fr); } .assignment-grid { grid-template-columns: repeat(3, 1fr); }
 }
