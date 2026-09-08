@@ -1,7 +1,8 @@
 import {
-  buildSchedule, capReadiness, effectiveOVR, environmentIncidentOccurs, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, POLICY_EFFECTS,
-  positionPenalty, pressureDeltaForResult, resolveProfileScores, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult,
+  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, effectiveOVR, environmentIncidentOccurs, goalSatisfied, injuryRiskFromFatigue, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, POLICY_EFFECTS,
+  positionPenalty, pressureDeltaForResult, resolveProfileScores, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult, weeklyBurnoutDelta,
 } from "../lib/game-rules.mjs";
+import type { CareerIssue } from "../lib/career-events.mjs";
 
 export type Screen = "start" | "creator" | "club" | "goals" | "dashboard" | "squad" | "tactics" | "training" | "match" | "table" | "career";
 export type Position = "BR" | "PO" | "ŚO" | "LO" | "DP" | "ŚP" | "PP" | "ŚPO" | "LP" | "N";
@@ -16,28 +17,29 @@ export type PsychChoice = { label: string; scores: Partial<Record<CoachProfile, 
 export type PsychQuestion = { id: string; question: string; context: string; choices: PsychChoice[] };
 
 export type LeaguePack = { id: string; association: string; district: string; competition: string; group: string; tier: number; teams: string[]; source?: string };
-export type Player = { id: string; name: string; age: number; primary: Position; secondary: Position[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number; potential: number; personality: string; status: string };
+export type Player = { id: string; name: string; age: number; primary: Position; secondary: Position[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number; potential: number; personality: string; status: string; injuryWeeks?: number };
 export type Team = { id: string; name: string; ovr: number; played: number; won: number; drawn: number; lost: number; gf: number; ga: number; points: number };
 export type Fixture = { round: number; home: string; away: string; played: boolean; homeGoals?: number; awayGoals?: number };
 export type MatchEvent = { minute: number; text: string; kind: "goal" | "card" | "injury" | "chance" | "info"; side: "home" | "away" | "neutral" };
-export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean; homeStrength?: number; awayStrength?: number };
+export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean; homeStrength?: number; awayStrength?: number; preparationReadiness?: number; preMatchPressure?: number; analysisAttempted?: boolean; analysisStartBalance?: number };
 export type DevelopmentGoal = { id: string; label: string; description: string; progress: number; target: number };
+export type SeasonEvidence = { formationsWithPoints: string[]; youthStarters: string[]; analysisRounds: number[]; tacticalRounds: number[]; pressureRounds: number[]; positiveDecisions: string[] };
 export type Coach = { name: string; age: number; region: string; playingExperience: string; coachingExperience: string; profile: CoachProfile; license: License; reputation: number; skills: Record<string, number> };
 export type Club = { id: string; name: string; association: string; district: string; competition: string; group: string; tier: number };
 export type Tactic = { formation: keyof typeof FORMATIONS; mentality: string; tempo: string; pressing: string; line: string; width: string; buildUp: string; passingRisk: string; assignments: Record<string, string> };
 export type GameState = {
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
   training: { focus: string; intensity: string; recovery: boolean; readiness: number; completedRound: number | null };
-  squadPolicy: string; pressures: Record<string, number>; burnout: number; president: Record<string, number>; presidentName: string;
+  squadPolicy: string; pressures: Record<string, number>; burnout: number; lastBurnoutChange: number; president: Record<string, number>; presidentName: string;
   careerChallenge: CareerChallenge; environment: LevelEnvironment; worldHumor: number;
   finances: { monthlySalary: number; personalFunds: number };
   licenseCourse?: { target: License; weeksRemaining: number; totalWeeks: number; funding: "self" | "club" };
   licenseMessage?: string;
-  developmentGoals: DevelopmentGoal[]; history: string[]; inbox: { id: string; title: string; body: string; resolved: boolean }[]; matchState?: MatchState; newSeasonPending?: boolean;
+  developmentGoals: DevelopmentGoal[]; seasonEvidence: SeasonEvidence; history: string[]; inbox: CareerIssue[]; matchState?: MatchState; newSeasonPending?: boolean;
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 1.2";
+export const BUILD = "TEN TRENER Build 1.3";
 export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
 export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
 export const LICENSE_COURSES: Partial<Record<License, { weeks: number; cost: number }>> = {
@@ -114,14 +116,14 @@ export const LEVEL_ENVIRONMENTS: Record<number, LevelEnvironment> = {
 
 export function environmentForTier(tier: number): LevelEnvironment { return LEVEL_ENVIRONMENTS[Math.max(1, Math.min(10, tier))]; }
 export const DEVELOPMENT_GOALS: Omit<DevelopmentGoal, "progress">[] = [
-  { id: "tactics", label: "Taktyka", description: "Osiągnij 72% przygotowania taktycznego w 8 meczach.", target: 8 },
-  { id: "motivation", label: "Motywacja", description: "Utrzymuj średnie morale pierwszej XI powyżej 68.", target: 10 },
-  { id: "people", label: "Zarządzanie ludźmi", description: "Rozwiąż 4 sytuacje bez utraty szatni.", target: 4 },
-  { id: "analysis", label: "Analiza", description: "Dokonaj 6 trafnych korekt planu meczowego.", target: 6 },
-  { id: "pressure", label: "Odporność na presję", description: "Przejdź 5 meczów wysokiej presji bez załamania.", target: 5 },
-  { id: "adaptability", label: "Adaptacyjność", description: "Zdobądź punkty trzema różnymi ustawieniami.", target: 3 },
-  { id: "youth", label: "Rozwój młodych", description: "Daj łączny rozwój trzem graczom U21.", target: 3 },
-  { id: "reputation", label: "Reputacja / networking", description: "Zbuduj 6 pozytywnych zdarzeń w środowisku.", target: 6 },
+  { id: "tactics", label: "Taktyka", description: "Rozpocznij 8 meczów z gotowością taktyczną minimum 72%.", target: 8 },
+  { id: "motivation", label: "Motywacja", description: "Rozpocznij 10 meczów ze średnim morale wyjściowej XI minimum 68.", target: 10 },
+  { id: "people", label: "Zarządzanie ludźmi", description: "Rozwiąż 4 problemy bez zwiększenia presji w szatni.", target: 4 },
+  { id: "analysis", label: "Analiza", description: "Po 30. minucie skoryguj pressing lub mentalność i popraw wynik meczu — 6 razy.", target: 6 },
+  { id: "pressure", label: "Odporność na presję", description: "Nie przegraj 5 meczów rozpoczynanych przy presji minimum 45%.", target: 5 },
+  { id: "adaptability", label: "Adaptacyjność", description: "Zdobądź punkty trzema różnymi formacjami.", target: 3 },
+  { id: "youth", label: "Rozwój młodych", description: "Wystaw od pierwszej minuty trzech różnych zawodników U21.", target: 3 },
+  { id: "reputation", label: "Reputacja / networking", description: "Wygraj 6 meczów ligowych — każdy wynik buduje widoczność trenera.", target: 6 },
 ];
 export const POSITIONS: Position[] = ["BR", "PO", "ŚO", "LO", "DP", "ŚP", "PP", "ŚPO", "LP", "N"];
 export const PERSONALITIES = ["Professional", "Emotional", "Ambitious", "Loyal", "Fragile", "Hot Head", "Big Game Player", "Irregular"];
@@ -177,4 +179,4 @@ export const LAST_NAMES = ["Adamski", "Bąk", "Bednarek", "Bielecki", "Błaszczy
 export const TIER_OVR: Record<number, number> = { 1: 76, 2: 69, 3: 63, 4: 58, 5: 54, 6: 50, 7: 46, 8: 42, 9: 38, 10: 34 };
 
 export function randomInt(seed: number, min: number, max: number) { const r = rngNext(seed); return { value: Math.floor(r.value * (max - min + 1)) + min, seed: r.seed }; }
-export { buildSchedule, capReadiness, effectiveOVR, environmentIncidentOccurs, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult };
+export { buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, effectiveOVR, environmentIncidentOccurs, goalSatisfied, injuryRiskFromFatigue, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult, weeklyBurnoutDelta };

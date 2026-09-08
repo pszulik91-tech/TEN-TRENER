@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  buildSchedule, capReadiness, effectiveOVR, environmentIncidentOccurs, liveBreakdown, liveOVR, normalizeStartingLicense,
-  POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, resolveProfileScores, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult,
+  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, effectiveOVR, environmentIncidentOccurs, goalSatisfied,
+  injuryRiskFromFatigue, liveBreakdown, liveOVR, normalizeStartingLicense, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult,
+  resolveProfileScores, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult, weeklyBurnoutDelta,
 } from "../lib/game-rules.mjs";
 
 const player = (id, primary, baseOVR = 50, secondary = []) => ({ id, primary, secondary, baseOVR, form: 50, morale: 50, fatigue: 10, relation: 50 });
@@ -37,6 +38,18 @@ test("Najlepsza XI jest unikalna i wybiera specjalistów pozycji przed samym OVR
   }
 });
 
+test("Najlepsza XI omija kontuzjowanych, nawet gdy mają najwyższy OVR", () => {
+  const players = [
+    { ...player("injured", "BR", 99), injuryWeeks: 2 },
+    player("healthy", "BR", 38),
+    player("striker", "N", 50),
+  ];
+  const assignments = selectBestLineup(players, ["BR", "N"]);
+  assert.equal(assignments.BR, "healthy");
+  assert.ok(!Object.values(assignments).includes("injured"));
+  assert.equal(effectiveOVR(players[0], "BR"), 1);
+});
+
 test("symulacja jest deterministyczna i nie generuje NaN", () => {
   const first = simulateMatchPlan(202627, 52, 48, "A", "B");
   const second = simulateMatchPlan(202627, 52, 48, "A", "B");
@@ -65,6 +78,67 @@ test("każda polityka kadry ma koszt, jeśli daje premię", () => {
     if (id !== "BALANCED" && effect.matchStrength > 0) assert.ok(effect.fatigue > 0 || effect.burnout > 0 || effect.morale < 0);
   }
   assert.ok(POLICY_EFFECTS.ROTATION.fatigue < 0 && POLICY_EFFECTS.ROTATION.matchStrength < 0);
+});
+
+test("kondycja jest jawna, a granie jedną XI przez całą rundę ma koszt", () => {
+  assert.equal(conditionFromFatigue(0), 100);
+  assert.equal(conditionFromFatigue(63), 37);
+  assert.equal(conditionFromFatigue(130), 0);
+  const base = player("p", "ŚP", 50);
+  let fatigue = 10;
+  for (let week = 0; week < 12; week += 1) fatigue += 5 + POLICY_EFFECTS.BALANCED.fatigue;
+  assert.equal(fatigue, 70);
+  assert.ok(liveOVR({ ...base, fatigue }) <= 45);
+  assert.ok(injuryRiskFromFatigue(fatigue, "Normalna") > injuryRiskFromFatigue(20, "Normalna") * 5);
+});
+
+test("Monte Carlo urazów rozróżnia świeżego i przeciążonego zawodnika", () => {
+  let seed = 812733; let fresh = 0; let exhausted = 0;
+  for (let sample = 0; sample < 20_000; sample += 1) {
+    let roll = rngNext(seed); seed = roll.seed; if (roll.value < injuryRiskFromFatigue(25, "Normalna")) fresh += 1;
+    roll = rngNext(seed); seed = roll.seed; if (roll.value < injuryRiskFromFatigue(82, "Wysoka")) exhausted += 1;
+  }
+  assert.ok(fresh / 20_000 < 0.015);
+  assert.ok(exhausted / 20_000 > 0.10);
+  assert.ok(exhausted > fresh * 8);
+});
+
+test("wypalenie jest liczone raz na tydzień i nie może skoczyć do 47 po starcie", () => {
+  let maximum = -Infinity;
+  for (const result of ["win", "draw", "loss"]) for (const intensity of ["Niska", "Normalna", "Wysoka"]) for (const recovery of [false, true]) for (const policy of Object.values(POLICY_EFFECTS)) for (const pressure of [10, 60, 85]) for (const profile of ["Generał", "Trener od zapierdolu", "Spokojny pragmatyk"]) {
+    maximum = Math.max(maximum, weeklyBurnoutDelta({ result, intensity, recovery, policyBurnout: policy.burnout, pressure, profile }));
+  }
+  assert.equal(maximum, 6);
+  assert.ok(8 + maximum < 20);
+  assert.equal(burnoutMatchPenalty(35), 0);
+  assert.ok(burnoutMatchPenalty(47) > 0);
+  assert.ok(burnoutMatchPenalty(90) <= 5);
+});
+
+test("Monte Carlo 5000 półsezonów: normalna praca nie produkuje masowo krytycznego wypalenia", () => {
+  let seed = 188194; let critical = 0; let sum = 0;
+  for (let season = 0; season < 5000; season += 1) {
+    let burnout = 8; let pressure = 20;
+    for (let week = 0; week < 18; week += 1) {
+      const roll = rngNext(seed); seed = roll.seed; const result = roll.value < .4 ? "win" : roll.value < .68 ? "draw" : "loss";
+      const delta = weeklyBurnoutDelta({ result, intensity: "Normalna", recovery: week % 4 === 3, policyBurnout: 0, pressure, profile: "Dyplomata" });
+      burnout = Math.max(0, Math.min(100, burnout + delta));
+      pressure = Math.max(0, Math.min(100, pressure + pressureDeltaForResult(result, 1)));
+    }
+    sum += burnout; if (burnout >= 65) critical += 1;
+  }
+  assert.ok(sum / 5000 < 24);
+  assert.ok(critical / 5000 < 0.01);
+});
+
+test("wszystkie osiem celów ma osiągalny i nieautomatyczny warunek", () => {
+  const positive = { readiness: 75, averageMorale: 72, positiveDecision: true, analysisAttempted: true, analysisImproved: true, preMatchPressure: 50, result: "win", newPointFormation: true, newYouthStarter: true };
+  for (const id of ["tactics", "motivation", "people", "analysis", "pressure", "adaptability", "youth", "reputation"]) assert.equal(goalSatisfied(id, positive), true, id);
+  assert.equal(goalSatisfied("analysis", { ...positive, analysisAttempted: false }), false);
+  assert.equal(goalSatisfied("analysis", { ...positive, analysisImproved: false }), false);
+  assert.equal(goalSatisfied("pressure", { ...positive, result: "loss" }), false);
+  assert.equal(goalSatisfied("adaptability", { ...positive, newPointFormation: false }), false);
+  assert.equal(goalSatisfied("youth", { ...positive, newYouthStarter: false }), false);
 });
 
 test("stare licencje migrują do Grassroots C, a wyższy start zwiększa koszt wyniku", () => {
@@ -117,4 +191,25 @@ test("pełny sezon ligi zachowuje wszystkie inwarianty tabeli", () => {
   assert.equal(table.reduce((sum, team) => sum + team.gf, 0), table.reduce((sum, team) => sum + team.ga, 0));
   const sorted = sortedTable(table);
   assert.ok(sorted.every((team, index) => index === 0 || sorted[index - 1].points >= team.points));
+});
+
+test("30 sezonów całego świata nie tworzy NaN ani niespójnej tabeli", () => {
+  let seed = 771991;
+  for (let season = 0; season < 30; season += 1) {
+    let table = Array.from({ length: 10 }, (_, index) => ({ id: `s${season}-t${index}`, name: `Klub ${index}`, ovr: 34 + ((index * 3 + season) % 17), played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0 }));
+    const fixtures = buildSchedule(table.map((team) => team.id));
+    for (const fixture of fixtures) {
+      const home = table.find((team) => team.id === fixture.home);
+      const away = table.find((team) => team.id === fixture.away);
+      const match = simulateMatchPlan(seed, home.ovr, away.ovr); seed = match.seed;
+      table = updateTeamResult(table, fixture.home, fixture.away, match.homeGoals, match.awayGoals);
+    }
+    assert.equal(table.reduce((sum, team) => sum + team.played, 0), 180);
+    assert.equal(table.reduce((sum, team) => sum + team.gf, 0), table.reduce((sum, team) => sum + team.ga, 0));
+    for (const team of table) {
+      assert.equal(team.played, 18);
+      assert.equal(team.points, team.won * 3 + team.drawn);
+      assert.ok(Object.values(team).filter((value) => typeof value === "number").every(Number.isFinite));
+    }
+  }
 });

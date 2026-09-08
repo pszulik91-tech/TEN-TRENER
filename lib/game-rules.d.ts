@@ -1,4 +1,4 @@
-export type RatingPlayer = { id: string; primary: string; secondary: string[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number };
+export type RatingPlayer = { id: string; primary: string; secondary: string[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number; injuryWeeks?: number };
 export type PolicyEffect = { label: string; short: string; matchStrength: number; fatigue: number; morale: number; burnout: number };
 export const POLICY_EFFECTS: Record<string, PolicyEffect>;
 export function clamp(value: number, min: number, max: number): number;
@@ -6,6 +6,11 @@ export function normalizeStartingLicense(value: unknown): "Grassroots C" | "UEFA
 export function pressureDeltaForResult(result: "win" | "draw" | "loss", multiplier: number): number;
 export function capReadiness(current: number, gain: number, cap: number): number;
 export function environmentIncidentOccurs(roll: number, risk: number): boolean;
+export function weeklyBurnoutDelta(input: { result: "win" | "draw" | "loss"; intensity: string; recovery: boolean; policyBurnout: number; pressure: number; profile: string }): number;
+export function burnoutMatchPenalty(burnout: number): number;
+export function conditionFromFatigue(fatigue: number): number;
+export function injuryRiskFromFatigue(fatigue: number, intensity?: string): number;
+export function goalSatisfied(goalId: string, context: { readiness: number; averageMorale: number; positiveDecision?: boolean; analysisAttempted?: boolean; analysisImproved?: boolean; preMatchPressure: number; result: "win" | "draw" | "loss"; newPointFormation?: boolean; newYouthStarter?: boolean }): boolean;
 export function resolveProfileScores<T extends string>(profiles: readonly T[], questions: Array<{ id: string; choices: Array<{ scores: Partial<Record<T, number>> }> }>, answers: Record<string, number>): T;
 export function rngNext(seed: number): { value: number; seed: number };
 export function normalizeSlot(slot: string): string;
