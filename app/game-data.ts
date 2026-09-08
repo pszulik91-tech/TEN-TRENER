@@ -1,3 +1,8 @@
+import {
+  buildSchedule, effectiveOVR, liveBreakdown, liveOVR, normalizeSlot, POLICY_EFFECTS,
+  positionPenalty, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult,
+} from "../lib/game-rules.mjs";
+
 export type Screen = "start" | "creator" | "club" | "goals" | "dashboard" | "squad" | "tactics" | "training" | "match" | "table" | "career";
 export type Position = "BR" | "PO" | "ŚO" | "LO" | "DP" | "ŚP" | "PP" | "ŚPO" | "LP" | "N";
 export type License = "Grassroots D" | "UEFA C" | "UEFA B" | "UEFA A" | "UEFA PRO";
@@ -8,21 +13,28 @@ export type Player = { id: string; name: string; age: number; primary: Position;
 export type Team = { id: string; name: string; ovr: number; played: number; won: number; drawn: number; lost: number; gf: number; ga: number; points: number };
 export type Fixture = { round: number; home: string; away: string; played: boolean; homeGoals?: number; awayGoals?: number };
 export type MatchEvent = { minute: number; text: string; kind: "goal" | "card" | "injury" | "chance" | "info"; side: "home" | "away" | "neutral" };
-export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean };
+export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean; homeStrength?: number; awayStrength?: number };
 export type DevelopmentGoal = { id: string; label: string; description: string; progress: number; target: number };
 export type Coach = { name: string; age: number; region: string; playingExperience: string; coachingExperience: string; profile: CoachProfile; license: License; reputation: number; skills: Record<string, number> };
 export type Club = { id: string; name: string; association: string; district: string; competition: string; group: string; tier: number };
 export type Tactic = { formation: keyof typeof FORMATIONS; mentality: string; tempo: string; pressing: string; line: string; width: string; buildUp: string; passingRisk: string; assignments: Record<string, string> };
 export type GameState = {
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
-  training: { focus: string; intensity: string; recovery: boolean; readiness: number };
+  training: { focus: string; intensity: string; recovery: boolean; readiness: number; completedRound: number | null };
   squadPolicy: string; pressures: Record<string, number>; burnout: number; president: Record<string, number>; presidentName: string;
+  finances: { monthlySalary: number; personalFunds: number };
+  licenseCourse?: { target: License; weeksRemaining: number; totalWeeks: number; funding: "self" | "club" };
+  licenseMessage?: string;
   developmentGoals: DevelopmentGoal[]; history: string[]; inbox: { id: string; title: string; body: string; resolved: boolean }[]; matchState?: MatchState; newSeasonPending?: boolean;
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 1.0";
+export const BUILD = "TEN TRENER Build 1.1";
+export const LICENSES: License[] = ["Grassroots D", "UEFA C", "UEFA B", "UEFA A", "UEFA PRO"];
 export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots D": 9, "UEFA C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
+export const LICENSE_COURSES: Partial<Record<License, { weeks: number; cost: number }>> = {
+  "UEFA C": { weeks: 12, cost: 1500 }, "UEFA B": { weeks: 20, cost: 3500 }, "UEFA A": { weeks: 28, cost: 6500 }, "UEFA PRO": { weeks: 40, cost: 12000 },
+};
 export const COACH_PROFILES: CoachProfile[] = ["Mentor", "Generał", "Taktyczny obsesyjny", "Wynikowiec", "Dyplomata", "Trener od zapierdolu", "Hazardzista", "Spokojny pragmatyk"];
 export const PROFILE_NOTE: Record<CoachProfile, string> = {
   Mentor: "Rozwój i relacje. Trudniej narzucić dyscyplinę w kryzysie.", Generał: "Dyscyplina i reakcja na presję. Ryzyko konfliktów w szatni.",
@@ -48,6 +60,23 @@ export const FORMATIONS = {
   "4-4-2": ["BR", "PO", "ŚO-L", "ŚO-P", "LO", "PP", "ŚP-P", "ŚP-L", "LP", "N-L", "N-P"],
   "3-5-2": ["BR", "ŚO-L", "ŚO", "ŚO-P", "PP", "ŚP-P", "DP", "ŚP-L", "LP", "N-L", "N-P"],
 } as const;
+
+export const FORMATION_COORDS: Record<keyof typeof FORMATIONS, Array<{ left: number; top: number }>> = {
+  "4-2-3-1": [{ left: 50, top: 90 }, { left: 84, top: 73 }, { left: 62, top: 76 }, { left: 38, top: 76 }, { left: 16, top: 73 }, { left: 62, top: 57 }, { left: 38, top: 57 }, { left: 82, top: 34 }, { left: 50, top: 39 }, { left: 18, top: 34 }, { left: 50, top: 12 }],
+  "4-3-3": [{ left: 50, top: 90 }, { left: 84, top: 73 }, { left: 62, top: 76 }, { left: 38, top: 76 }, { left: 16, top: 73 }, { left: 68, top: 51 }, { left: 50, top: 60 }, { left: 32, top: 51 }, { left: 82, top: 25 }, { left: 50, top: 12 }, { left: 18, top: 25 }],
+  "4-4-2": [{ left: 50, top: 90 }, { left: 84, top: 73 }, { left: 62, top: 76 }, { left: 38, top: 76 }, { left: 16, top: 73 }, { left: 82, top: 46 }, { left: 62, top: 52 }, { left: 38, top: 52 }, { left: 18, top: 46 }, { left: 37, top: 15 }, { left: 63, top: 15 }],
+  "3-5-2": [{ left: 50, top: 90 }, { left: 74, top: 73 }, { left: 50, top: 78 }, { left: 26, top: 73 }, { left: 86, top: 48 }, { left: 66, top: 51 }, { left: 50, top: 61 }, { left: 34, top: 51 }, { left: 14, top: 48 }, { left: 37, top: 15 }, { left: 63, top: 15 }],
+};
+
+export function maxStartingLicense(coachingExperience: string, playingExperience: string): License {
+  if (coachingExperience === "Ponad 10 lat" && ["Zawodowiec", "Reprezentant"].includes(playingExperience)) return "UEFA PRO";
+  if (coachingExperience === "Ponad 10 lat") return "UEFA A";
+  if (coachingExperience === "4–10 lat") return "UEFA B";
+  if (coachingExperience === "1–3 lata") return "UEFA C";
+  return "Grassroots D";
+}
+
+export function nextLicense(current: License): License | undefined { return LICENSES[LICENSES.indexOf(current) + 1]; }
 
 const regional: [string, string, string[]][] = [
   ["Dolnośląski ZPN", "Wrocław", ["Polonia Wrocław", "Błękitni Jerzmanowo", "Orzeł Pawłowice", "Sokół Smolec", "KS Brochów", "Odra Lubiąż", "Zorza Pęgów", "Piast Żerniki", "Wicher Domasław", "Burza Bystrzyca"]],
@@ -84,11 +113,5 @@ export const FIRST_NAMES = ["Adam", "Adrian", "Aleksander", "Bartosz", "Błażej
 export const LAST_NAMES = ["Adamski", "Bąk", "Bednarek", "Bielecki", "Błaszczyk", "Borowski", "Brzozowski", "Chmiel", "Cieślak", "Czarnecki", "Duda", "Dziedzic", "Gajda", "Głowacki", "Grabowski", "Janik", "Jankowski", "Kaczmarek", "Kamiński", "Kasprzak", "Kowal", "Krawczyk", "Król", "Kubiak", "Kurek", "Lis", "Maj", "Makowski", "Marciniak", "Mazur", "Michalak", "Nowak", "Olejniczak", "Olszewski", "Pawlak", "Piasecki", "Pietrzak", "Przybylski", "Rutkowski", "Sikora", "Sokołowski", "Stępień", "Szulc", "Tomaszewski", "Urban", "Walczak", "Wasilewski", "Włodarczyk", "Wrona", "Zając", "Zieliński"];
 export const TIER_OVR: Record<number, number> = { 1: 76, 2: 69, 3: 63, 4: 58, 5: 54, 6: 50, 7: 46, 8: 42, 9: 38, 10: 34 };
 
-export function rngNext(seed: number) { let t = (seed + 0x6d2b79f5) | 0; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return { value: ((t ^ (t >>> 14)) >>> 0) / 4294967296, seed: (seed + 0x6d2b79f5) >>> 0 }; }
 export function randomInt(seed: number, min: number, max: number) { const r = rngNext(seed); return { value: Math.floor(r.value * (max - min + 1)) + min, seed: r.seed }; }
-export function normalizeSlot(slot: string): Position { if (slot.startsWith("ŚO")) return "ŚO"; if (slot.startsWith("ŚP")) return "ŚP"; if (slot.startsWith("DP")) return "DP"; if (slot.startsWith("N")) return "N"; return slot as Position; }
-export function positionPenalty(player: Pick<Player, "primary" | "secondary">, slot: string) { const target = normalizeSlot(slot); if (player.primary === target) return 0; if (player.secondary.includes(target)) return 0.04; if (player.primary === "BR" || target === "BR") return 0.45; const defenders: Position[] = ["PO", "ŚO", "LO", "DP"]; const midfield: Position[] = ["DP", "ŚP", "PP", "ŚPO", "LP"]; const attack: Position[] = ["PP", "ŚPO", "LP", "N"]; if (defenders.includes(player.primary) && defenders.includes(target)) return 0.09; if (midfield.includes(player.primary) && midfield.includes(target)) return 0.07; if (attack.includes(player.primary) && attack.includes(target)) return 0.08; return 0.2; }
-export function liveOVR(player: Player, slot?: string) { const liveModifier = Math.max(-0.2, Math.min(0.14, (player.form - 50) / 450 + (player.morale - 50) / 500 - player.fatigue / 520)); return Math.max(1, Math.round(player.baseOVR * (1 + liveModifier - (slot ? positionPenalty(player, slot) : 0)))); }
-export function buildSchedule(teamIds: string[]) { const teams = [...teamIds]; if (teams.length % 2) teams.push("bye"); const rounds: Fixture[] = []; const rotation = [...teams]; for (let round = 1; round < teams.length; round++) { for (let i = 0; i < teams.length / 2; i++) { const home = rotation[i]; const away = rotation[rotation.length - 1 - i]; if (home !== "bye" && away !== "bye") rounds.push({ round, home: round % 2 ? home : away, away: round % 2 ? away : home, played: false }); } rotation.splice(1, 0, rotation.pop() as string); } const offset = teams.length - 1; return [...rounds, ...rounds.map((f) => ({ ...f, round: f.round + offset, home: f.away, away: f.home }))]; }
-export function sortedTable(teams: Team[]) { return [...teams].sort((a, b) => b.points - a.points || (b.gf - b.ga) - (a.gf - a.ga) || b.gf - a.gf || a.name.localeCompare(b.name, "pl")); }
-export function updateTeamResult(teams: Team[], home: string, away: string, hg: number, ag: number) { return teams.map((team) => { if (team.id !== home && team.id !== away) return team; const isHome = team.id === home; const gf = isHome ? hg : ag; const ga = isHome ? ag : hg; return { ...team, played: team.played + 1, won: team.won + (gf > ga ? 1 : 0), drawn: team.drawn + (gf === ga ? 1 : 0), lost: team.lost + (gf < ga ? 1 : 0), gf: team.gf + gf, ga: team.ga + ga, points: team.points + (gf > ga ? 3 : gf === ga ? 1 : 0) }; }); }
+export { buildSchedule, effectiveOVR, liveBreakdown, liveOVR, normalizeSlot, POLICY_EFFECTS, positionPenalty, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult };

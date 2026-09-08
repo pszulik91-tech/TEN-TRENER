@@ -1,0 +1,20 @@
+export type RatingPlayer = { id: string; primary: string; secondary: string[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number };
+export type PolicyEffect = { label: string; short: string; matchStrength: number; fatigue: number; morale: number; burnout: number };
+export const POLICY_EFFECTS: Record<string, PolicyEffect>;
+export function clamp(value: number, min: number, max: number): number;
+export function rngNext(seed: number): { value: number; seed: number };
+export function normalizeSlot(slot: string): string;
+export function positionPenalty(player: Pick<RatingPlayer, "primary" | "secondary">, slot: string): number;
+export function liveBreakdown(player: RatingPlayer): { form: number; morale: number; relation: number; fatigue: number; total: number };
+export function liveOVR(player: RatingPlayer): number;
+export function effectiveOVR(player: RatingPlayer, slot: string): number;
+export function selectBestLineup(players: RatingPlayer[], slots: readonly string[]): Record<string, string>;
+export type LeagueTeam = { id: string; name: string; ovr: number; played: number; won: number; drawn: number; lost: number; gf: number; ga: number; points: number };
+export type LeagueFixture = { round: number; home: string; away: string; played: boolean; homeGoals?: number; awayGoals?: number };
+export function buildSchedule(teamIds: string[]): LeagueFixture[];
+export function updateTeamResult(teams: LeagueTeam[], home: string, away: string, homeGoals: number, awayGoals: number): LeagueTeam[];
+export function sortedTable(teams: LeagueTeam[]): LeagueTeam[];
+export function simulateMatchPlan(seed: number, homeStrength: number, awayStrength: number, homeName?: string, awayName?: string): {
+  seed: number; events: Array<{ minute: number; text: string; kind: "goal" | "card" | "chance" | "info"; side: "home" | "away" | "neutral" }>;
+  homeGoals: number; awayGoals: number; shotsHome: number; shotsAway: number; possessionHome: number; homeXg: number; awayXg: number;
+};

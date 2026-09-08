@@ -1,7 +1,7 @@
 import {
   BUILD, DEVELOPMENT_GOALS, FIRST_NAMES, FORMATIONS, GameState, LAST_NAMES,
   LeaguePack, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
-  buildSchedule, liveOVR, positionPenalty, randomInt,
+  buildSchedule, positionPenalty, randomInt, selectBestLineup,
 } from "./game-data";
 import type { Coach, CoachProfile } from "./game-data";
 
@@ -44,17 +44,17 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
   });
   const clubTeam = teams.find((team) => team.name === clubName) ?? teams[0];
   const generated = makePlayers(seed, clubTeam.ovr); seed = generated.seed;
-  const assignments: Record<string, string> = {}; const used = new Set<string>();
-  FORMATIONS["4-2-3-1"].forEach((slot) => { const candidate = [...generated.players].filter((player) => !used.has(player.id)).sort((a, b) => liveOVR(b, slot) - liveOVR(a, slot))[0]; if (candidate) { assignments[slot] = candidate.id; used.add(candidate.id); } });
+  const assignments = selectBestLineup(generated.players, FORMATIONS["4-2-3-1"]);
   return {
     build: BUILD, seed, coach,
     club: { id: clubTeam.id, name: clubTeam.name, association: pack.association, district: pack.district, competition: pack.competition, group: pack.group, tier: pack.tier },
     season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures: buildSchedule(teams.map((team) => team.id)), players: generated.players,
     tactic: { formation: "4-2-3-1", mentality: "Zrównoważona", tempo: "Normalne", pressing: "Średni", line: "Średnia", width: "Standardowa", buildUp: "Mieszane", passingRisk: "Umiarkowane", assignments },
-    training: { focus: "Taktyka", intensity: "Normalna", recovery: true, readiness: 62 }, squadPolicy: "BALANCED",
+    training: { focus: "Taktyka", intensity: "Normalna", recovery: true, readiness: 62, completedRound: null }, squadPolicy: "BALANCED",
     pressures: { board: 18, fans: 20, media: 12, dressing: 15, personal: 16 }, burnout: 8,
     president: { ambition: 58, patience: 54, ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
     presidentName: `Prezes ${LAST_NAMES[(seed + 11) % LAST_NAMES.length]}`,
+    finances: { monthlySalary: Math.max(1800, 14000 - pack.tier * 1200), personalFunds: 9000 },
     developmentGoals: DEVELOPMENT_GOALS.filter((goal) => goals.includes(goal.id)).map((goal) => ({ ...goal, progress: 0 })),
     history: [`13.07.2026 — ${coach.name} podpisał kontrakt z ${clubName}.`],
     inbox: [{ id: "welcome", title: `Witamy w ${clubName}`, body: `${coach.name.split(" ")[0] || "Trenerze"}, zarząd oczekuje spokojnego wejścia w sezon i miejsca w górnej połowie tabeli. Zakres transferów: SHARED.`, resolved: false }],
