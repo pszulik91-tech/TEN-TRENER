@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, defaultMicrocycle, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, goalSatisfied,
+  buildMatchStrength, buildSchedule, burnoutMatchPenalty, capReadiness, coachingExperienceEligibility, conditionFromFatigue, defaultMicrocycle, diagnoseMatchOutcome, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, goalSatisfied,
   injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult,
-  requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, highestEligibleStartingLicense, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
+  requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, highestEligibleStartingLicense, highestEligibleCoachingExperience, teamLiveStrength, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
 } from "../lib/game-rules.mjs";
 
 const player = (id, primary, baseOVR = 50, secondary = []) => ({ id, primary, secondary, baseOVR, form: 50, morale: 50, fatigue: 10, relation: 50 });
@@ -160,6 +160,34 @@ test("licencja startowa wynika z wiarygodnego życiorysu trenera", () => {
   assert.equal(startingLicenseEligibility("UEFA PRO", "Reprezentant", "4–10 lat").eligible, true);
   assert.equal(highestEligibleStartingLicense("Brak", "Debiutant"), "Grassroots C");
   assert.equal(highestEligibleStartingLicense("Reprezentant", "4–10 lat"), "UEFA PRO");
+});
+
+test("wiek i kariera zawodnicza ograniczają możliwy staż trenerski", () => {
+  assert.equal(coachingExperienceEligibility(35, "Zawodowiec", "Ponad 10 lat").eligible, false);
+  assert.equal(coachingExperienceEligibility(35, "Zawodowiec", "4–10 lat").eligible, true);
+  assert.equal(highestEligibleCoachingExperience(35, "Zawodowiec"), "4–10 lat");
+  assert.equal(startingLicenseEligibility("UEFA PRO", "Zawodowiec", "Ponad 10 lat", 35).eligible, false);
+  assert.equal(coachingExperienceEligibility(45, "Zawodowiec", "Ponad 10 lat").eligible, true);
+});
+
+test("rozkład siły oddziela OVR, przygotowanie, warsztat, plan i zdarzenia", () => {
+  const strength = buildMatchStrength({ lineupOVR: 44, readiness: 62, coachTactics: 48, averageCondition: 82, tactic: { pressing: "Średni", tempo: "Normalne", line: "Średnia", buildUp: "Mieszane", passingRisk: "Umiarkowane", mentality: "Zrównoważona" }, policyStrength: 0, burnout: 8, incidentPenalty: 0 });
+  assert.equal(strength.factors.lineup, 44);
+  assert.ok(strength.factors.preparation < 0 && strength.factors.preparation > -1);
+  assert.equal(Number.isFinite(strength.total), true);
+  assert.ok(Math.abs(strength.total - Object.values(strength.factors).reduce((sum, value) => sum + value, 0)) < .01);
+});
+
+test("raport nie obwinia przygotowania 62% za skrajnie skutecznego rywala", () => {
+  const diagnosis = diagnoseMatchOutcome({ result: "loss", readiness: 62, expectedWin: .58, expectedLoss: .2, userGoals: 1, opponentGoals: 4, userXg: 1.7, opponentXg: 1.05, userShots: 8, opponentShots: 8 });
+  assert.match(diagnosis, /skuteczny/);
+  assert.doesNotMatch(diagnosis, /gotowość/i);
+});
+
+test("forma, morale i zmęczenie zmieniają siłę drużyn AI w sezonie", () => {
+  const base = { id: "a", name: "A", ovr: 50, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, form: 50, morale: 55, fatigue: 14 };
+  assert.ok(teamLiveStrength({ ...base, form: 70, morale: 70 }) > teamLiveStrength(base));
+  assert.ok(teamLiveStrength({ ...base, fatigue: 70 }) < teamLiveStrength(base));
 });
 
 test("środowisko ogranicza gotowość i ma kontrolowane ryzyko absencji", () => {

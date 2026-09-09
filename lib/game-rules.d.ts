@@ -4,9 +4,16 @@ export const POLICY_EFFECTS: Record<string, PolicyEffect>;
 export function clamp(value: number, min: number, max: number): number;
 export function normalizeStartingLicense(value: unknown): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
 export function requiredLicenseForTier(tier: number): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
+export function requiredLicenseForCompetition(competition: string): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
 export function licenseCoversTier(license: unknown, tier: number): boolean;
-export function startingLicenseEligibility(license: string, playingExperience: string, coachingExperience: string): { eligible: boolean; reason: string };
-export function highestEligibleStartingLicense(playingExperience: string, coachingExperience: string): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
+export function licenseCoversCompetition(license: unknown, competition: string): boolean;
+export function coachingExperienceEligibility(age: number, playingExperience: string, coachingExperience: string): { eligible: boolean; availableYears: number; reason: string };
+export function highestEligibleCoachingExperience(age: number, playingExperience: string): string;
+export function startingLicenseEligibility(license: string, playingExperience: string, coachingExperience: string, age?: number): { eligible: boolean; reason: string };
+export function highestEligibleStartingLicense(playingExperience: string, coachingExperience: string, age?: number): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
+export function readinessStrengthImpact(readiness: number): number;
+export function tacticalPlanImpact(tactic: Record<string, string>, averageCondition?: number, readiness?: number): number;
+export function buildMatchStrength(input: { lineupOVR: number; readiness: number; coachTactics: number; averageCondition: number; tactic: Record<string, unknown>; policyStrength?: number; burnout?: number; incidentPenalty?: number }): { factors: Record<string, number>; total: number };
 export function pressureDeltaForResult(result: "win" | "draw" | "loss", multiplier: number): number;
 export function capReadiness(current: number, gain: number, cap: number): number;
 export function environmentIncidentOccurs(roll: number, risk: number): boolean;
@@ -23,7 +30,8 @@ export function liveBreakdown(player: RatingPlayer): { form: number; morale: num
 export function liveOVR(player: RatingPlayer): number;
 export function effectiveOVR(player: RatingPlayer, slot: string): number;
 export function selectBestLineup(players: RatingPlayer[], slots: readonly string[]): Record<string, string>;
-export type LeagueTeam = { id: string; name: string; ovr: number; played: number; won: number; drawn: number; lost: number; gf: number; ga: number; points: number };
+export type LeagueTeam = { id: string; name: string; ovr: number; played: number; won: number; drawn: number; lost: number; gf: number; ga: number; points: number; form?: number; morale?: number; fatigue?: number; lastFive?: string[] };
+export function teamLiveStrength(team: LeagueTeam): number;
 export type LeagueFixture = { round: number; date: string; home: string; away: string; played: boolean; homeGoals?: number; awayGoals?: number };
 export function seasonRoundDates(roundCount: number, startYear?: number, tier?: number): string[];
 export function buildSchedule(teamIds: string[], startYear?: number, tier?: number): LeagueFixture[];
@@ -36,5 +44,7 @@ export function updateTeamResult(teams: LeagueTeam[], home: string, away: string
 export function sortedTable(teams: LeagueTeam[]): LeagueTeam[];
 export function simulateMatchPlan(seed: number, homeStrength: number, awayStrength: number, homeName?: string, awayName?: string): {
   seed: number; events: Array<{ minute: number; text: string; kind: "goal" | "card" | "chance" | "info"; side: "home" | "away" | "neutral" }>;
-  homeGoals: number; awayGoals: number; shotsHome: number; shotsAway: number; possessionHome: number; homeXg: number; awayXg: number;
+  homeGoals: number; awayGoals: number; shotsHome: number; shotsAway: number; possessionHome: number; homeXg: number; awayXg: number; expected: { home: number; draw: number; away: number };
 };
+export function expectedOutcomeProbabilities(homeXg: number, awayXg: number): { home: number; draw: number; away: number };
+export function diagnoseMatchOutcome(input: { result: "win" | "draw" | "loss"; readiness: number; expectedWin: number; expectedLoss: number; userGoals: number; opponentGoals: number; userXg: number; opponentXg: number; userShots: number; opponentShots: number }): string;

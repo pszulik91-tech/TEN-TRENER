@@ -6,6 +6,7 @@ import {
 } from "./game-data";
 import type { Coach, CoachProfile } from "./game-data";
 import { welcomeIssue } from "../lib/career-events.mjs";
+import { createWorldSnapshot } from "../lib/world-engine.mjs";
 
 export function skillSet(profile: CoachProfile, playingExperience: string, coachingExperience: string) {
   const playingBonus = playingExperience === "Reprezentant" ? 10 : playingExperience === "Zawodowiec" ? 7 : playingExperience === "Niższe ligi" ? 3 : 0;
@@ -44,7 +45,7 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
   const careerChallenge = LICENSE_CHALLENGES[coach.license];
   const teams: Team[] = pack.teams.map((name, index) => {
     const quality = randomInt(seed, -4, 4); seed = quality.seed;
-    return { id: `team-${index}`, name, ovr: (TIER_OVR[pack.tier] ?? 42) + quality.value, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0 };
+    return { id: `team-${index}`, name, ovr: (TIER_OVR[pack.tier] ?? 42) + quality.value, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, form: 50, morale: 55, fatigue: 14, lastFive: [] };
   });
   const clubTeam = teams.find((team) => team.name === clubName) ?? teams[0];
   const generated = makePlayers(seed, clubTeam.ovr); seed = generated.seed;
@@ -52,6 +53,7 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
   const worldHumor = Math.max(12, Math.min(94, Math.round(environment.humorBase * .45) + humorRoll.value));
   const challengedCoach = { ...coach, reputation: Math.min(100, coach.reputation + careerChallenge.reputationBonus) };
   const assignments = selectBestLineup(generated.players, FORMATIONS["4-2-3-1"]);
+  const generatedWorld = createWorldSnapshot(LEAGUE_PACKS, pack.id, 2026, seed, TIER_OVR); seed = generatedWorld.seed;
   return {
     build: BUILD, seed, coach: challengedCoach,
     club: { id: clubTeam.id, name: clubTeam.name, association: pack.association, district: pack.district, competition: pack.competition, group: pack.group, tier: pack.tier },
@@ -60,6 +62,7 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
     training: { sessions: defaultMicrocycle(environment.trainingSessions), readiness: Math.min(environment.readinessCap, 62), completedRound: null }, squadPolicy: "BALANCED",
     pressures: { board: 18 + careerChallenge.pressureBonus, fans: 20 + Math.round(careerChallenge.pressureBonus * .8), media: Math.round((12 + careerChallenge.pressureBonus) * environment.mediaScale), dressing: 15, personal: 16 + Math.round(careerChallenge.pressureBonus * .7) }, burnout: 8 + Math.round(careerChallenge.pressureBonus * .15), lastBurnoutChange: 0,
     careerChallenge, environment, worldHumor,
+    world: generatedWorld.world,
     president: { ambition: 58 + Math.round(careerChallenge.pressureBonus * .4), patience: Math.max(22, 54 - Math.round(careerChallenge.pressureBonus * .65)), ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
     presidentName: `Prezes ${LAST_NAMES[(seed + 11) % LAST_NAMES.length]}`,
     finances: { monthlySalary: Math.max(1800, 14000 - pack.tier * 1200), personalFunds: 9000 },
@@ -109,7 +112,7 @@ export function buildLeagueForSeason(game: GameState, tier: number, seasonYear: 
   const squadBaseline = game.players.length ? Math.round([...game.players].sort((a, b) => b.baseOVR - a.baseOVR).slice(0, 11).reduce((sum, player) => sum + player.baseOVR, 0) / Math.min(11, game.players.length)) : TIER_OVR[tier];
   const teams: Team[] = names.map((name, index) => {
     const quality = randomInt(seed, -4, 4); seed = quality.seed;
-    return { id: index === 0 ? game.club.id : `s${seasonYear}-team-${index}`, name, ovr: index === 0 ? squadBaseline : (TIER_OVR[tier] ?? 42) + quality.value, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0 };
+    return { id: index === 0 ? game.club.id : `s${seasonYear}-team-${index}`, name, ovr: index === 0 ? squadBaseline : (TIER_OVR[tier] ?? 42) + quality.value, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, form: 50, morale: 55, fatigue: 14, lastFive: [] };
   });
   return { seed, teams, fixtures: buildSchedule(teams.map((team) => team.id), seasonYear, tier), pack, club: { ...game.club, id: teams[0].id, name: clubName, association: forcedPack?.association ?? pack.association ?? game.club.association, district: forcedPack?.district ?? pack.district ?? game.club.district, competition: pack.competition ?? environmentForTier(tier).label, group: forcedPack?.group ?? pack.group, tier } };
 }
