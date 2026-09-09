@@ -792,3 +792,81 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .world-group-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .training-session-card:nth-child(even) { border-left: 1px dotted #766e5f; }
 }
+
+/* Build 2.0 — drużyna jako całość */
+.age-stepper { display: grid; grid-template-columns: 3.25rem minmax(4.5rem, 1fr) 3.25rem; min-height: 3.25rem; border: 2px solid #403b31; background: #f5edd9; }
+.age-stepper button { border: 0; background: #1f455e; color: #fff; font-size: 1.5rem; font-weight: 900; }
+.age-stepper button:disabled { opacity: .35; }
+.age-stepper output { display: grid; place-items: center; color: #211e19; font-family: Impact, "Arial Black", sans-serif; font-size: 1.5rem; }
+
+.team-plan-layout { display: grid; gap: .8rem; min-width: 0; }
+.team-plan-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
+.team-plan-card { display: grid; align-content: start; gap: .35rem; min-height: 10.5rem; padding: .75rem; border: 1px solid #514b40; border-top: 6px solid #756c5d; background: #f3ead5; color: #211e19; text-align: left; }
+.team-plan-card > span { color: #a33028; font-size: .66rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.team-plan-card > strong { font-family: Georgia, serif; font-size: 1rem; }
+.team-plan-card p { margin: 0; color: #5e574b; font-size: .74rem; line-height: 1.4; }
+.team-plan-card small { color: #4f493f; font-size: .66rem; line-height: 1.35; }
+.team-plan-card.active { border-color: #a33028; border-top-color: #a33028; background: #e8d7b2; box-shadow: inset 0 0 0 2px #a33028; }
+.selected-team-plan { display: grid; gap: .8rem; align-content: start; border-top: 8px solid #1f455e; }
+.selected-team-plan h2 { margin: 0; font-family: Georgia, serif; font-size: 1.5rem; }
+.selected-team-plan > p { margin: 0; color: #5e574b; line-height: 1.5; }
+.plan-stamp { display: flex; align-items: center; gap: .45rem; color: #a33028; font-size: .7rem; font-weight: 900; letter-spacing: .08em; }
+.plan-stamp svg { width: 1rem; }
+.team-instructions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #706757; }
+.team-instructions span { display: grid; gap: .1rem; padding: .55rem; border-right: 1px dotted #766e5f; border-bottom: 1px dotted #766e5f; }
+.team-instructions small { color: #6a6255; font-size: .62rem; font-weight: 900; }
+.team-instructions b { color: #1f455e; font-size: .8rem; }
+.auto-lineup-note, .availability-note { display: flex; align-items: flex-start; gap: .65rem; }
+.auto-lineup-note { padding: .7rem; background: #e1d4b7; color: #332e26; }
+.auto-lineup-note svg, .availability-note svg { width: 1.15rem; flex: 0 0 auto; color: #a33028; }
+.auto-lineup-note span { display: grid; gap: .18rem; font-size: .73rem; line-height: 1.4; }
+.availability-note { border-left: 8px solid #a33028; }
+.availability-note p { margin: .25rem 0 0; color: #5e574b; font-size: .78rem; line-height: 1.45; }
+
+.training-preset-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
+.training-preset { display: grid; align-content: start; gap: .35rem; min-height: 6.7rem; padding: .7rem; border: 1px solid #514b40; border-left: 5px solid #756c5d; background: #f3ead5; color: #211e19; text-align: left; }
+.training-preset strong { font-family: Georgia, serif; font-size: .95rem; }
+.training-preset span { color: #5e574b; font-size: .7rem; line-height: 1.4; }
+.training-preset.active { border-color: #a33028; border-left-color: #a33028; background: #e8d7b2; }
+.training-preset:disabled { opacity: .62; }
+.microcycle-days { display: grid; gap: 0; border: 1px solid #766e5f; }
+.microcycle-days span { display: grid; grid-template-columns: 5.5rem 1fr; gap: .5rem; padding: .55rem .65rem; border-bottom: 1px dotted #766e5f; }
+.microcycle-days span:last-child { border-bottom: 0; }
+.microcycle-days b { color: #a33028; font-size: .72rem; }
+.microcycle-days small { color: #4f493f; font-size: .72rem; }
+.advanced-microcycle { margin-top: .75rem; border-top: 3px double #514b40; }
+.advanced-microcycle summary { cursor: pointer; padding: .75rem 0; color: #1f455e; font-weight: 900; }
+
+.decision-actions button { display: grid; justify-items: start; align-content: center; gap: .22rem; height: auto; }
+.decision-actions button span { font-weight: 900; }
+.decision-actions button small { color: #696154; font-size: .64rem; line-height: 1.3; text-align: left; }
+.decision-feedback { border-left: 8px solid #1f455e; }
+.decision-feedback h3 { margin: 0 0 .35rem; font-family: Georgia, serif; }
+.decision-feedback > p { color: #4f493f; line-height: 1.45; }
+.decision-feedback > div:last-child { display: flex; flex-wrap: wrap; gap: .35rem; }
+.decision-feedback > div:last-child span { padding: .3rem .45rem; border: 1px solid #756c5d; background: #eadfca; color: #332e26; font-size: .7rem; font-weight: 800; }
+.world-pulse { border-top: 8px solid #1f455e; }
+.world-pulse-metrics { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid #756c5d; }
+.world-pulse-metrics span { display: grid; justify-items: center; gap: .15rem; padding: .55rem .25rem; border-right: 1px dotted #756c5d; color: #5e574b; font-size: .64rem; text-align: center; }
+.world-pulse-metrics span:last-child { border-right: 0; }
+.world-pulse-metrics b { color: #1f455e; font-family: Impact, sans-serif; font-size: 1.25rem; }
+.world-headlines { margin-top: .7rem; }
+.world-headlines p { margin: 0; padding: .42rem 0; border-bottom: 1px dotted #766e5f; color: #403a31; font-size: .72rem; line-height: 1.35; }
+
+@media (min-width: 640px) {
+  .team-plan-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .training-preset-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+@media (min-width: 960px) {
+  .team-plan-layout { grid-template-columns: minmax(0, 1.55fr) minmax(19rem, .65fr); align-items: start; }
+  .team-plan-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .selected-team-plan { position: sticky; top: 5.5rem; }
+}
+
+@media (max-width: 420px) {
+  .team-plan-grid { grid-template-columns: 1fr; }
+  .team-plan-card { min-height: auto; }
+  .training-preset-grid { grid-template-columns: 1fr; }
+  .training-preset { min-height: auto; }
+}

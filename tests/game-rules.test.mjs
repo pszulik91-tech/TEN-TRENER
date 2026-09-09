@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   buildMatchStrength, buildSchedule, burnoutMatchPenalty, capReadiness, coachingExperienceEligibility, conditionFromFatigue, defaultMicrocycle, diagnoseMatchOutcome, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, goalSatisfied,
   injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult,
-  requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, highestEligibleStartingLicense, highestEligibleCoachingExperience, teamLiveStrength, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
+  requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, selectLineupForPlan, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, highestEligibleStartingLicense, highestEligibleCoachingExperience, naturalRecoveryForGap, teamLiveStrength, trainingPresetSessions, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
 } from "../lib/game-rules.mjs";
 
 const player = (id, primary, baseOVR = 50, secondary = []) => ({ id, primary, secondary, baseOVR, form: 50, morale: 50, fatigue: 10, relation: 50 });
@@ -48,6 +48,42 @@ test("Najlepsza XI omija kontuzjowanych, nawet gdy mają najwyższy OVR", () => 
   assert.equal(assignments.BR, "healthy");
   assert.ok(!Object.values(assignments).includes("injured"));
   assert.equal(effectiveOVR(players[0], "BR"), 1);
+});
+
+test("automatyczne plany omijają kontuzje i absencje oraz zachowują pozycje", () => {
+  const slots = ["BR", "PO", "ŚO-L", "ŚO-P", "LO", "PP", "ŚP-P", "ŚP-L", "LP", "N-L", "N-P"];
+  const primaries = ["BR", "PO", "ŚO", "ŚO", "LO", "PP", "ŚP", "ŚP", "LP", "N", "N"];
+  const healthy = primaries.map((primary, index) => ({ ...player(`healthy-${index}`, primary, 45 + index), age: 24 + index % 5 }));
+  const unavailable = [
+    { ...player("injured-star", "N", 99), age: 24, injuryWeeks: 2 },
+    { ...player("work-shift-star", "ŚP", 98), age: 25, absenceRounds: 1 },
+  ];
+  for (const plan of ["STRONGEST", "ROTATION", "YOUTH", "FRESH", "PRESS"]) {
+    const assignments = selectLineupForPlan([...healthy, ...unavailable], slots, plan);
+    assert.equal(new Set(Object.values(assignments)).size, 11, plan);
+    assert.ok(!Object.values(assignments).includes("injured-star"), plan);
+    assert.ok(!Object.values(assignments).includes("work-shift-star"), plan);
+    for (const slot of slots) assert.equal(positionPenalty(healthy.find((item) => item.id === assignments[slot]), slot), 0, `${plan}: ${slot}`);
+  }
+});
+
+test("plany Młodzi i Świeże nogi rzeczywiście zmieniają automatyczną XI", () => {
+  const slots = ["BR", "PO", "ŚO-L", "ŚO-P", "LO", "PP", "ŚP-P", "ŚP-L", "LP", "N-L", "N-P"];
+  const primaries = ["BR", "PO", "ŚO", "ŚO", "LO", "PP", "ŚP", "ŚP", "LP", "N", "N"];
+  const veterans = primaries.map((primary, index) => ({ ...player(`v-${index}`, primary, 56), age: 31, fatigue: index < 5 ? 78 : 38 }));
+  const youth = primaries.map((primary, index) => ({ ...player(`u-${index}`, primary, 52), age: 19, fatigue: 8 }));
+  const strongest = Object.values(selectLineupForPlan([...veterans, ...youth], slots, "STRONGEST"));
+  const young = Object.values(selectLineupForPlan([...veterans, ...youth], slots, "YOUTH"));
+  const fresh = Object.values(selectLineupForPlan([...veterans, ...youth], slots, "FRESH"));
+  assert.ok(young.filter((id) => id.startsWith("u-")).length > strongest.filter((id) => id.startsWith("u-")).length);
+  assert.ok(fresh.filter((id) => id.startsWith("u-")).length >= 5);
+});
+
+test("Rotacja odstawia zmęczonego lidera, gdy świeży zmiennik jest wystarczająco dobry", () => {
+  const tiredLeader = { ...player("leader", "N", 60), age: 29, fatigue: 50 };
+  const freshReserve = { ...player("reserve", "N", 55), age: 24, fatigue: 0 };
+  assert.equal(selectLineupForPlan([tiredLeader, freshReserve], ["N"], "STRONGEST").N, "leader");
+  assert.equal(selectLineupForPlan([tiredLeader, freshReserve], ["N"], "ROTATION").N, "reserve");
 });
 
 test("symulacja jest deterministyczna i nie generuje NaN", () => {
@@ -219,6 +255,29 @@ test("skutek mikrocyklu wynika ze wszystkich sesji, a regeneracja ma realny kosz
   assert.ok(recovery.fatigueDelta < 0);
   assert.ok(recovery.readinessGain < normal.readinessGain);
   assert.equal(recovery.hasRecovery, true);
+});
+
+test("preset mikrocyklu zawsze rozpisuje właściwą liczbę sesji", () => {
+  for (const count of [2, 3, 4, 5, 6]) for (const preset of ["BALANCED", "RECOVERY", "OPPONENT", "INTENSE", "YOUTH"]) {
+    const sessions = trainingPresetSessions(count, preset);
+    assert.equal(sessions.length, count, `${preset}/${count}`);
+    assert.ok(sessions.every((session) => session.day && session.focus && session.intensity));
+  }
+});
+
+test("regeneracja między meczami stabilizuje normalny rytm, ale nie kasuje kosztu przeciążania", () => {
+  const balancedLoad = evaluateMicrocycle(trainingPresetSessions(2, "BALANCED")).fatigueDelta;
+  const intenseLoad = evaluateMicrocycle(trainingPresetSessions(2, "INTENSE")).fatigueDelta;
+  let balancedFatigue = 10; let intenseFatigue = 10;
+  for (let week = 0; week < 18; week += 1) {
+    const recovery = naturalRecoveryForGap(7, 9);
+    balancedFatigue = Math.max(0, Math.min(100, balancedFatigue - recovery + balancedLoad + 8));
+    intenseFatigue = Math.max(0, Math.min(100, intenseFatigue - recovery + intenseLoad + 8 + POLICY_EFFECTS.HARDLINE.fatigue));
+  }
+  assert.ok(conditionFromFatigue(balancedFatigue) >= 60, `kondycja ${conditionFromFatigue(balancedFatigue)}`);
+  assert.ok(intenseFatigue > balancedFatigue + 20);
+  assert.ok(naturalRecoveryForGap(14, 2) > naturalRecoveryForGap(7, 2));
+  assert.ok(naturalRecoveryForGap(7, 2) > naturalRecoveryForGap(7, 9));
 });
 
 test("ankieta przypisuje profil deterministycznie i ignoruje nieznane punkty", () => {

@@ -10,6 +10,10 @@ test("pozostałe rozgrywki świata wykonują własne kolejki do daty kariery", (
   const created = createWorldSnapshot(packs, packs[0].id, 2026, 77123, baselines);
   const simulated = simulateWorldToDate(created.world, "2027-06-20", created.seed);
   assert.equal(simulated.world.competitions.length, packs.length - 1);
+  assert.ok(simulated.activity.competitionsAdvanced > 0);
+  assert.ok(simulated.activity.matchesPlayed > 0);
+  assert.ok(simulated.activity.squadMoves > 0);
+  assert.ok(simulated.activity.headlines.length > 0 && simulated.activity.headlines.length <= 4);
   for (const competition of simulated.world.competitions) {
     assert.equal(competition.currentRound, competition.totalRounds);
     const expectedPlayed = (competition.teams.length - 1) * 2;

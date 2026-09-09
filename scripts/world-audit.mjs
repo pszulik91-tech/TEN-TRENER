@@ -27,11 +27,12 @@ function audit(initialSeed) {
     }
   }
   const managerChanges = world.competitions.reduce((sum, competition) => sum + competition.managerChanges, 0);
-  return { seed, competitions: world.competitions.length, teams: world.competitions.reduce((sum, competition) => sum + competition.teams.length, 0), seasons, matches, managerChanges, ovrChanges };
+  const squadMoves = world.competitions.reduce((sum, competition) => sum + (competition.squadMoves ?? 0), 0);
+  return { seed, competitions: world.competitions.length, teams: world.competitions.reduce((sum, competition) => sum + competition.teams.length, 0), seasons, matches, managerChanges, squadMoves, ovrChanges };
 }
 
 const first = audit(661_903);
 const second = audit(661_903);
 if (JSON.stringify(first) !== JSON.stringify(second)) throw new Error("Audyt świata nie jest deterministyczny");
-if (first.matches < 150_000 || first.ovrChanges === 0 || first.managerChanges === 0) throw new Error("Świat nie wykazuje oczekiwanej aktywności");
+if (first.matches < 150_000 || first.ovrChanges === 0 || first.managerChanges === 0 || first.squadMoves === 0) throw new Error("Świat nie wykazuje oczekiwanej aktywności");
 console.log(JSON.stringify({ deterministic: true, ...first }, null, 2));

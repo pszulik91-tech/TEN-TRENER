@@ -1,6 +1,8 @@
-export type RatingPlayer = { id: string; primary: string; secondary: string[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number; injuryWeeks?: number };
+export type RatingPlayer = { id: string; age?: number; primary: string; secondary: string[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number; injuryWeeks?: number; absenceRounds?: number };
 export type PolicyEffect = { label: string; short: string; matchStrength: number; fatigue: number; morale: number; burnout: number };
 export const POLICY_EFFECTS: Record<string, PolicyEffect>;
+export const TEAM_PLANS: Record<string, { label: string; tag: string; formation: string; policy: string; description: string; benefit: string; risk: string; tactic: Record<string, string> }>;
+export const TRAINING_PRESETS: Record<string, { label: string; description: string }>;
 export function clamp(value: number, min: number, max: number): number;
 export function normalizeStartingLicense(value: unknown): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
 export function requiredLicenseForTier(tier: number): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
@@ -16,6 +18,8 @@ export function tacticalPlanImpact(tactic: Record<string, string>, averageCondit
 export function buildMatchStrength(input: { lineupOVR: number; readiness: number; coachTactics: number; averageCondition: number; tactic: Record<string, unknown>; policyStrength?: number; burnout?: number; incidentPenalty?: number }): { factors: Record<string, number>; total: number };
 export function pressureDeltaForResult(result: "win" | "draw" | "loss", multiplier: number): number;
 export function capReadiness(current: number, gain: number, cap: number): number;
+export function trainingPresetSessions(sessionCount?: number, presetId?: string): Array<{ id: string; day: string; focus: string; intensity: string }>;
+export function naturalRecoveryForGap(daysBetweenMatches?: number, tier?: number): number;
 export function environmentIncidentOccurs(roll: number, risk: number): boolean;
 export function weeklyBurnoutDelta(input: { result: "win" | "draw" | "loss"; intensity: string; recovery: boolean; policyBurnout: number; pressure: number; profile: string }): number;
 export function burnoutMatchPenalty(burnout: number): number;
@@ -29,6 +33,8 @@ export function positionPenalty(player: Pick<RatingPlayer, "primary" | "secondar
 export function liveBreakdown(player: RatingPlayer): { form: number; morale: number; relation: number; fatigue: number; total: number };
 export function liveOVR(player: RatingPlayer): number;
 export function effectiveOVR(player: RatingPlayer, slot: string): number;
+export function playerAvailable(player: RatingPlayer): boolean;
+export function selectLineupForPlan(players: RatingPlayer[], slots: readonly string[], planId?: string): Record<string, string>;
 export function selectBestLineup(players: RatingPlayer[], slots: readonly string[]): Record<string, string>;
 export type LeagueTeam = { id: string; name: string; ovr: number; played: number; won: number; drawn: number; lost: number; gf: number; ga: number; points: number; form?: number; morale?: number; fatigue?: number; lastFive?: string[] };
 export function teamLiveStrength(team: LeagueTeam): number;

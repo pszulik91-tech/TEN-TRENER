@@ -1,6 +1,6 @@
 import {
   POLICY_EFFECTS, burnoutMatchPenalty, licenseCoversTier, offseasonBurnout, pressureDeltaForResult,
-  requiredLicenseForTier, simulateMatchPlan, weeklyBurnoutDelta,
+  naturalRecoveryForGap, requiredLicenseForTier, simulateMatchPlan, weeklyBurnoutDelta,
 } from "../lib/game-rules.mjs";
 
 const POLICIES = Object.keys(POLICY_EFFECTS);
@@ -14,17 +14,19 @@ function runCareer(initialSeed, policyId) {
   for (let season = 0; season < SEASONS; season += 1) {
     const fatigue = Array(23).fill(10); let seasonPoints = 0;
     for (let round = 1; round <= 18; round += 1) {
+      const passiveRecovery = naturalRecoveryForGap(7, tier);
+      for (let index = 0; index < fatigue.length; index += 1) fatigue[index] = Math.max(0, fatigue[index] - passiveRecovery + 2);
       const ordered = fatigue.map((value, index) => ({ value, index })).sort((a, b) => a.value - b.value);
       const starters = policyId === "HARDLINE" ? Array.from({ length: 11 }, (_, index) => index) : ordered.slice(0, 11).map((item) => item.index);
       const starterFatigue = starters.reduce((sum, index) => sum + fatigue[index], 0) / 11; const recovery = starterFatigue > 38;
-      for (let index = 0; index < fatigue.length; index += 1) fatigue[index] = Math.max(0, Math.min(100, fatigue[index] + 4 - (recovery ? 4 : 0)));
+      if (recovery) for (let index = 0; index < fatigue.length; index += 1) fatigue[index] = Math.max(0, fatigue[index] - 4);
       const freshnessPenalty = Math.max(0, starterFatigue - 30) * .035; const base = 46 - (tier - 7) * 4;
       const strength = base + policy.matchStrength - burnoutMatchPenalty(burnout) - freshnessPenalty; const opponent = base;
       const match = round % 2 ? simulateMatchPlan(seed, strength + .2, opponent, "Gracz", "Rywal") : simulateMatchPlan(seed, opponent + .2, strength, "Rywal", "Gracz"); seed = match.seed;
       const gf = round % 2 ? match.homeGoals : match.awayGoals; const ga = round % 2 ? match.awayGoals : match.homeGoals; const result = gf > ga ? "win" : gf === ga ? "draw" : "loss";
       seasonPoints += result === "win" ? 3 : result === "draw" ? 1 : 0; pressure = Math.max(0, Math.min(100, pressure + pressureDeltaForResult(result, 1)));
       burnout = Math.max(0, Math.min(100, burnout + weeklyBurnoutDelta({ result, intensity: "Normalna", recovery, policyBurnout: policy.burnout, pressure, profile: "Dyplomata" })));
-      for (let index = 0; index < fatigue.length; index += 1) fatigue[index] = Math.max(0, Math.min(100, fatigue[index] + (starters.includes(index) ? 5 + policy.fatigue : 1)));
+      for (let index = 0; index < fatigue.length; index += 1) fatigue[index] = Math.max(0, Math.min(100, fatigue[index] + (starters.includes(index) ? 8 + policy.fatigue : -2)));
       peakBurnout = Math.max(peakBurnout, burnout);
     }
     pointsTotal += seasonPoints; if (burnout >= 65) criticalSeasons += 1;

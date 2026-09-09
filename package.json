@@ -13,6 +13,7 @@
     "test": "npm run build && node --test tests/*.test.mjs",
     "audit:careers": "node scripts/full-career-audit.mjs",
     "audit:matches": "node scripts/match-engine-audit.mjs",
+    "audit:plans": "node scripts/team-plan-audit.mjs",
     "audit:events": "node scripts/event-diversity-audit.mjs",
     "audit:world": "node scripts/world-audit.mjs",
     "import:regional": "node scripts/import-regional-catalog.mjs",

@@ -34,7 +34,7 @@ export function makePlayers(seed: number, base: number, idPrefix = "p") {
     const quality = randomInt(nextSeed, -6, 6); nextSeed = quality.seed;
     const potential = randomInt(nextSeed, base + 2, Math.min(90, base + 16)); nextSeed = potential.seed;
     const positionalNeighbors = POSITIONS.filter((position) => position !== primary && positionPenalty({ primary, secondary: [] }, position) <= 0.09);
-    return { id: `${idPrefix}-${index}-${a.value}-${b.value}`, name: `${FIRST_NAMES[a.value]} ${LAST_NAMES[b.value]}`, age: age.value, primary, secondary: positionalNeighbors.slice(0, index % 3 === 0 ? 2 : 1), baseOVR: Math.max(20, base + quality.value), form: 48 + (index % 7), morale: 58 + (index % 11), fatigue: 8 + (index % 12), relation: 55, potential: potential.value, personality: PERSONALITIES[index % PERSONALITIES.length], status: index < 11 ? "Pierwszy skład" : index < 18 ? "Rotacja" : "Rezerwa", injuryWeeks: 0 };
+    return { id: `${idPrefix}-${index}-${a.value}-${b.value}`, name: `${FIRST_NAMES[a.value]} ${LAST_NAMES[b.value]}`, age: age.value, primary, secondary: positionalNeighbors.slice(0, index % 3 === 0 ? 2 : 1), baseOVR: Math.max(20, base + quality.value), form: 48 + (index % 7), morale: 58 + (index % 11), fatigue: 8 + (index % 12), relation: 55, potential: potential.value, personality: PERSONALITIES[index % PERSONALITIES.length], status: index < 11 ? "Pierwszy skład" : index < 18 ? "Rotacja" : "Rezerwa", injuryWeeks: 0, absenceRounds: 0 };
   });
   return { players, seed: nextSeed };
 }
@@ -59,10 +59,11 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
     club: { id: clubTeam.id, name: clubTeam.name, association: pack.association, district: pack.district, competition: pack.competition, group: pack.group, tier: pack.tier },
     season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures: buildSchedule(teams.map((team) => team.id), 2026, pack.tier), players: generated.players,
     tactic: { formation: "4-2-3-1", mentality: "Zrównoważona", tempo: "Normalne", pressing: "Średni", line: "Średnia", width: "Standardowa", buildUp: "Mieszane", passingRisk: "Umiarkowane", assignments },
-    training: { sessions: defaultMicrocycle(environment.trainingSessions), readiness: Math.min(environment.readinessCap, 62), completedRound: null }, squadPolicy: "BALANCED",
+    training: { sessions: defaultMicrocycle(environment.trainingSessions), readiness: Math.min(environment.readinessCap, 62), completedRound: null, preset: "BALANCED" }, squadPolicy: "BALANCED", teamPlan: "STRONGEST",
     pressures: { board: 18 + careerChallenge.pressureBonus, fans: 20 + Math.round(careerChallenge.pressureBonus * .8), media: Math.round((12 + careerChallenge.pressureBonus) * environment.mediaScale), dressing: 15, personal: 16 + Math.round(careerChallenge.pressureBonus * .7) }, burnout: 8 + Math.round(careerChallenge.pressureBonus * .15), lastBurnoutChange: 0,
     careerChallenge, environment, worldHumor,
     world: generatedWorld.world,
+    worldActivity: { date: "2026-07-13", competitionsAdvanced: 0, matchesPlayed: 0, squadMoves: 0, managerChanges: 0, headlines: [] },
     president: { ambition: 58 + Math.round(careerChallenge.pressureBonus * .4), patience: Math.max(22, 54 - Math.round(careerChallenge.pressureBonus * .65)), ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
     presidentName: `Prezes ${LAST_NAMES[(seed + 11) % LAST_NAMES.length]}`,
     finances: { monthlySalary: Math.max(1800, 14000 - pack.tier * 1200), personalFunds: 9000 },
@@ -84,7 +85,7 @@ export function evolveSquad(players: Player[], initialSeed: number, tier: number
     roll = rngNext(seed); seed = roll.seed; const change = offseasonBaseChange({ ...player, age: nextAge }, roll.value);
     const baseOVR = Math.max(18, Math.min(player.potential, player.baseOVR + change));
     if (change) changes.push(`${player.name} ${change > 0 ? "+" : ""}${change}`);
-    kept.push({ ...player, age: nextAge, baseOVR, form: 50, morale: Math.round((player.morale + 55) / 2), fatigue: 10, relation: Math.round((player.relation + 55) / 2), injuryWeeks: 0 });
+    kept.push({ ...player, age: nextAge, baseOVR, form: 50, morale: Math.round((player.morale + 55) / 2), fatigue: 10, relation: Math.round((player.relation + 55) / 2), injuryWeeks: 0, absenceRounds: 0, absenceReason: undefined });
   }
   const academy = makePlayers(seed, Math.max(22, (TIER_OVR[tier] ?? 42) - 5), `y${seasonYear}`); seed = academy.seed;
   const needed = Math.max(0, 23 - kept.length); const graduates = academy.players.slice(0, needed).map((player, index) => ({ ...player, age: 17 + (index % 3), baseOVR: Math.min(player.baseOVR, (TIER_OVR[tier] ?? 42) - 1), potential: Math.max(player.potential, player.baseOVR + 10), status: "Młodzież" }));
@@ -139,7 +140,7 @@ function seasonYearFrom(season: string) { return Number(season.slice(0, 4)) + 1;
 
 export function environmentIncident(game: GameState) {
   const roll = randomInt(game.seed, 0, 999); let seed = roll.seed;
-  if (!environmentIncidentOccurs(roll.value / 1000, game.environment.absenceRisk)) return { seed, penalty: 0, text: undefined as string | undefined };
+  if (!environmentIncidentOccurs(roll.value / 1000, game.environment.absenceRisk)) return { seed, penalty: 0, text: undefined as string | undefined, unavailableIds: [] as string[], absenceReason: undefined as string | undefined };
   const pick = randomInt(seed, 0, 2); seed = pick.seed;
   const humorous = game.worldHumor >= 60;
   const lower = game.club.tier >= 7;
@@ -148,7 +149,14 @@ export function environmentIncident(game: GameState) {
       ? ["Jeden z podstawowych zawodników kończy zmianę w pracy tuż przed zbiórką. Dojedzie, ale rozgrzewka będzie ekspresowa.", "Kierownik melduje, że linia boczna wygląda dziś pewniej niż fragment murawy. Trzeba uprościć pierwsze podania.", "Bus utknął po drodze po dwóch zawodników. Obaj są w kadrze, lecz przygotowanie nie będzie podręcznikowe."]
       : ["Obowiązki zawodowe ograniczyły przygotowanie jednego z podstawowych graczy.", "Stan boiska wymusza prostszy plan rozegrania niż zakładano.", "Opóźniony transport skrócił zespołowi rozgrzewkę."]
     : ["Drobny problem mięśniowy wykryty na rozgrzewce ogranicza gotowość jednego z liderów.", "Opóźnienie w podróży skróciło odprawę przedmeczową.", "Nagła infekcja w kadrze zmusza sztab do korekty obciążeń."];
-  return { seed, penalty: lower ? 2.2 : 1.4, text: texts[pick.value] };
+  const unavailableCount = lower ? (pick.value === 0 ? 1 : 0) : (pick.value === 0 || pick.value === 2 ? 1 : 0);
+  const candidates = game.players.filter((player) => (player.injuryWeeks ?? 0) <= 0 && (player.absenceRounds ?? 0) <= 0);
+  const unavailableIds: string[] = [];
+  for (let index = 0; index < unavailableCount && candidates.length; index += 1) {
+    const chosen = randomInt(seed, 0, candidates.length - 1); seed = chosen.seed;
+    unavailableIds.push(candidates.splice(chosen.value, 1)[0].id);
+  }
+  return { seed, penalty: lower ? 2.2 : 1.4, text: texts[pick.value], unavailableIds, absenceReason: lower ? "obowiązki zawodowe" : "nagła niedyspozycja" };
 }
 
 export function teamForId(game: GameState, id: string) { return game.teams.find((team) => team.id === id); }

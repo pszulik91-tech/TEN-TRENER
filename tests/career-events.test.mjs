@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { EVENT_POOL, generateRoundIssues, welcomeIssue } from "../lib/career-events.mjs";
+import { EVENT_POOL, generateRoundIssues, previewIssueEffects, resolveIssueEffects, welcomeIssue } from "../lib/career-events.mjs";
 
 function utilitySigns(effects) {
   const values = [];
@@ -93,4 +93,17 @@ test("Monte Carlo 20 tysięcy kolejek zachowuje rytm pracy i różnorodność", 
 test("limit zaległych spraw może zatrzymać nową generację", () => {
   const batch = generateRoundIssues({ seed: 123, round: 10, tier: 9, result: "loss", worldHumor: 80, maxEvents: 0 });
   assert.equal(batch.events.length, 0);
+});
+
+test("odpowiedź pokazuje kierunek, a dokładny skutek jest losowany deterministycznie", () => {
+  const choice = { teamMorale: 3, teamFatigue: -4, pressures: { dressing: -2, board: 2 }, unavailable: { min: 1, max: 2, rounds: 1, reason: "praca zawodowa" } };
+  const preview = previewIssueEffects(choice).join(" • ");
+  assert.match(preview, /morale.*wzrost/i);
+  assert.match(preview, /zmęczenie.*spadek/i);
+  assert.match(preview, /niedostępni/i);
+  const first = resolveIssueEffects(202627, choice);
+  const second = resolveIssueEffects(202627, choice);
+  assert.deepEqual(first, second);
+  assert.ok(first.effects.teamMorale >= 2 && first.effects.teamMorale <= 4);
+  assert.ok(first.effects.unavailable.count >= 1 && first.effects.unavailable.count <= 2);
 });
