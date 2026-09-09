@@ -53,7 +53,7 @@ export type GameState = {
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 1.8";
+export const BUILD = "TEN TRENER Build 1.9";
 export const DATABASE_STATS = LEAGUE_CATALOG_STATS;
 export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
 export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
@@ -109,6 +109,18 @@ export const PSYCH_QUESTIONS: PsychQuestion[] = [
     { label: "Najcięższa jednostka miesiąca. Reset przez pracę.", scores: { "Trener od zapierdolu": 3, Generał: 1 } },
     { label: "Zamykam grupę i jasno wskazuję standardy.", scores: { Generał: 3, Wynikowiec: 1 } },
     { label: "Upraszczam plan do dwóch zachowań, które umiemy najlepiej.", scores: { "Spokojny pragmatyk": 2, "Taktyczny obsesyjny": 2 } },
+  ] },
+  { id: "paperwork", context: "Przed meczem kierownik nie potrafi jednoznacznie potwierdzić uprawnienia ważnego rezerwowego.", question: "Jak rozstrzygasz konflikt sportu z regulaminem?", choices: [
+    { label: "Wykreślam go. Ryzyko walkowera jest nieakceptowalne.", scores: { "Spokojny pragmatyk": 3, Generał: 1 } },
+    { label: "Czekam na potwierdzenie i w tym czasie układam dwa warianty XI.", scores: { "Taktyczny obsesyjny": 2, Dyplomata: 2 } },
+    { label: "Biorę ryzyko. Mecze wygrywa się jakością na boisku.", scores: { Hazardzista: 3, Wynikowiec: 1 } },
+    { label: "Oddaję decyzję kierownikowi, ale wspieram zawodnika rozmową.", scores: { Mentor: 2, Dyplomata: 2 } },
+  ] },
+  { id: "headline", context: "Media skróciły Twoją wypowiedź tak, że brzmi jak krytyka drużyny. Szatnia już widziała nagłówek.", question: "Co robisz jako pierwsze?", choices: [
+    { label: "Rozmawiam z zespołem, zanim odpowiem publicznie.", scores: { Mentor: 3, Dyplomata: 1 } },
+    { label: "Na konferencji przedstawiam pełny kontekst i dane.", scores: { "Taktyczny obsesyjny": 2, Dyplomata: 2 } },
+    { label: "Nie tłumaczę się. Następny wynik zamknie temat.", scores: { Wynikowiec: 3, Generał: 1 } },
+    { label: "Odwracam narrację jednym mocnym, ryzykownym komunikatem.", scores: { Hazardzista: 3, "Trener od zapierdolu": 1 } },
   ] },
 ];
 
