@@ -5,6 +5,8 @@ export function clamp(value: number, min: number, max: number): number;
 export function normalizeStartingLicense(value: unknown): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
 export function requiredLicenseForTier(tier: number): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
 export function licenseCoversTier(license: unknown, tier: number): boolean;
+export function startingLicenseEligibility(license: string, playingExperience: string, coachingExperience: string): { eligible: boolean; reason: string };
+export function highestEligibleStartingLicense(playingExperience: string, coachingExperience: string): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
 export function pressureDeltaForResult(result: "win" | "draw" | "loss", multiplier: number): number;
 export function capReadiness(current: number, gain: number, cap: number): number;
 export function environmentIncidentOccurs(roll: number, risk: number): boolean;

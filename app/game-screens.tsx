@@ -33,7 +33,7 @@ export function GameShell({ game, screen, go, menuOpen, setMenuOpen, saveNow, sa
   const lastRound = Math.max(1, ...game.fixtures.map((fixture: Fixture) => fixture.round));
   return <div className="game-shell">
     <aside className={`side-nav ${menuOpen ? "open" : ""}`}>
-      <div className="side-brand"><span>TT</span><div><strong>TEN TRENER</strong><small>WYDAJEMY BUILD 1.4</small></div><button className="close-menu" onClick={() => setMenuOpen(false)}><X /></button></div>
+      <div className="side-brand"><span>TT</span><div><strong>TEN TRENER</strong><small>WYDAJEMY BUILD 1.5</small></div><button className="close-menu" onClick={() => setMenuOpen(false)}><X /></button></div>
       <div className="club-identity"><span className="club-crest large">{initials(game.club.name)}</span><div><strong>{game.employmentStatus === "unemployed" ? "Bez klubu" : game.club.name}</strong><small>{game.employmentStatus === "unemployed" ? "rynek pracy" : `${game.club.competition} • ${game.club.group}`}</small></div></div>
       <nav>{NAV_ITEMS.map((item) => { const Icon = item.icon; return <button key={item.id} className={screen === item.id ? "active" : ""} onClick={() => go(item.id)}><Icon /><span>{item.label}</span></button>; })}</nav>
       <div className="side-footer"><div><span>Trener</span><strong>{game.coach.name}</strong><small>{game.coach.license} • rep. {game.coach.reputation}</small></div><button onClick={saveNow} title="Zapisz grę"><Save /></button></div>

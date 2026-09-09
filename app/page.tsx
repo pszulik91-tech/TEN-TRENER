@@ -4,14 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import {
   BUILD, DEVELOPMENT_GOALS, effectiveOVR, FORMATIONS, GameState, LEAGUE_PACKS, LICENSE_MIN_TIER,
   License, CoachProfile, POLICY_EFFECTS, SAVE_KEY, Screen, Team, Fixture, LICENSE_CHALLENGES, TIER_OVR,
-  buildSchedule, burnoutMatchPenalty, capReadiness, dismissalProbability, environmentForTier, goalSatisfied, injuryRiskFromFatigue, licenseCoversTier, normalizeStartingLicense, offseasonBurnout, pressureDeltaForResult, requiredLicenseForTier, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult, weeklyBurnoutDelta,
+  buildSchedule, burnoutMatchPenalty, capReadiness, dismissalProbability, environmentForTier, goalSatisfied, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversTier, normalizeStartingLicense, offseasonBurnout, positionPenalty, pressureDeltaForResult, requiredLicenseForTier, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, startingLicenseEligibility, updateTeamResult, weeklyBurnoutDelta,
 } from "./game-data";
 import type { Coach, LeaguePack } from "./game-data";
 import { buildLeagueForSeason, createGame, currentFixture, environmentIncident, evolveSquad, generateJobOffers, makePlayers, makePresident, skillSet, teamForId } from "./game-engine";
 import { generateRoundIssues, legacyIssue } from "../lib/career-events.mjs";
 import { ClubPicker, Creator, GoalPicker, StartScreen } from "./setup-screens";
 import type { CoachDraft } from "./setup-screens";
-import { CareerV14 as Career, DashboardV14 as Dashboard, GameShell, Jobs, Match, Squad, TableScreenV14 as TableScreen, Tactics, Training } from "./game-screens";
+import { CareerV14 as Career, GameShell, Jobs, TableScreenV14 as TableScreen, Training } from "./game-screens";
+import { DashboardV15 as Dashboard, MatchV15 as Match, SquadV15 as Squad, TacticsV15 as Tactics } from "./gameplay-screens";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("start");
@@ -54,7 +55,8 @@ export default function App() {
 
   const finalizeCareer = () => {
     if (!selectedPack || selectedGoals.length !== 2) return;
-    const derived = skillSet(draft.profile, draft.playingExperience, draft.coachingExperience); const coach: Coach = { name: draft.name, age: draft.age, region: draft.region, playingExperience: draft.playingExperience, coachingExperience: draft.coachingExperience, profile: draft.profile, license: draft.license, ...derived };
+    const startingLicense = startingLicenseEligibility(draft.license, draft.playingExperience, draft.coachingExperience).eligible ? draft.license : highestEligibleStartingLicense(draft.playingExperience, draft.coachingExperience) as License;
+    const derived = skillSet(draft.profile, draft.playingExperience, draft.coachingExperience); const coach: Coach = { name: draft.name, age: draft.age, region: draft.region, playingExperience: draft.playingExperience, coachingExperience: draft.coachingExperience, profile: draft.profile, license: startingLicense, ...derived };
     setGame(createGame(coach, selectedPack, selectedClub, selectedGoals)); go("dashboard");
   };
   const saveNow = () => { if (!game) return; localStorage.setItem(SAVE_KEY, JSON.stringify(game)); setHasSave(true); setSavedPulse(true); window.setTimeout(() => setSavedPulse(false), 1400); };
@@ -132,8 +134,21 @@ export default function App() {
       const summary = evaluatedProgress.map((goal) => `${goal.label}: ${goal.progress}/${goal.target}`).join(" • ");
       finalInbox = [{ id: `winter-${game.season}`, category: "Ewaluacja", title: "Zimowa ocena celów", body: `${summary}. To zapis postępu, nie automatyczne zaliczenie. Wiosną nadal możesz domknąć oba cele.`, choices: [{ id: "ack", label: "Przyjmuję ocenę i planuję wiosnę", feedback: "Ocena zimowa została zapisana. Zarząd wróci do celów po ostatniej kolejce.", effects: {} }], resolved: false }, ...finalInbox];
     }
+    const userShots = userHome ? match.shotsHome : match.shotsAway; const opponentShots = userHome ? match.shotsAway : match.shotsHome; const preparation = match.preparationReadiness ?? game.training.readiness; const slots = FORMATIONS[game.tactic.formation]; const mismatches = slots.filter((slot) => { const player = game.players.find((item) => item.id === game.tactic.assignments[slot]); return !player || positionPenalty(player, slot) > .04; }).length; const afterStarters = updatedPlayers.filter((player) => starters.has(player.id)); const averageConditionAfter = afterStarters.length ? Math.round(afterStarters.reduce((sum, player) => sum + (100 - player.fatigue), 0) / afterStarters.length) : 0;
+    const positives: string[] = []; const warnings: string[] = [];
+    if (result === "win") positives.push("Wynik został dowieziony — morale wyjściowej XI wzrosło.");
+    if (preparation >= 72) positives.push(`Mikrocykl dał ${preparation}% gotowości i realnie wsparł plan meczu.`);
+    if (userShots > opponentShots) positives.push(`Zespół stworzył więcej strzałów: ${userShots}–${opponentShots}.`);
+    if (analysisImproved) positives.push("Zmiana po 30. minucie poprawiła bilans wyniku i zaliczyła postęp celu „Analiza”.");
+    if (averageConditionAfter < 65) warnings.push(`Kondycja XI spadła do ${averageConditionAfter}%. Przed kolejnym meczem potrzebna jest rotacja lub regeneracja.`);
+    if (preparation < 65) warnings.push(`Gotowość ${preparation}% ograniczyła realizację planu.`);
+    if (mismatches) warnings.push(`${mismatches} ${mismatches === 1 ? "pozycja była" : "pozycje były"} obsadzone z wyraźną karą dopasowania.`);
+    if (game.burnout >= 45) warnings.push(`Wypalenie ${game.burnout}% zabrało część jakości przygotowania trenera.`);
+    if (userShots < opponentShots) warnings.push(`Rywal oddał więcej strzałów: ${opponentShots}–${userShots}.`);
+    const expectedDifference = userHome ? (match.homeStrength ?? 0) - (match.awayStrength ?? 0) : (match.awayStrength ?? 0) - (match.homeStrength ?? 0); const surprise = expectedDifference >= 2 && result === "loss" ? "Porażka mimo roli faworyta" : expectedDifference <= -2 && result === "win" ? "Zwycięstwo ponad przedmeczowe szanse" : result === "win" ? "Zasłużone zwycięstwo" : result === "draw" ? "Remis do analizy" : "Porażka z konkretnymi przyczynami";
+    const postMatchReport = { verdict: surprise, summary: `${score}. Przygotowanie ${preparation}%, kondycja XI po meczu ${averageConditionAfter}%, siła zespołów ${expectedDifference >= 0 ? "+" : ""}${expectedDifference.toFixed(1)} dla twojej drużyny.`, positives: positives.length ? positives : ["Mecz dostarczył danych do korekty kolejnego mikrocyklu."], warnings: warnings.length ? warnings : ["Brak alarmu kondycyjnego lub pozycyjnego po tym spotkaniu."], boardChange: nextPressures.board - game.pressures.board, burnoutChange: weeklyBurnout, averageCondition: averageConditionAfter, analysisOutcome: match.analysisAttempted ? analysisImproved ? "Korekta skuteczna — postęp celu zaliczony." : "Korekta wykonana, ale bilans wyniku się nie poprawił." : "Brak korekty po 30. minucie — cel „Analiza” bez postępu." };
     const careerStats = { ...game.careerStats, matches: game.careerStats.matches + 1, wins: game.careerStats.wins + (result === "win" ? 1 : 0), draws: game.careerStats.draws + (result === "draw" ? 1 : 0), losses: game.careerStats.losses + (result === "loss" ? 1 : 0) };
-    setGame({ ...game, seed, coach, teams, fixtures, round: newRound, date: nextDate, matchState: { ...match, minute: 90, completed: true }, pressures: nextPressures, burnout: Math.max(0, Math.min(100, game.burnout + weeklyBurnout)), lastBurnoutChange: weeklyBurnout, players: updatedPlayers, training: { ...game.training, readiness: Math.max(50, Math.min(game.environment.readinessCap, 54 + Math.round(game.coach.skills.analysis / 8))), completedRound: null }, finances: { ...game.finances, personalFunds: game.finances.personalFunds + Math.round(game.finances.monthlySalary / 4) }, licenseCourse, licenseMessage, developmentGoals: evaluatedProgress, seasonEvidence: evidence, history: [...injuryHistory, ...courseHistory, `${match.fixture.date} — ${score}.`, ...game.history].slice(0, 80), inbox: finalInbox, winterEvaluatedRound, careerStats, newSeasonPending: endSeason });
+    setGame({ ...game, seed, coach, teams, fixtures, round: newRound, date: nextDate, matchState: { ...match, minute: 90, completed: true, postMatchReport }, pressures: nextPressures, burnout: Math.max(0, Math.min(100, game.burnout + weeklyBurnout)), lastBurnoutChange: weeklyBurnout, players: updatedPlayers, training: { ...game.training, readiness: Math.max(50, Math.min(game.environment.readinessCap, 54 + Math.round(game.coach.skills.analysis / 8))), completedRound: null }, finances: { ...game.finances, personalFunds: game.finances.personalFunds + Math.round(game.finances.monthlySalary / 4) }, licenseCourse, licenseMessage, developmentGoals: evaluatedProgress, seasonEvidence: evidence, history: [...injuryHistory, ...courseHistory, `${match.fixture.date} — ${score}.`, ...game.history].slice(0, 80), inbox: finalInbox, winterEvaluatedRound, careerStats, newSeasonPending: endSeason });
   };
 
   const resolveDecision = (eventId: string, choiceId: string) => {
@@ -179,7 +194,7 @@ export default function App() {
   if (screen === "club") return <ClubPicker draft={draft} associations={associations} districts={districts} packs={packs} pack={selectedPack} selectedAssociation={selectedAssociation} selectedDistrict={selectedDistrict} selectedPackId={selectedPackId} selectedClub={selectedClub} onAssociation={chooseAssociation} onDistrict={chooseDistrict} onPack={choosePack} onClub={setSelectedClub} onBack={() => go("creator")} onNext={() => go("goals")} />;
   if (screen === "goals") return <GoalPicker selected={selectedGoals} setSelected={setSelectedGoals} season={game?.season ?? "2026/27"} onBack={() => go(game ? "dashboard" : "club")} onConfirm={game ? confirmNewSeasonGoals : finalizeCareer} />;
   if (!game) return <StartScreen hasSave={hasSave} onNew={() => go("creator")} onLoad={loadGame} />;
-  return <GameShell game={game} screen={screen} go={go} menuOpen={menuOpen} setMenuOpen={setMenuOpen} saveNow={saveNow} savedPulse={savedPulse}>{screen === "dashboard" && <Dashboard game={game} go={go} resolveDecision={resolveDecision} prepareMatch={prepareMatch} beginNextSeason={beginNextSeason} />}{screen === "squad" && <Squad game={game} setGame={setGame} />}{screen === "tactics" && <Tactics game={game} setGame={setGame} />}{screen === "training" && <Training game={game} setGame={setGame} applyTraining={applyTraining} />}{screen === "match" && <Match game={game} go={go} advanceMatch={advanceMatch} prepareMatch={prepareMatch} changeLiveInstruction={changeLiveInstruction} />}{screen === "table" && <TableScreen game={game} />}{screen === "jobs" && <Jobs game={game} acceptJob={acceptJob} />}{screen === "career" && <Career game={game} setGame={setGame} retireCareer={retireCareer} />}</GameShell>;
+  return <GameShell game={game} screen={screen} go={go} menuOpen={menuOpen} setMenuOpen={setMenuOpen} saveNow={saveNow} savedPulse={savedPulse}>{screen === "dashboard" && <Dashboard game={game} go={go} resolveDecision={resolveDecision} prepareMatch={prepareMatch} beginNextSeason={beginNextSeason} />}{screen === "squad" && <Squad game={game} setGame={setGame} go={go} />}{screen === "tactics" && <Tactics game={game} setGame={setGame} />}{screen === "training" && <Training game={game} setGame={setGame} applyTraining={applyTraining} />}{screen === "match" && <Match game={game} go={go} advanceMatch={advanceMatch} prepareMatch={prepareMatch} changeLiveInstruction={changeLiveInstruction} />}{screen === "table" && <TableScreen game={game} />}{screen === "jobs" && <Jobs game={game} acceptJob={acceptJob} />}{screen === "career" && <Career game={game} setGame={setGame} retireCareer={retireCareer} />}</GameShell>;
 }
 
 function migrateGame(value: unknown): GameState {

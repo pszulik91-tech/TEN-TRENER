@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, dismissalProbability, effectiveOVR, environmentIncidentOccurs, goalSatisfied,
   injuryRiskFromFatigue, licenseCoversTier, liveBreakdown, liveOVR, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult,
-  requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
+  requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, highestEligibleStartingLicense, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
 } from "../lib/game-rules.mjs";
 
 const player = (id, primary, baseOVR = 50, secondary = []) => ({ id, primary, secondary, baseOVR, form: 50, morale: 50, fatigue: 10, relation: 50 });
@@ -149,6 +149,17 @@ test("stare licencje migrują do Grassroots C, a wyższy start zwiększa koszt w
   assert.ok(pressureDeltaForResult("loss", 1.6) > pressureDeltaForResult("loss", 1));
   assert.ok(pressureDeltaForResult("draw", 1.6) > pressureDeltaForResult("draw", 1));
   assert.ok(pressureDeltaForResult("win", 1.6) > pressureDeltaForResult("win", 1));
+});
+
+test("licencja startowa wynika z wiarygodnego życiorysu trenera", () => {
+  assert.equal(startingLicenseEligibility("Grassroots C", "Brak", "Debiutant").eligible, true);
+  assert.equal(startingLicenseEligibility("UEFA B", "Brak", "Debiutant").eligible, false);
+  assert.equal(startingLicenseEligibility("UEFA B", "Niższe ligi", "Debiutant").eligible, true);
+  assert.equal(startingLicenseEligibility("UEFA A", "Zawodowiec", "1–3 lata").eligible, true);
+  assert.equal(startingLicenseEligibility("UEFA PRO", "Brak", "Debiutant").eligible, false);
+  assert.equal(startingLicenseEligibility("UEFA PRO", "Reprezentant", "4–10 lat").eligible, true);
+  assert.equal(highestEligibleStartingLicense("Brak", "Debiutant"), "Grassroots C");
+  assert.equal(highestEligibleStartingLicense("Reprezentant", "4–10 lat"), "UEFA PRO");
 });
 
 test("środowisko ogranicza gotowość i ma kontrolowane ryzyko absencji", () => {

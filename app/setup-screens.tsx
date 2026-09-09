@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { BUILD, DEVELOPMENT_GOALS, environmentForTier, LICENSE_CHALLENGES, LICENSES, PROFILE_NOTE, PSYCH_QUESTIONS, resolveCoachProfile } from "./game-data";
+import { BUILD, DEVELOPMENT_GOALS, environmentForTier, highestEligibleStartingLicense, LICENSE_CHALLENGES, LICENSES, PROFILE_NOTE, PSYCH_QUESTIONS, resolveCoachProfile, startingLicenseEligibility } from "./game-data";
 import type { CoachProfile, LeaguePack, License } from "./game-data";
 
 export type CoachDraft = { name: string; age: number; region: string; playingExperience: string; coachingExperience: string; profile: CoachProfile; license: License; psychAnswers: Record<string, number> };
@@ -23,7 +23,11 @@ export function StartScreen({ hasSave, onNew, onLoad }: { hasSave: boolean; onNe
 export function Creator({ draft, setDraft, onNext, onBack }: { draft: CoachDraft; setDraft: Dispatch<SetStateAction<CoachDraft>>; onNext: () => void; onBack: () => void }) {
   const firstMissing = PSYCH_QUESTIONS.findIndex((question) => draft.psychAnswers[question.id] === undefined);
   const [questionIndex, setQuestionIndex] = useState(firstMissing < 0 ? PSYCH_QUESTIONS.length - 1 : firstMissing);
-  const update = (key: keyof CoachDraft, value: CoachDraft[keyof CoachDraft]) => setDraft((current) => ({ ...current, [key]: value } as CoachDraft));
+  const update = (key: keyof CoachDraft, value: CoachDraft[keyof CoachDraft]) => setDraft((current) => {
+    const next = { ...current, [key]: value } as CoachDraft;
+    if (["playingExperience", "coachingExperience"].includes(key) && !startingLicenseEligibility(next.license, next.playingExperience, next.coachingExperience).eligible) next.license = highestEligibleStartingLicense(next.playingExperience, next.coachingExperience);
+    return next;
+  });
   const answerCount = PSYCH_QUESTIONS.filter((question) => draft.psychAnswers[question.id] !== undefined).length;
   const questionnaireDone = answerCount === PSYCH_QUESTIONS.length;
   const question = PSYCH_QUESTIONS[questionIndex];
@@ -43,7 +47,7 @@ export function Creator({ draft, setDraft, onNext, onBack }: { draft: CoachDraft
       <label className="field"><span>Doświadczenie trenerskie</span><NativeSelect value={draft.coachingExperience} onChange={(e) => update("coachingExperience", e.target.value)} className="w-full"><NativeSelectOption>Debiutant</NativeSelectOption><NativeSelectOption>1–3 lata</NativeSelectOption><NativeSelectOption>4–10 lat</NativeSelectOption><NativeSelectOption>Ponad 10 lat</NativeSelectOption></NativeSelect></label>
     </div>
     <div className="section-label">Licencja startowa • wybór poziomu wyzwania</div>
-    <div className="license-choice-grid">{LICENSES.map((license) => { const challenge = LICENSE_CHALLENGES[license]; return <button key={license} className={`license-choice ${draft.license === license ? "selected" : ""}`} onClick={() => update("license", license)}><span>{license}</span><strong>{challenge.label}</strong><p>{challenge.description}</p><small>Presja wynikowa ×{challenge.pressureMultiplier.toFixed(2)} • reputacja +{challenge.reputationBonus}</small></button>; })}</div>
+    <div className="license-choice-grid">{LICENSES.map((license) => { const challenge = LICENSE_CHALLENGES[license]; const eligibility = startingLicenseEligibility(license, draft.playingExperience, draft.coachingExperience); return <button disabled={!eligibility.eligible} key={license} className={`license-choice ${draft.license === license ? "selected" : ""} ${!eligibility.eligible ? "locked" : ""}`} onClick={() => update("license", license)}><span>{license}</span><strong>{eligibility.eligible ? challenge.label : "Niedostępna dla tego życiorysu"}</strong><p>{eligibility.eligible ? challenge.description : eligibility.reason}</p><small>{eligibility.eligible ? `Presja wynikowa ×${challenge.pressureMultiplier.toFixed(2)} • reputacja +${challenge.reputationBonus}` : "Najpierw zwiększ doświadczenie zawodnicze lub trenerskie."}</small></button>; })}</div>
     <p className="setup-note">Grassroots C jest podstawowym początkiem kariery. Wyższa licencja otwiera wyższe ligi, ale zwiększa oczekiwania, presję i koszt błędów od pierwszego dnia.</p>
     <div className="section-label">Ankieta profilu psychologicznego • {answerCount} / {PSYCH_QUESTIONS.length}</div>
     <section className="psych-test">
