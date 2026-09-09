@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { Activity, ChevronRight, CircleAlert, ClipboardCheck, Gauge, Shield, Sparkles, Target, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,8 +17,6 @@ type DashboardProps = { game: GameState; go: Go; resolveDecision: (eventId: stri
 type MatchProps = { game: GameState; go: Go; advanceMatch: () => void; prepareMatch: () => void; changeLiveInstruction: (field: "mentality" | "pressing", value: string) => void };
 
 function signed(value: number) { return `${value >= 0 ? "+" : ""}${Number.isInteger(value) ? value : value.toFixed(1)}`; }
-function conditionLabel(value: number) { return value >= 85 ? "świeży" : value >= 70 ? "gotowy" : value >= 55 ? "zmęczony" : "przeciążony"; }
-
 function PostMatchReport({ game, compact = false }: { game: GameState; compact?: boolean }) {
   const match = game.matchState; const report = match?.postMatchReport;
   if (!match?.completed || !report) return null;
@@ -27,13 +26,19 @@ function PostMatchReport({ game, compact = false }: { game: GameState; compact?:
 
 export function DashboardV15(props: DashboardProps) {
   const report = props.game.matchState?.completed && props.game.matchState.postMatchReport;
+  const reportKey = report ? `${props.game.matchState?.fixture.round}-${props.game.matchState?.homeGoals}-${props.game.matchState?.awayGoals}` : null; const [dismissedReport, setDismissedReport] = useState<string | null>(null);
   if (!report || props.game.employmentStatus !== "employed") return <DashboardV14 {...props} />;
-  return <div className="page-stack"><PostMatchReport game={props.game} compact /><DashboardV14 {...props} /></div>;
+  return <><DashboardV14 {...props} />{dismissedReport !== reportKey && <ReportWindow game={props.game} close={() => setDismissedReport(reportKey)} />}</>;
 }
 
 export function MatchV15(props: MatchProps) {
   const complete = props.game.matchState?.completed && props.game.matchState.postMatchReport;
-  return <div className="page-stack">{complete && <PostMatchReport game={props.game} />}<Match {...props} /></div>;
+  const reportKey = complete ? `${props.game.matchState?.fixture.round}-${props.game.matchState?.homeGoals}-${props.game.matchState?.awayGoals}` : null; const [dismissedReport, setDismissedReport] = useState<string | null>(null);
+  return <>{complete && dismissedReport !== reportKey && <ReportWindow game={props.game} close={() => setDismissedReport(reportKey)} />}<Match {...props} /></>;
+}
+
+function ReportWindow({ game, close }: { game: GameState; close: () => void }) {
+  return <div className="post-match-window-backdrop" role="dialog" aria-modal="true" aria-label="Raport pomeczowy"><div className="post-match-window"><PostMatchReport game={game} /><Button size="lg" className="w-full report-close" onClick={close}>Zamknij raport i wróć do gry <ChevronRight /></Button></div></div>;
 }
 
 export function SquadV15({ game, setGame, go }: { game: GameState; setGame: Setter; go: Go }) {
