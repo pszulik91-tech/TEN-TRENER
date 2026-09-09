@@ -4,7 +4,7 @@ import {
 } from "../lib/game-rules.mjs";
 import type { CareerIssue } from "../lib/career-events.mjs";
 import type { WorldState } from "../lib/world-engine.mjs";
-import { regionalTier, VERIFIED_LEAGUE_PACKS } from "./league-catalog.mjs";
+import { LEAGUE_CATALOG_STATS, VERIFIED_LEAGUE_PACKS } from "./league-catalog.mjs";
 
 export type Screen = "start" | "creator" | "club" | "goals" | "dashboard" | "squad" | "tactics" | "training" | "match" | "table" | "jobs" | "career";
 export type Position = "BR" | "PO" | "ŚO" | "LO" | "DP" | "ŚP" | "PP" | "ŚPO" | "LP" | "N";
@@ -53,7 +53,8 @@ export type GameState = {
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 1.7";
+export const BUILD = "TEN TRENER Build 1.8";
+export const DATABASE_STATS = LEAGUE_CATALOG_STATS;
 export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
 export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
 export const LICENSE_COURSES: Partial<Record<License, { weeks: number; cost: number }>> = {
@@ -161,6 +162,9 @@ export const FORMATION_COORDS: Record<keyof typeof FORMATIONS, Array<{ left: num
 
 export function nextLicense(current: License): License | undefined { return LICENSES[LICENSES.indexOf(current) + 1]; }
 
+/*
+ * Zachowane wyłącznie jako notatka migracyjna ze starszych zapisów Build 1.6.
+ * Nie jest częścią aktywnej bazy ani bundla gry; aktywny katalog pochodzi z PCDB poniżej.
 const regional: [string, string, string[]][] = [
   ["Dolnośląski ZPN", "Wrocław", ["Polonia Wrocław", "Błękitni Jerzmanowo", "Orzeł Pawłowice", "Sokół Smolec", "KS Brochów", "Odra Lubiąż", "Zorza Pęgów", "Piast Żerniki", "Wicher Domasław", "Burza Bystrzyca"]],
   ["Kujawsko-Pomorski ZPN", "Bydgoszcz", ["Gwiazda Bydgoszcz", "Wisła Fordon", "Zawisza II Bydgoszcz", "Spójnia Białe Błota", "Dąb Potulice", "Skra Paterek", "Orzeł Kcynia", "Victoria Kołaczkowo", "Gryf Sicienko", "Noteć Łabiszyn"]],
@@ -191,22 +195,10 @@ const LEGACY_LEAGUE_PACKS: LeaguePack[] = [
   { id: "podkarpacka-b-jaroslaw", association: "Podkarpacki ZPN", district: "Jarosław", competition: "Klasa B", group: "Jarosław", tier: regionalTier("Podkarpacki ZPN", "Klasa B"), teams: ["Łazowianka Łazy", "Wietlin", "Korona Tuchla", "San Gorzyce", "Iskra Cieszacin Wielki", "Tęcza Jankowice", "Orzeł Bystrowice", "LKS Mołodycz", "Dąb Cetula", "Zorza Zarzecze"], source: "Podkarpacki ZPN / 90minut.pl, sezon 2026/27" },
   ...regional.map(([association, district, teams], index) => ({ id: `regional-b-${index}`, association, district, competition: "Klasa B", group: district, tier: regionalTier(association, "Klasa B"), teams })),
 ];
+*/
 
-const verifiedIds = new Set<string>(VERIFIED_LEAGUE_PACKS.map((pack) => pack.id));
-const verifiedTeamsByAssociation = new Map<string, Set<string>>();
-for (const pack of VERIFIED_LEAGUE_PACKS) {
-  const teams = verifiedTeamsByAssociation.get(pack.association) ?? new Set<string>();
-  pack.teams.forEach((team: string) => teams.add(team));
-  verifiedTeamsByAssociation.set(pack.association, teams);
-}
-const remainingLegacyPacks = LEGACY_LEAGUE_PACKS
-  .filter((pack) => !verifiedIds.has(pack.id) && !(pack.id.startsWith("regional-b-") && VERIFIED_LEAGUE_PACKS.some((verified) => verified.association === pack.association && verified.district === pack.district && verified.competition === pack.competition)))
-  .map((pack) => ({ ...pack, teams: pack.teams.filter((team) => !verifiedTeamsByAssociation.get(pack.association)?.has(team)) }))
-  .filter((pack) => pack.teams.length >= 8);
-export const LEAGUE_PACKS: LeaguePack[] = [
-  ...VERIFIED_LEAGUE_PACKS,
-  ...remainingLegacyPacks,
-].map((pack) => ({ ...pack, teams: [...pack.teams] })) as LeaguePack[];
+export const LEAGUE_PACKS: LeaguePack[] = VERIFIED_LEAGUE_PACKS
+  .map((pack) => ({ ...pack, teams: [...pack.teams] })) as LeaguePack[];
 
 export const FIRST_NAMES = ["Adam", "Adrian", "Aleksander", "Bartosz", "Błażej", "Dawid", "Dominik", "Emil", "Filip", "Grzegorz", "Hubert", "Igor", "Jakub", "Jan", "Kacper", "Kamil", "Karol", "Konrad", "Krystian", "Łukasz", "Maciej", "Marcel", "Marek", "Mateusz", "Michał", "Mikołaj", "Miłosz", "Norbert", "Oskar", "Patryk", "Paweł", "Piotr", "Przemysław", "Rafał", "Robert", "Sebastian", "Szymon", "Tomasz", "Wiktor", "Wojciech"];
 export const LAST_NAMES = ["Adamski", "Bąk", "Bednarek", "Bielecki", "Błaszczyk", "Borowski", "Brzozowski", "Chmiel", "Cieślak", "Czarnecki", "Duda", "Dziedzic", "Gajda", "Głowacki", "Grabowski", "Janik", "Jankowski", "Kaczmarek", "Kamiński", "Kasprzak", "Kowal", "Krawczyk", "Król", "Kubiak", "Kurek", "Lis", "Maj", "Makowski", "Marciniak", "Mazur", "Michalak", "Nowak", "Olejniczak", "Olszewski", "Pawlak", "Piasecki", "Pietrzak", "Przybylski", "Rutkowski", "Sikora", "Sokołowski", "Stępień", "Szulc", "Tomaszewski", "Urban", "Walczak", "Wasilewski", "Włodarczyk", "Wrona", "Zając", "Zieliński"];

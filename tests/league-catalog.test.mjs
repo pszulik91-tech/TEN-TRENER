@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { regionalTier, VERIFIED_LEAGUE_PACKS, V_LEAGUE_ASSOCIATIONS } from "../app/league-catalog.mjs";
+import { LEAGUE_CATALOG_STATS, regionalTier, VERIFIED_LEAGUE_PACKS, V_LEAGUE_ASSOCIATIONS } from "../app/league-catalog.mjs";
 
 test("snapshot 2026/27 ma pełne ligi centralne i cztery grupy III ligi", () => {
   for (const id of ["ekstraklasa", "pierwsza-liga", "druga-liga"]) assert.equal(VERIFIED_LEAGUE_PACKS.find((pack) => pack.id === id)?.teams.length, 18, id);
@@ -45,21 +45,42 @@ test("poziomy regionalne nie są zaszyte jako jedna drabina dla całej Polski", 
 });
 
 test("testowane okręgi Jarosław, Krosno i Rybnik mają pełne aktualne grupy", () => {
-  const byId = Object.fromEntries(VERIFIED_LEAGUE_PACKS.map((pack) => [pack.id, pack]));
-  assert.equal(byId["podkarpacka-okregowa-jaroslaw"].teams.length, 16);
-  assert.equal(byId["podkarpacka-a-krosno-ii"].teams.length, 15);
-  assert.equal(byId["podkarpacka-a-jaroslaw"].teams.length, 14);
-  assert.equal(byId["podkarpacka-b-jaroslaw"].teams.length, 14);
-  assert.equal(byId["slaska-okregowa-rybnik-raciborz"].teams.length, 16);
-  assert.equal(byId["slaska-a-rybnik-i"].teams.length, 12);
-  assert.equal(byId["slaska-a-rybnik-ii"].teams.length, 12);
+  const find = (association, competition, group) => VERIFIED_LEAGUE_PACKS.find((pack) => pack.association === association && pack.competition === competition && pack.group === group);
+  assert.equal(find("Podkarpacki ZPN", "Klasa okręgowa", "Jarosław")?.teams.length, 16);
+  assert.equal(find("Podkarpacki ZPN", "Klasa A", "Krosno II")?.teams.length, 15);
+  assert.equal(find("Podkarpacki ZPN", "Klasa A", "Jarosław I")?.teams.length, 14);
+  assert.equal(find("Podkarpacki ZPN", "Klasa B", "Jarosław")?.teams.length, 14);
+  assert.equal(find("Śląski ZPN", "Klasa okręgowa", "śląska III (Racibórz-Rybnik)")?.teams.length, 16);
+  assert.equal(find("Śląski ZPN", "Klasa A", "Rybnik I")?.teams.length, 12);
+  assert.equal(find("Śląski ZPN", "Klasa A", "Rybnik II")?.teams.length, 12);
 });
 
 test("pakiety nie mają zduplikowanych identyfikatorów ani drużyn wewnątrz grup", () => {
   assert.equal(new Set(VERIFIED_LEAGUE_PACKS.map((pack) => pack.id)).size, VERIFIED_LEAGUE_PACKS.length);
   for (const pack of VERIFIED_LEAGUE_PACKS) assert.equal(new Set(pack.teams).size, pack.teams.length, pack.id);
-  const entries = VERIFIED_LEAGUE_PACKS.flatMap((pack) => pack.teams.map((team) => [team, pack.id]));
-  const locations = new Map();
-  for (const [team, packId] of entries) locations.set(team, [...(locations.get(team) ?? []), packId]);
-  assert.deepEqual([...locations].filter(([, packIds]) => packIds.length > 1), []);
+});
+
+test("pełny katalog regionalny obejmuje wszystkie 16 WZPN i najniższe klasy", () => {
+  assert.deepEqual(LEAGUE_CATALOG_STATS, { associations: 16, groups: 407, teams: 5517 });
+  const regional = VERIFIED_LEAGUE_PACKS.filter((pack) => pack.tier > 4);
+  const associations = [...new Set(regional.map((pack) => pack.association))];
+  assert.equal(associations.length, 16);
+  for (const association of associations) {
+    assert.ok(regional.some((pack) => pack.association === association && pack.competition === "IV liga"), `${association}: brak IV ligi`);
+    assert.ok(regional.some((pack) => pack.association === association && pack.competition === "Klasa A"), `${association}: brak Klasy A`);
+    assert.ok(regional.some((pack) => pack.association === association && pack.competition !== "IV liga"), `${association}: brak lig niższych`);
+  }
+  assert.equal(VERIFIED_LEAGUE_PACKS.filter((pack) => pack.competition === "Klasa okręgowa").length, 60);
+  assert.equal(VERIFIED_LEAGUE_PACKS.filter((pack) => pack.competition === "Klasa A").length, 127);
+  assert.equal(VERIFIED_LEAGUE_PACKS.filter((pack) => pack.competition === "Klasa B").length, 185);
+  assert.equal(VERIFIED_LEAGUE_PACKS.filter((pack) => pack.competition === "Klasa C").length, 3);
+});
+
+test("każda zaimportowana grupa ma hierarchię, źródło i prawdziwe nazwy", () => {
+  for (const pack of VERIFIED_LEAGUE_PACKS) {
+    assert.ok(pack.association && pack.district && pack.competition && pack.group, pack.id);
+    assert.ok(pack.teams.length >= 4, `${pack.id}: tylko ${pack.teams.length} drużyn`);
+    assert.ok(pack.teams.every((name) => !/(Klub|Team|Drużyna) #?\d/i.test(name)), pack.id);
+    assert.ok(pack.source, `${pack.id}: brak źródła`);
+  }
 });

@@ -1,6 +1,8 @@
 // Snapshot startowy 2026/27. Dane centralne i wojewódzkie są oddzielone od save'a:
 // po rozpoczęciu kariery terminarz oraz ruchy ligowe żyją już w świecie gry.
 
+import { GENERATED_REGIONAL_PACKS } from "./regional-catalog.generated.mjs";
+
 const source = "PZPN/WZPN i 90minut.pl — snapshot 2026/27";
 
 export const V_LEAGUE_ASSOCIATIONS = ["Małopolski ZPN", "Mazowiecki ZPN", "Śląski ZPN", "Wielkopolski ZPN"];
@@ -13,7 +15,7 @@ export function regionalTier(association, competition) {
   return base + (hasVLeague ? 1 : 0);
 }
 
-export const VERIFIED_LEAGUE_PACKS = [
+const CURATED_LEAGUE_PACKS = [
   { id: "ekstraklasa", association: "PZPN — rozgrywki centralne", district: "Polska", competition: "Ekstraklasa", group: "liga ogólnopolska", tier: 1, teams: ["Lech Poznań", "Legia Warszawa", "Górnik Zabrze", "Jagiellonia Białystok", "Wisła Kraków", "Piast Gliwice", "GKS Katowice", "Pogoń Szczecin", "Korona Kielce", "Zagłębie Lubin", "Cracovia", "Radomiak Radom", "Widzew Łódź", "Śląsk Wrocław", "Motor Lublin", "Wisła Płock", "Wieczysta Kraków", "Raków Częstochowa"], source },
   { id: "pierwsza-liga", association: "PZPN — rozgrywki centralne", district: "Polska", competition: "I liga", group: "liga ogólnopolska", tier: 2, teams: ["Pogoń Grodzisk Mazowiecki", "Chrobry Głogów", "Arka Gdynia", "Polonia Warszawa", "ŁKS Łódź", "Bruk-Bet Termalica Nieciecza", "Lechia Gdańsk", "Miedź Legnica", "Odra Opole", "Pogoń Siedlce", "Polonia Bytom", "Puszcza Niepołomice", "Stal Mielec", "Stal Rzeszów", "Ruch Chorzów", "Warta Poznań", "Podbeskidzie Bielsko-Biała", "Unia Skierniewice"], source },
   { id: "druga-liga", association: "PZPN — rozgrywki centralne", district: "Polska", competition: "II liga", group: "liga ogólnopolska", tier: 3, teams: ["Avia Świdnik", "Chojniczanka Chojnice", "GKS Tychy", "Górnik Łęczna", "Hutnik Kraków", "Lechia Zielona Góra", "Legia II Warszawa", "Olimpia Grudziądz", "Podhale Nowy Targ", "Rekord Bielsko-Biała", "Resovia Rzeszów", "Sandecja Nowy Sącz", "Sokół Kleczew", "Stal Stalowa Wola", "Śląsk II Wrocław", "Świt Szczecin", "Zawisza Bydgoszcz", "Znicz Pruszków"], source },
@@ -61,3 +63,34 @@ export const VERIFIED_LEAGUE_PACKS = [
   { id: "slaska-b-rybnik-i", association: "Śląski ZPN", district: "Rybnik", competition: "Klasa B", group: "Rybnik I", tier: 9, teams: ["Zuch Orzepowice", "Dąb Dębieńsko", "LKS Górki Śląskie", "Polonia Niewiadom", "Naprzód II Rydułtowy", "KS Wielopole", "Płomień II Ochojec", "Górnik II Radlin", "KS 47 Wielopole", "Rymer II Rybnik", "Inter II Krostoszowice", "Pierwszy Chwałowice"], source },
   { id: "slaska-b-rybnik-ii", association: "Śląski ZPN", district: "Rybnik", competition: "Klasa B", group: "Rybnik II", tier: 9, teams: ["Rapid Wodzisław", "LKS II Baranowice", "GKS 62 Jastrzębie", "Żar Szeroka", "KS 27 II Gołkowice", "Odra Wodzisław", "LKS Skrbeńsko", "Polaris Żory", "Start Kleszczów", "Zryw Bzie", "Start II Mszana", "KS 25 Kokoszyce"], source },
 ];
+
+function normalized(value) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function representsSameGroup(candidate, imported) {
+  if (candidate.association !== imported.association || candidate.competition !== imported.competition) return false;
+  if (normalized(candidate.group) === normalized(imported.group)) return true;
+  const importedTeams = new Set(imported.teams.map(normalized));
+  const overlap = candidate.teams.filter((team) => importedTeams.has(normalized(team))).length;
+  return overlap >= Math.min(6, Math.ceil(Math.min(candidate.teams.length, imported.teams.length) / 2));
+}
+
+// Dane centralne pozostają kuratorowane ręcznie. Regionalny katalog pochodzi z jednego
+// snapshotu 2026/27; ręczne pakiety uzupełniają wyłącznie grupy pominięte w imporcie.
+const centralPacks = CURATED_LEAGUE_PACKS.filter((pack) => pack.tier <= 4);
+const missingCuratedRegionalPacks = CURATED_LEAGUE_PACKS
+  .filter((pack) => pack.tier > 4)
+  .filter((pack) => !GENERATED_REGIONAL_PACKS.some((imported) => representsSameGroup(pack, imported)));
+
+export const VERIFIED_LEAGUE_PACKS = [
+  ...centralPacks,
+  ...GENERATED_REGIONAL_PACKS,
+  ...missingCuratedRegionalPacks,
+];
+
+export const LEAGUE_CATALOG_STATS = Object.freeze({
+  associations: new Set(VERIFIED_LEAGUE_PACKS.filter((pack) => pack.tier > 4).map((pack) => pack.association)).size,
+  groups: VERIFIED_LEAGUE_PACKS.length,
+  teams: VERIFIED_LEAGUE_PACKS.reduce((total, pack) => total + pack.teams.length, 0),
+});

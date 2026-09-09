@@ -14,6 +14,7 @@
     "audit:careers": "node scripts/full-career-audit.mjs",
     "audit:matches": "node scripts/match-engine-audit.mjs",
     "audit:world": "node scripts/world-audit.mjs",
+    "import:regional": "node scripts/import-regional-catalog.mjs",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
   },
