@@ -1,8 +1,8 @@
 import {
   BUILD, DEVELOPMENT_GOALS, FIRST_NAMES, FORMATIONS, GameState, LAST_NAMES,
-  JobOffer, LeaguePack, LEAGUE_PACKS, LICENSE_CHALLENGES, LICENSE_MIN_TIER, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
-  buildSchedule, offseasonBaseChange, positionPenalty, randomInt, rngNext, selectBestLineup, shouldRetirePlayer,
-  environmentForTier, environmentIncidentOccurs,
+  JobOffer, LeaguePack, LEAGUE_PACKS, LICENSE_CHALLENGES, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
+  buildSchedule, defaultMicrocycle, licenseCoversCompetition, offseasonBaseChange, positionPenalty, randomInt, rngNext, selectBestLineup, shouldRetirePlayer,
+  environmentForPack, environmentForTier, environmentIncidentOccurs,
 } from "./game-data";
 import type { Coach, CoachProfile } from "./game-data";
 import { welcomeIssue } from "../lib/career-events.mjs";
@@ -40,7 +40,7 @@ export function makePlayers(seed: number, base: number, idPrefix = "p") {
 
 export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goals: string[]): GameState {
   let seed = Math.abs(Array.from(`${coach.name}-${clubName}`).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) | 0, 202627)) >>> 0;
-  const environment = environmentForTier(pack.tier);
+  const environment = environmentForPack(pack);
   const careerChallenge = LICENSE_CHALLENGES[coach.license];
   const teams: Team[] = pack.teams.map((name, index) => {
     const quality = randomInt(seed, -4, 4); seed = quality.seed;
@@ -57,7 +57,7 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
     club: { id: clubTeam.id, name: clubTeam.name, association: pack.association, district: pack.district, competition: pack.competition, group: pack.group, tier: pack.tier },
     season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures: buildSchedule(teams.map((team) => team.id), 2026, pack.tier), players: generated.players,
     tactic: { formation: "4-2-3-1", mentality: "Zrównoważona", tempo: "Normalne", pressing: "Średni", line: "Średnia", width: "Standardowa", buildUp: "Mieszane", passingRisk: "Umiarkowane", assignments },
-    training: { focus: "Taktyka", intensity: "Normalna", recovery: true, readiness: Math.min(environment.readinessCap, 62), completedRound: null }, squadPolicy: "BALANCED",
+    training: { sessions: defaultMicrocycle(environment.trainingSessions), readiness: Math.min(environment.readinessCap, 62), completedRound: null }, squadPolicy: "BALANCED",
     pressures: { board: 18 + careerChallenge.pressureBonus, fans: 20 + Math.round(careerChallenge.pressureBonus * .8), media: Math.round((12 + careerChallenge.pressureBonus) * environment.mediaScale), dressing: 15, personal: 16 + Math.round(careerChallenge.pressureBonus * .7) }, burnout: 8 + Math.round(careerChallenge.pressureBonus * .15), lastBurnoutChange: 0,
     careerChallenge, environment, worldHumor,
     president: { ambition: 58 + Math.round(careerChallenge.pressureBonus * .4), patience: Math.max(22, 54 - Math.round(careerChallenge.pressureBonus * .65)), ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
@@ -111,11 +111,11 @@ export function buildLeagueForSeason(game: GameState, tier: number, seasonYear: 
     const quality = randomInt(seed, -4, 4); seed = quality.seed;
     return { id: index === 0 ? game.club.id : `s${seasonYear}-team-${index}`, name, ovr: index === 0 ? squadBaseline : (TIER_OVR[tier] ?? 42) + quality.value, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0 };
   });
-  return { seed, teams, fixtures: buildSchedule(teams.map((team) => team.id), seasonYear, tier), pack, club: { ...game.club, id: teams[0].id, name: clubName, association: forcedPack?.association ?? game.club.association, district: forcedPack?.district ?? game.club.district, competition: environmentForTier(tier).label, group: forcedPack?.group ?? pack.group, tier } };
+  return { seed, teams, fixtures: buildSchedule(teams.map((team) => team.id), seasonYear, tier), pack, club: { ...game.club, id: teams[0].id, name: clubName, association: forcedPack?.association ?? pack.association ?? game.club.association, district: forcedPack?.district ?? pack.district ?? game.club.district, competition: pack.competition ?? environmentForTier(tier).label, group: forcedPack?.group ?? pack.group, tier } };
 }
 
 export function generateJobOffers(game: GameState, initialSeed: number): { seed: number; offers: JobOffer[] } {
-  let seed = initialSeed; const eligible = LEAGUE_PACKS.filter((pack) => pack.tier >= LICENSE_MIN_TIER[game.coach.license]); const pool = [...eligible]; const offers: JobOffer[] = [];
+  let seed = initialSeed; const eligible = LEAGUE_PACKS.filter((pack) => licenseCoversCompetition(game.coach.license, pack.competition)); const pool = [...eligible]; const offers: JobOffer[] = [];
   while (pool.length && offers.length < 3) {
     const pick = randomInt(seed, 0, pool.length - 1); seed = pick.seed; const pack = pool.splice(pick.value, 1)[0];
     const candidates = pack.teams.filter((name) => name !== game.club.name); const clubPick = randomInt(seed, 0, candidates.length - 1); seed = clubPick.seed; const clubName = candidates[clubPick.value];

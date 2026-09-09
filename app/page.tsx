@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  BUILD, DEVELOPMENT_GOALS, effectiveOVR, FORMATIONS, GameState, LEAGUE_PACKS, LICENSE_MIN_TIER,
+  BUILD, DEVELOPMENT_GOALS, effectiveOVR, FORMATIONS, GameState, LEAGUE_PACKS,
   License, CoachProfile, POLICY_EFFECTS, SAVE_KEY, Screen, Team, Fixture, LICENSE_CHALLENGES, TIER_OVR,
-  buildSchedule, burnoutMatchPenalty, capReadiness, dismissalProbability, environmentForTier, goalSatisfied, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversTier, normalizeStartingLicense, offseasonBurnout, positionPenalty, pressureDeltaForResult, requiredLicenseForTier, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, startingLicenseEligibility, updateTeamResult, weeklyBurnoutDelta,
+  buildSchedule, burnoutMatchPenalty, capReadiness, defaultMicrocycle, dismissalProbability, environmentForPack, evaluateMicrocycle, goalSatisfied, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, normalizeStartingLicense, offseasonBurnout, positionPenalty, pressureDeltaForResult, requiredLicenseForTier, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, startingLicenseEligibility, updateTeamResult, weeklyBurnoutDelta,
 } from "./game-data";
 import type { Coach, LeaguePack } from "./game-data";
 import { buildLeagueForSeason, createGame, currentFixture, environmentIncident, evolveSquad, generateJobOffers, makePlayers, makePresident, skillSet, teamForId } from "./game-engine";
@@ -33,7 +33,7 @@ export default function App() {
   }, []);
   useEffect(() => { if (game) localStorage.setItem(SAVE_KEY, JSON.stringify(game)); }, [game]);
 
-  const eligiblePacks = useMemo(() => LEAGUE_PACKS.filter((pack) => pack.tier >= LICENSE_MIN_TIER[draft.license]), [draft.license]);
+  const eligiblePacks = useMemo(() => LEAGUE_PACKS.filter((pack) => licenseCoversCompetition(draft.license, pack.competition)), [draft.license]);
   const associations = useMemo(() => [...new Set(eligiblePacks.map((pack) => pack.association))].sort((a, b) => a.localeCompare(b, "pl")), [eligiblePacks]);
   const districts = useMemo(() => [...new Set(eligiblePacks.filter((pack) => pack.association === selectedAssociation).map((pack) => pack.district))], [eligiblePacks, selectedAssociation]);
   const packs = useMemo(() => eligiblePacks.filter((pack) => pack.association === selectedAssociation && pack.district === selectedDistrict), [eligiblePacks, selectedAssociation, selectedDistrict]);
@@ -46,7 +46,7 @@ export default function App() {
   };
 
   const startClubStep = () => {
-    const available = LEAGUE_PACKS.filter((pack) => pack.tier >= LICENSE_MIN_TIER[draft.license]); const first = available.find((pack) => pack.association === selectedAssociation) ?? available[0];
+    const available = LEAGUE_PACKS.filter((pack) => licenseCoversCompetition(draft.license, pack.competition)); const first = available.find((pack) => pack.association === selectedAssociation) ?? available[0];
     setSelectedAssociation(first.association); setSelectedDistrict(first.district); setSelectedPackId(first.id); setSelectedClub(first.teams[0]); go("club");
   };
   const chooseAssociation = (value: string) => { const first = eligiblePacks.find((pack) => pack.association === value) as LeaguePack; setSelectedAssociation(value); setSelectedDistrict(first.district); setSelectedPackId(first.id); setSelectedClub(first.teams[0]); };
@@ -63,8 +63,9 @@ export default function App() {
 
   const applyTraining = () => {
     if (!game || game.employmentStatus !== "employed" || game.careerEnded || game.training.completedRound === game.round) return;
-    const readiness = game.training.intensity === "Wysoka" ? 8 : game.training.intensity === "Niska" ? 1 : 5; const load = game.training.intensity === "Wysoka" ? 8 : game.training.intensity === "Niska" ? 1 : 4; const recovery = game.training.recovery ? 4 : 0;
-    setGame({ ...game, training: { ...game.training, readiness: capReadiness(game.training.readiness, readiness, game.environment.readinessCap), completedRound: game.round }, players: game.players.map((player) => ({ ...player, fatigue: Math.max(0, Math.min(100, player.fatigue + load - recovery - (game.training.focus === "Regeneracja" ? 2 : 0))), morale: Math.max(0, Math.min(100, player.morale + (game.training.focus === "Atmosfera" ? 3 : 0))), form: Math.max(0, Math.min(100, player.form + (["Finalizacja", "Pressing", "Rozwój młodych"].includes(game.training.focus) && (game.training.focus !== "Rozwój młodych" || player.age <= 21) ? 1 : 0))) })), history: [`${game.date} — Zrealizowano mikrocykl kolejki ${game.round}: ${game.training.focus}, ${game.environment.trainingSessions} sesje, intensywność ${game.training.intensity.toLowerCase()}.`, ...game.history].slice(0, 80) });
+    const effect = evaluateMicrocycle(game.training.sessions);
+    const summary = game.training.sessions.map((session) => `${session.day} ${session.focus} (${session.intensity.toLowerCase()})`).join(" • ");
+    setGame({ ...game, training: { ...game.training, readiness: capReadiness(game.training.readiness, effect.readinessGain, game.environment.readinessCap), completedRound: game.round }, players: game.players.map((player) => player.injuryWeeks > 0 ? { ...player, fatigue: Math.max(0, player.fatigue - 4) } : ({ ...player, fatigue: Math.max(0, Math.min(100, player.fatigue + effect.fatigueDelta)), morale: Math.max(0, Math.min(100, player.morale + effect.moraleDelta)), form: Math.max(0, Math.min(100, player.form + effect.formDelta + (player.age <= 21 ? effect.youthFormDelta : 0))) })), history: [`${game.date} — Mikrocykl kolejki ${game.round} (${game.training.sessions.length} sesji): ${summary}.`, ...game.history].slice(0, 80) });
     go("dashboard");
   };
 
@@ -113,11 +114,11 @@ export default function App() {
       const add = goalSatisfied(goal.id, { readiness: match.preparationReadiness ?? 0, averageMorale, preMatchPressure: match.preMatchPressure ?? 0, result }) ? 1 : 0;
       return { ...goal, progress: Math.min(goal.target, goal.progress + add) };
     });
-    const weeklyBurnout = weeklyBurnoutDelta({ result, intensity: game.training.intensity, recovery: game.training.recovery, policyBurnout: policy.burnout, pressure: match.preMatchPressure ?? Math.max(...Object.values(game.pressures)), profile: game.coach.profile });
+    const microcycleEffect = evaluateMicrocycle(game.training.sessions); const weeklyBurnout = weeklyBurnoutDelta({ result, intensity: microcycleEffect.averageIntensity, recovery: microcycleEffect.hasRecovery, policyBurnout: policy.burnout, pressure: match.preMatchPressure ?? Math.max(...Object.values(game.pressures)), profile: game.coach.profile });
     const injuryHistory: string[] = []; const updatedPlayers = game.players.map((player) => {
       if ((player.injuryWeeks ?? 0) > 0) return { ...player, injuryWeeks: Math.max(0, (player.injuryWeeks ?? 0) - 1), fatigue: Math.max(0, player.fatigue - 8) };
       const starter = starters.has(player.id); const fatigue = Math.max(0, Math.min(100, player.fatigue + (starter ? 5 + policy.fatigue + tacticLoad : 1))); let injuryWeeks = 0;
-      if (starter) { const injuryRoll = rngNext(seed); seed = injuryRoll.seed; if (injuryRoll.value < injuryRiskFromFatigue(fatigue, game.training.intensity)) { const durationRoll = rngNext(seed); seed = durationRoll.seed; injuryWeeks = 1 + Math.floor(durationRoll.value * 3); injuryHistory.push(`${game.date} — ${player.name}: uraz przeciążeniowy, przerwa ${injuryWeeks} tyg.`); } }
+      if (starter) { const injuryRoll = rngNext(seed); seed = injuryRoll.seed; if (injuryRoll.value < injuryRiskFromFatigue(fatigue, microcycleEffect.averageIntensity)) { const durationRoll = rngNext(seed); seed = durationRoll.seed; injuryWeeks = 1 + Math.floor(durationRoll.value * 3); injuryHistory.push(`${game.date} — ${player.name}: uraz przeciążeniowy, przerwa ${injuryWeeks} tyg.`); } }
       return {
         ...player,
         fatigue,
@@ -148,7 +149,7 @@ export default function App() {
     const expectedDifference = userHome ? (match.homeStrength ?? 0) - (match.awayStrength ?? 0) : (match.awayStrength ?? 0) - (match.homeStrength ?? 0); const surprise = expectedDifference >= 2 && result === "loss" ? "Porażka mimo roli faworyta" : expectedDifference <= -2 && result === "win" ? "Zwycięstwo ponad przedmeczowe szanse" : result === "win" ? "Zasłużone zwycięstwo" : result === "draw" ? "Remis do analizy" : "Porażka z konkretnymi przyczynami";
     const postMatchReport = { verdict: surprise, summary: `${score}. Przygotowanie ${preparation}%, kondycja XI po meczu ${averageConditionAfter}%, siła zespołów ${expectedDifference >= 0 ? "+" : ""}${expectedDifference.toFixed(1)} dla twojej drużyny.`, positives: positives.length ? positives : ["Mecz dostarczył danych do korekty kolejnego mikrocyklu."], warnings: warnings.length ? warnings : ["Brak alarmu kondycyjnego lub pozycyjnego po tym spotkaniu."], boardChange: nextPressures.board - game.pressures.board, burnoutChange: weeklyBurnout, averageCondition: averageConditionAfter, analysisOutcome: match.analysisAttempted ? analysisImproved ? "Korekta skuteczna — postęp celu zaliczony." : "Korekta wykonana, ale bilans wyniku się nie poprawił." : "Brak korekty po 30. minucie — cel „Analiza” bez postępu." };
     const careerStats = { ...game.careerStats, matches: game.careerStats.matches + 1, wins: game.careerStats.wins + (result === "win" ? 1 : 0), draws: game.careerStats.draws + (result === "draw" ? 1 : 0), losses: game.careerStats.losses + (result === "loss" ? 1 : 0) };
-    setGame({ ...game, seed, coach, teams, fixtures, round: newRound, date: nextDate, matchState: { ...match, minute: 90, completed: true, postMatchReport }, pressures: nextPressures, burnout: Math.max(0, Math.min(100, game.burnout + weeklyBurnout)), lastBurnoutChange: weeklyBurnout, players: updatedPlayers, training: { ...game.training, readiness: Math.max(50, Math.min(game.environment.readinessCap, 54 + Math.round(game.coach.skills.analysis / 8))), completedRound: null }, finances: { ...game.finances, personalFunds: game.finances.personalFunds + Math.round(game.finances.monthlySalary / 4) }, licenseCourse, licenseMessage, developmentGoals: evaluatedProgress, seasonEvidence: evidence, history: [...injuryHistory, ...courseHistory, `${match.fixture.date} — ${score}.`, ...game.history].slice(0, 80), inbox: finalInbox, winterEvaluatedRound, careerStats, newSeasonPending: endSeason });
+    setGame({ ...game, seed, coach, teams, fixtures, round: newRound, date: nextDate, matchState: { ...match, minute: 90, completed: true, postMatchReport }, pressures: nextPressures, burnout: Math.max(0, Math.min(100, game.burnout + weeklyBurnout)), lastBurnoutChange: weeklyBurnout, players: updatedPlayers, training: { sessions: defaultMicrocycle(game.environment.trainingSessions), readiness: Math.max(50, Math.min(game.environment.readinessCap, 54 + Math.round(game.coach.skills.analysis / 8))), completedRound: null }, finances: { ...game.finances, personalFunds: game.finances.personalFunds + Math.round(game.finances.monthlySalary / 4) }, licenseCourse, licenseMessage, developmentGoals: evaluatedProgress, seasonEvidence: evidence, history: [...injuryHistory, ...courseHistory, `${match.fixture.date} — ${score}.`, ...game.history].slice(0, 80), inbox: finalInbox, winterEvaluatedRound, careerStats, newSeasonPending: endSeason });
   };
 
   const resolveDecision = (eventId: string, choiceId: string) => {
@@ -164,7 +165,7 @@ export default function App() {
     let seed = base.seed; let players = base.players; let squadNotes: string[] = [];
     if (offer) { const generated = makePlayers(seed, TIER_OVR[tier] ?? 42, `club${pending.year}`); players = generated.players; seed = generated.seed; squadNotes = [`Nowy klub: przejęto kadrę ${clubName}.`]; }
     else { const evolved = evolveSquad(players, seed, tier, pending.year); players = evolved.players; seed = evolved.seed; squadNotes = [`Przerwa między sezonami: wypalenie ${base.burnout}% → ${offseasonBurnout(base.burnout)}%.`, ...(evolved.retired.length ? [`Emerytury zawodników: ${evolved.retired.join(", ")}.`] : []), ...(evolved.graduates.length ? [`Do kadry weszli juniorzy: ${evolved.graduates.join(", ")}.`] : []), ...(evolved.changes.length ? [`Zmiany Base OVR: ${evolved.changes.slice(0, 8).join(", ")}${evolved.changes.length > 8 ? "…" : ""}.`] : [])]; }
-    const working = { ...base, seed, players, club: { ...base.club, name: clubName } }; const league = buildLeagueForSeason(working, tier, pending.year, clubName, forcedPack); const environment = environmentForTier(tier); const assignments = selectBestLineup(players, FORMATIONS[base.tactic.formation]); const presidentUpdate = offer ? makePresident(league.seed, tier) : { seed: league.seed, president: base.president, presidentName: base.presidentName };
+    const working = { ...base, seed, players, club: { ...base.club, name: clubName } }; const league = buildLeagueForSeason(working, tier, pending.year, clubName, forcedPack); const environment = environmentForPack(league.pack); const assignments = selectBestLineup(players, FORMATIONS[base.tactic.formation]); const presidentUpdate = offer ? makePresident(league.seed, tier) : { seed: league.seed, president: base.president, presidentName: base.presidentName };
     const required = requiredLicenseForTier(tier) as License; let licenseCourse = base.licenseCourse; let licenseMessage = base.licenseMessage;
     if (!licenseCoversTier(base.coach.license, tier) && !licenseCourse) {
       const course = (Object.keys(LICENSE_CHALLENGES) as License[]).find((license) => license === required) ?? required;
@@ -173,7 +174,7 @@ export default function App() {
       licenseMessage = `${environment.label} wymaga ${required}. Klub uruchomił finansowany kurs; obowiązuje warunkowe dopuszczenie na czas nauki.`;
     }
     const clubs = base.careerStats.clubs.includes(clubName) ? base.careerStats.clubs : [...base.careerStats.clubs, clubName];
-    setGame({ ...base, seed: presidentUpdate.seed, club: league.club, teams: league.teams, fixtures: league.fixtures, players, coach: base.coach, environment, careerChallenge: LICENSE_CHALLENGES[base.coach.license], season: `${pending.year}/${String(pending.year + 1).slice(-2)}`, date: `${pending.year}-07-13`, round: 1, tactic: { ...base.tactic, assignments }, training: { ...base.training, readiness: Math.min(environment.readinessCap, 60), completedRound: null }, matchState: undefined, newSeasonPending: false, winterEvaluatedRound: undefined, burnout: offseasonBurnout(base.burnout), lastBurnoutChange: -Math.max(0, base.burnout - offseasonBurnout(base.burnout)), developmentGoals: [], seasonEvidence: { formationsWithPoints: [], youthStarters: [], analysisRounds: [], tacticalRounds: [], pressureRounds: [], positiveDecisions: [] }, employmentStatus: "employed", jobOffers: [], pendingSeason: undefined, licenseCourse, licenseMessage, president: presidentUpdate.president, presidentName: presidentUpdate.presidentName, careerStats: { ...base.careerStats, clubs, highestTier: Math.min(base.careerStats.highestTier, tier) }, history: [...squadNotes, `Start sezonu ${pending.year}/${String(pending.year + 1).slice(-2)}: ${clubName}, ${environment.label}.`, ...base.history].slice(0, 80) }); setSelectedGoals([]); go("goals");
+    setGame({ ...base, seed: presidentUpdate.seed, club: league.club, teams: league.teams, fixtures: league.fixtures, players, coach: base.coach, environment, careerChallenge: LICENSE_CHALLENGES[base.coach.license], season: `${pending.year}/${String(pending.year + 1).slice(-2)}`, date: `${pending.year}-07-13`, round: 1, tactic: { ...base.tactic, assignments }, training: { sessions: defaultMicrocycle(environment.trainingSessions), readiness: Math.min(environment.readinessCap, 60), completedRound: null }, matchState: undefined, newSeasonPending: false, winterEvaluatedRound: undefined, burnout: offseasonBurnout(base.burnout), lastBurnoutChange: -Math.max(0, base.burnout - offseasonBurnout(base.burnout)), developmentGoals: [], seasonEvidence: { formationsWithPoints: [], youthStarters: [], analysisRounds: [], tacticalRounds: [], pressureRounds: [], positiveDecisions: [] }, employmentStatus: "employed", jobOffers: [], pendingSeason: undefined, licenseCourse, licenseMessage, president: presidentUpdate.president, presidentName: presidentUpdate.presidentName, careerStats: { ...base.careerStats, clubs, highestTier: Math.min(base.careerStats.highestTier, tier) }, history: [...squadNotes, `Start sezonu ${pending.year}/${String(pending.year + 1).slice(-2)}: ${clubName}, ${environment.label}.`, ...base.history].slice(0, 80) }); setSelectedGoals([]); go("goals");
   };
 
   const beginNextSeason = () => {
@@ -202,7 +203,7 @@ function migrateGame(value: unknown): GameState {
   const history = Array.isArray(parsed.history) ? parsed.history : [];
   const trainedToday = history.some((entry) => typeof entry === "string" && entry.startsWith(`${parsed.date} — Zrealizowano mikrocykl`));
   const license = normalizeStartingLicense(parsed.coach?.license) as License;
-  const environment = parsed.environment ?? environmentForTier(parsed.club.tier);
+  const environment = parsed.environment ? { ...parsed.environment, ...environmentForPack({ tier: parsed.club.tier, competition: parsed.club.competition }) } : environmentForPack({ tier: parsed.club.tier, competition: parsed.club.competition });
   const careerChallenge = parsed.careerChallenge ?? LICENSE_CHALLENGES[license];
   const rawCourse = parsed.licenseCourse as GameState["licenseCourse"] | undefined;
   const licenseCourse = rawCourse && String(rawCourse.target) === "UEFA C"
@@ -215,6 +216,9 @@ function migrateGame(value: unknown): GameState {
   const currentScheduledDate = fixtures.find((fixture) => fixture.round === parsed.round && (fixture.home === parsed.club.id || fixture.away === parsed.club.id))?.date;
   const played = parsed.teams?.find((team) => team.id === parsed.club.id);
   const careerStats = parsed.careerStats ?? { seasons: 0, matches: played?.played ?? 0, wins: played?.won ?? 0, draws: played?.drawn ?? 0, losses: played?.lost ?? 0, promotions: 0, relegations: 0, goalsCompleted: 0, highestTier: parsed.club.tier, clubs: [parsed.club.name] };
+  const legacyTraining = parsed.training as GameState["training"] & { focus?: string; intensity?: string; recovery?: boolean };
+  let trainingSessions = Array.isArray(legacyTraining?.sessions) && legacyTraining.sessions.length === environment.trainingSessions ? legacyTraining.sessions : defaultMicrocycle(environment.trainingSessions);
+  if (!Array.isArray(legacyTraining?.sessions) && legacyTraining?.focus) trainingSessions = trainingSessions.map((session, index) => index === Math.max(0, trainingSessions.length - 2) ? { ...session, focus: legacyTraining.focus as typeof session.focus, intensity: (legacyTraining.intensity ?? session.intensity) as typeof session.intensity } : legacyTraining.recovery && index === 0 ? { ...session, focus: "Regeneracja", intensity: "Niska" } : session);
   return {
     ...parsed,
     build: BUILD,
@@ -233,7 +237,7 @@ function migrateGame(value: unknown): GameState {
     developmentGoals: (parsed.developmentGoals ?? []).map((goal) => { const canonical = DEVELOPMENT_GOALS.find((item) => item.id === goal.id); return canonical ? { ...canonical, progress: Math.min(canonical.target, goal.progress ?? 0) } : goal; }),
     inbox: (parsed.inbox ?? []).map((item) => legacyIssue(item)),
     squadPolicy: POLICY_EFFECTS[parsed.squadPolicy] ? parsed.squadPolicy : "BALANCED",
-    training: { focus: parsed.training?.focus ?? "Taktyka", intensity: parsed.training?.intensity ?? "Normalna", recovery: parsed.training?.recovery ?? true, readiness: Math.min(environment.readinessCap, parsed.training?.readiness ?? 60), completedRound: parsed.training?.completedRound ?? (trainedToday ? parsed.round : null) },
+    training: { sessions: trainingSessions, readiness: Math.min(environment.readinessCap, parsed.training?.readiness ?? 60), completedRound: parsed.training?.completedRound ?? (trainedToday ? parsed.round : null) },
     finances: parsed.finances ?? { monthlySalary: Math.max(1800, 14000 - parsed.club.tier * 1200), personalFunds: 9000 },
     employmentStatus: parsed.employmentStatus ?? "employed",
     jobOffers: parsed.jobOffers ?? [],

@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, dismissalProbability, effectiveOVR, environmentIncidentOccurs, goalSatisfied,
-  injuryRiskFromFatigue, licenseCoversTier, liveBreakdown, liveOVR, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult,
+  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, defaultMicrocycle, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, goalSatisfied,
+  injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult,
   requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, highestEligibleStartingLicense, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
 } from "../lib/game-rules.mjs";
 
@@ -170,6 +170,29 @@ test("środowisko ogranicza gotowość i ma kontrolowane ryzyko absencji", () =>
   assert.equal(environmentIncidentOccurs(.5, 0), false);
 });
 
+test("mikrocykl ma od 2 do 6 osobno edytowalnych sesji zależnie od środowiska", () => {
+  for (let count = 2; count <= 6; count += 1) {
+    const sessions = defaultMicrocycle(count);
+    assert.equal(sessions.length, count);
+    assert.equal(new Set(sessions.map((session) => session.id)).size, count);
+    assert.ok(sessions.every((session) => session.day && session.focus && session.intensity));
+  }
+  assert.deepEqual(defaultMicrocycle(1), defaultMicrocycle(2));
+  assert.deepEqual(defaultMicrocycle(9), defaultMicrocycle(6));
+});
+
+test("skutek mikrocyklu wynika ze wszystkich sesji, a regeneracja ma realny koszt i zysk", () => {
+  const normal = evaluateMicrocycle(defaultMicrocycle(4));
+  const hard = evaluateMicrocycle(defaultMicrocycle(4).map((session) => ({ ...session, focus: "Pressing", intensity: "Wysoka" })));
+  const recovery = evaluateMicrocycle(defaultMicrocycle(4).map((session) => ({ ...session, focus: "Regeneracja", intensity: "Niska" })));
+  assert.ok(hard.readinessGain > 0);
+  assert.ok(hard.fatigueDelta > normal.fatigueDelta);
+  assert.equal(hard.risk, "wysokie");
+  assert.ok(recovery.fatigueDelta < 0);
+  assert.ok(recovery.readinessGain < normal.readinessGain);
+  assert.equal(recovery.hasRecovery, true);
+});
+
 test("ankieta przypisuje profil deterministycznie i ignoruje nieznane punkty", () => {
   const profiles = ["Mentor", "Generał", "Hazardzista"];
   const questions = [
@@ -225,6 +248,10 @@ test("licencja blokuje poziom rynku, ale awans może uruchomić ścieżkę kursu
   assert.equal(licenseCoversTier("Grassroots C", 7), false);
   assert.equal(licenseCoversTier("UEFA A", 4), true);
   assert.equal(licenseCoversTier("UEFA PRO", 9), true);
+  assert.equal(licenseCoversCompetition("Grassroots C", "Klasa A"), true);
+  assert.equal(licenseCoversCompetition("Grassroots C", "Klasa okręgowa"), false);
+  assert.equal(licenseCoversCompetition("UEFA B", "Klasa okręgowa"), true);
+  assert.equal(licenseCoversCompetition("UEFA A", "III liga"), true);
 });
 
 test("po sezonie zawodnicy starzeją się i Base OVR zmienia się tylko według wieku", () => {

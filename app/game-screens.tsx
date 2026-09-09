@@ -11,8 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { Progress } from "@/components/ui/progress";
-import { effectiveOVR, FORMATION_COORDS, FORMATIONS, licenseCoversTier, LICENSE_COURSES, liveBreakdown, liveOVR, nextLicense, POLICY_EFFECTS, POSITIONS, positionPenalty, selectBestLineup, sortedTable } from "./game-data";
-import type { DevelopmentGoal, Fixture, GameState, MatchState, Screen, Tactic } from "./game-data";
+import { effectiveOVR, evaluateMicrocycle, FORMATION_COORDS, FORMATIONS, licenseCoversTier, LICENSE_COURSES, liveBreakdown, liveOVR, nextLicense, POLICY_EFFECTS, POSITIONS, positionPenalty, selectBestLineup, sortedTable } from "./game-data";
+import type { DevelopmentGoal, Fixture, GameState, MatchState, Screen, Tactic, TrainingFocus, TrainingIntensity } from "./game-data";
 import { currentFixture, formatDate, presidentLabel, pressureLabel, pressureName, skillLabel, teamForId } from "./game-engine";
 
 const MOBILE_NAV_ITEMS: { id: Screen; label: string; icon: LucideIcon }[] = [
@@ -33,7 +33,7 @@ export function GameShell({ game, screen, go, menuOpen, setMenuOpen, saveNow, sa
   const lastRound = Math.max(1, ...game.fixtures.map((fixture: Fixture) => fixture.round));
   return <div className="game-shell">
     <aside className={`side-nav ${menuOpen ? "open" : ""}`}>
-      <div className="side-brand"><span>TT</span><div><strong>TEN TRENER</strong><small>WYDAJEMY BUILD 1.5</small></div><button className="close-menu" onClick={() => setMenuOpen(false)}><X /></button></div>
+      <div className="side-brand"><span>TT</span><div><strong>TEN TRENER</strong><small>WYDAJEMY BUILD 1.6</small></div><button className="close-menu" onClick={() => setMenuOpen(false)}><X /></button></div>
       <div className="club-identity"><span className="club-crest large">{initials(game.club.name)}</span><div><strong>{game.employmentStatus === "unemployed" ? "Bez klubu" : game.club.name}</strong><small>{game.employmentStatus === "unemployed" ? "rynek pracy" : `${game.club.competition} • ${game.club.group}`}</small></div></div>
       <nav>{NAV_ITEMS.map((item) => { const Icon = item.icon; return <button key={item.id} className={screen === item.id ? "active" : ""} onClick={() => go(item.id)}><Icon /><span>{item.label}</span></button>; })}</nav>
       <div className="side-footer"><div><span>Trener</span><strong>{game.coach.name}</strong><small>{game.coach.license} • rep. {game.coach.reputation}</small></div><button onClick={saveNow} title="Zapisz grę"><Save /></button></div>
@@ -77,26 +77,28 @@ export function Tactics({ game, setGame }: { game: GameState; setGame: GameSette
 }
 
 export function Training({ game, setGame, applyTraining }: TrainingProps) {
-  const update = (key: string, value: unknown) => setGame({ ...game, training: { ...game.training, [key]: value } });
   const locked = game.training.completedRound === game.round; const fixture = currentFixture(game); const opponentId = fixture?.home === game.club.id ? fixture.away : fixture?.home; const opponent = opponentId ? teamForId(game, opponentId) : undefined; const policy = POLICY_EFFECTS[game.squadPolicy] ?? POLICY_EFFECTS.BALANCED;
-  const readinessGain = game.training.intensity === "Wysoka" ? 8 : game.training.intensity === "Niska" ? 1 : 5; const sessions = microcycleFor(game.environment.trainingSessions, game.training.focus, game.training.intensity);
-  return <div className="page-stack"><section className="page-heading"><div><p className="eyebrow">MIKROCYKL • KOLEJKA {game.round}</p><h1>Trening</h1><p>{game.environment.label}: {game.environment.trainingSessions} sesje między meczami. Po realizacji plan jest zamknięty do następnej kolejki.</p></div><div className="lineup-score"><span>Gotowość</span><strong>{game.training.readiness}%</strong></div></section><section className={`match-week panel ${locked ? "locked" : ""}`}><div><CalendarDays /><span><small>NAJBLIŻSZY MECZ</small><strong>{opponent?.name ?? "brak rywala"} • {fixture?.home === game.club.id ? "dom" : "wyjazd"}</strong></span></div><Badge variant="outline">{locked ? "mikrocykl wykonany" : "plan otwarty"}</Badge></section><section className="microcycle-strip">{sessions.map((session) => <div key={`${session.day}-${session.label}`}><b>{session.day}</b><span>{session.label}</span></div>)}</section><section className="training-grid"><div className="panel"><div className="panel-title"><div><Target /><span>Priorytet</span></div></div><div className="training-choices">{["Taktyka", "Finalizacja", "Pressing", "Regeneracja", "Atmosfera", "Rozwój młodych"].map((focus) => <button disabled={locked} className={game.training.focus === focus ? "active" : ""} key={focus} onClick={() => update("focus", focus)}><strong>{focus}</strong><small>{focus === "Taktyka" ? "+ przygotowanie" : focus === "Regeneracja" ? "− zmęczenie" : focus === "Atmosfera" ? "+ morale" : "+ forma sytuacyjna"}</small></button>)}</div></div><div className="panel"><div className="panel-title"><div><Gauge /><span>Obciążenie</span></div></div><div className="intensity-options">{["Niska", "Normalna", "Wysoka"].map((value) => <button disabled={locked} className={game.training.intensity === value ? "active" : ""} key={value} onClick={() => update("intensity", value)}>{value}</button>)}</div><label className="recovery-toggle"><input disabled={locked} type="checkbox" checked={game.training.recovery} onChange={(event) => update("recovery", event.target.checked)} /><span><strong>Sesja regeneracyjna</strong><small>Obniża przyrost zmęczenia, ale zabiera część bodźca.</small></span></label><div className="risk-preview"><div><span>Przewidywana gotowość</span><strong>{locked ? game.training.readiness : Math.min(game.environment.readinessCap, game.training.readiness + readinessGain)}%</strong></div><div><span>Limit środowiska</span><strong>{game.environment.readinessCap}% • {game.environment.status}</strong></div><div><span>Wpływ polityki kadry</span><strong>{policy.label}: zm. {policy.fatigue >= 0 ? "+" : ""}{policy.fatigue}</strong></div><div><span>Ryzyko przeciążenia</span><strong>{game.training.intensity === "Wysoka" ? "podwyższone" : game.training.intensity === "Niska" ? "niskie" : "umiarkowane"}</strong></div></div><Button disabled={locked} className="w-full" size="lg" onClick={applyTraining}>{locked ? "Mikrocykl już wykonany" : "Zrealizuj mikrocykl"} {!locked && <ChevronRight />}</Button></div></section></div>;
+  const effect = evaluateMicrocycle(game.training.sessions);
+  const updateSession = (index: number, key: "focus" | "intensity", value: TrainingFocus | TrainingIntensity) => {
+    const sessions = game.training.sessions.map((session, sessionIndex) => {
+      if (sessionIndex !== index) return session;
+      if (key === "focus") return { ...session, focus: value as TrainingFocus, intensity: value === "Regeneracja" && session.intensity === "Wysoka" ? "Niska" as TrainingIntensity : session.intensity };
+      return { ...session, intensity: value as TrainingIntensity };
+    });
+    setGame({ ...game, training: { ...game.training, sessions } });
+  };
+  const focuses: TrainingFocus[] = ["Regeneracja", "Analiza rywala", "Motoryka", "Taktyka", "Finalizacja", "Pressing", "Atmosfera", "Rozwój młodych", "Stałe fragmenty"];
+  const intensities: TrainingIntensity[] = ["Niska", "Normalna", "Wysoka"];
+  return <div className="page-stack"><section className="page-heading"><div><p className="eyebrow">MIKROCYKL • KOLEJKA {game.round}</p><h1>Trening</h1><p>{game.environment.label}: planujesz osobno każdą z {game.training.sessions.length} sesji między meczami. Po realizacji mikrocykl jest zamknięty do następnej kolejki.</p></div><div className="lineup-score"><span>Gotowość</span><strong>{game.training.readiness}%</strong></div></section><section className={`match-week panel ${locked ? "locked" : ""}`}><div><CalendarDays /><span><small>NAJBLIŻSZY MECZ</small><strong>{opponent?.name ?? "brak rywala"} • {fixture?.home === game.club.id ? "dom" : "wyjazd"}</strong></span></div><Badge variant="outline">{locked ? "mikrocykl wykonany" : `${game.training.sessions.length} sesji do ustawienia`}</Badge></section><section className="training-grid"><div className="panel session-plan"><div className="panel-title"><div><Target /><span>Plan mikrocyklu</span></div><small>każda karta = osobny dzień</small></div><div className="session-plan-list">{game.training.sessions.map((session, index) => <article className="training-session-card" key={session.id}><header><span><b>SESJA {index + 1}</b><strong>{session.day}</strong></span><small>{trainingFocusNote(session.focus as TrainingFocus)}</small></header><label className="field compact"><span>Akcent treningowy</span><NativeSelect disabled={locked} value={session.focus} onChange={(event) => updateSession(index, "focus", event.target.value as TrainingFocus)} className="w-full">{focuses.map((focus) => <NativeSelectOption key={focus}>{focus}</NativeSelectOption>)}</NativeSelect></label><div><span className="control-label">Intensywność tej sesji</span><div className="intensity-options">{intensities.map((value) => <button disabled={locked || (session.focus === "Regeneracja" && value === "Wysoka")} className={session.intensity === value ? "active" : ""} key={value} onClick={() => updateSession(index, "intensity", value)}>{value}</button>)}</div></div></article>)}</div></div><aside className="panel microcycle-summary"><div className="panel-title"><div><Gauge /><span>Skutek całego tygodnia</span></div></div><div className="risk-preview"><div><span>Przewidywana gotowość</span><strong>{locked ? game.training.readiness : Math.min(game.environment.readinessCap, game.training.readiness + effect.readinessGain)}%</strong></div><div><span>Zmiana zmęczenia kadry</span><strong>{effect.fatigueDelta > 0 ? "+" : ""}{effect.fatigueDelta}</strong></div><div><span>Morale / forma</span><strong>{effect.moraleDelta >= 0 ? "+" : ""}{effect.moraleDelta} / +{effect.formDelta}</strong></div><div><span>Limit środowiska</span><strong>{game.environment.readinessCap}% • {game.environment.status}</strong></div><div><span>Polityka kadry</span><strong>{policy.label}: mecz {policy.matchStrength >= 0 ? "+" : ""}{policy.matchStrength}</strong></div><div><span>Ryzyko przeciążenia</span><strong>{effect.risk}</strong></div></div><p className="training-advice">Regeneracja odejmuje zmęczenie, analiza i taktyka zwiększają przygotowanie, a jednostki wysokiej intensywności podnoszą sufit kosztem świeżości i urazów.</p><Button disabled={locked} className="w-full" size="lg" onClick={applyTraining}>{locked ? "Mikrocykl już wykonany" : `Zrealizuj ${game.training.sessions.length} sesji`} {!locked && <ChevronRight />}</Button></aside></section></div>;
 }
 
-function microcycleFor(count: number, focus: string, intensity: string) {
-  const all = [
-    { day: "D+1", label: "Regeneracja i analiza meczu" },
-    { day: "D+2", label: "Rozwój indywidualny i młodzież" },
-    { day: "D−5", label: "Analiza rywala" },
-    { day: "D−4", label: `Motoryka • obciążenie ${intensity.toLowerCase()}` },
-    { day: "D−3", label: `Priorytet: ${focus}` },
-    { day: "D−1", label: "Taktyka, skład i stałe fragmenty" },
-  ];
-  if (count <= 2) return [all[4], all[5]];
-  if (count === 3) return [all[0], all[4], all[5]];
-  if (count === 4) return [all[0], all[3], all[4], all[5]];
-  if (count === 5) return [all[0], all[2], all[3], all[4], all[5]];
-  return all;
+function trainingFocusNote(focus: TrainingFocus) {
+  if (focus === "Regeneracja") return "świeżość i zejście z obciążeń";
+  if (focus === "Analiza rywala" || focus === "Taktyka" || focus === "Stałe fragmenty") return "przygotowanie meczowe";
+  if (focus === "Atmosfera") return "morale i relacje";
+  if (focus === "Rozwój młodych") return "bodziec głównie dla U21";
+  if (focus === "Motoryka" || focus === "Pressing") return "większy koszt fizyczny";
+  return "forma sytuacyjna";
 }
 
 export function Match({ game, go, advanceMatch, prepareMatch, changeLiveInstruction }: MatchProps) {

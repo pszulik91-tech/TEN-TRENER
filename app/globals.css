@@ -529,6 +529,20 @@ body {
 .training-choices button.active { border-color: #a33028; background: #e6d6b2; box-shadow: inset 5px 0 #a33028; }
 .risk-preview strong { color: #211e19; }
 .recovery-toggle input { accent-color: #a33028; }
+.session-plan { padding: 0; overflow: hidden; }
+.session-plan > .panel-title, .microcycle-summary > .panel-title { padding: .8rem; margin: 0; }
+.session-plan-list { display: grid; }
+.training-session-card { display: grid; gap: .65rem; padding: .8rem; border-top: 1px dotted #766e5f; background: #eee4cc; }
+.training-session-card:nth-child(even) { background: #f4ecd9; }
+.training-session-card header { display: flex; align-items: flex-start; justify-content: space-between; gap: .7rem; }
+.training-session-card header > span { display: flex; align-items: center; gap: .5rem; }
+.training-session-card header b { padding: .22rem .35rem; background: #a33028; color: #fff; font-size: .62rem; letter-spacing: .05em; }
+.training-session-card header strong { color: #1f455e; font-family: Georgia, serif; font-size: 1rem; }
+.training-session-card header small { max-width: 12rem; color: #625b4e; font-size: .66rem; text-align: right; }
+.training-session-card .field { margin: 0; }
+.control-label { display: block; margin-bottom: .35rem; color: #5e574b; font-size: .68rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
+.microcycle-summary { align-self: start; }
+.training-advice { padding: .7rem; border-left: 5px solid #e2c04c; background: #e5d8bc; color: #504a40; font-size: .73rem; line-height: 1.45; }
 
 .pre-match-facts span { color: #5c5549; border-color: #6c6456; }
 .pre-match-facts b { color: #211e19; }
@@ -738,4 +752,6 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .tactics-sidebar { position: sticky; top: 5.5rem; }
   .lineup-at-glance { display: block; }
   .instruction-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .session-plan-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .training-session-card:nth-child(even) { border-left: 1px dotted #766e5f; }
 }

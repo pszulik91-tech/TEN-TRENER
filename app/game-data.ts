@@ -1,8 +1,9 @@
 import {
-  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, dismissalProbability, effectiveOVR, environmentIncidentOccurs, goalSatisfied, injuryRiskFromFatigue, licenseCoversTier, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS,
+  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, defaultMicrocycle, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, goalSatisfied, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS,
   highestEligibleStartingLicense, positionPenalty, pressureDeltaForResult, requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
 } from "../lib/game-rules.mjs";
 import type { CareerIssue } from "../lib/career-events.mjs";
+import { regionalTier, VERIFIED_LEAGUE_PACKS } from "./league-catalog.mjs";
 
 export type Screen = "start" | "creator" | "club" | "goals" | "dashboard" | "squad" | "tactics" | "training" | "match" | "table" | "jobs" | "career";
 export type Position = "BR" | "PO" | "ŚO" | "LO" | "DP" | "ŚP" | "PP" | "ŚPO" | "LP" | "N";
@@ -15,6 +16,9 @@ export type LevelEnvironment = {
 };
 export type PsychChoice = { label: string; scores: Partial<Record<CoachProfile, number>> };
 export type PsychQuestion = { id: string; question: string; context: string; choices: PsychChoice[] };
+export type TrainingFocus = "Regeneracja" | "Analiza rywala" | "Motoryka" | "Taktyka" | "Finalizacja" | "Pressing" | "Atmosfera" | "Rozwój młodych" | "Stałe fragmenty";
+export type TrainingIntensity = "Niska" | "Normalna" | "Wysoka";
+export type TrainingSession = { id: string; day: string; focus: string; intensity: string };
 
 export type LeaguePack = { id: string; association: string; district: string; competition: string; group: string; tier: number; teams: string[]; source?: string };
 export type Player = { id: string; name: string; age: number; primary: Position; secondary: Position[]; baseOVR: number; form: number; morale: number; fatigue: number; relation: number; potential: number; personality: string; status: string; injuryWeeks?: number };
@@ -34,7 +38,7 @@ export type JobOffer = { id: string; packId: string; clubName: string; tier: num
 export type PendingSeason = { year: number; targetTier: number; place: number; outcome: "awans" | "utrzymanie" | "spadek" };
 export type GameState = {
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
-  training: { focus: string; intensity: string; recovery: boolean; readiness: number; completedRound: number | null };
+  training: { sessions: TrainingSession[]; readiness: number; completedRound: number | null };
   squadPolicy: string; pressures: Record<string, number>; burnout: number; lastBurnoutChange: number; president: Record<string, number>; presidentName: string;
   careerChallenge: CareerChallenge; environment: LevelEnvironment; worldHumor: number;
   finances: { monthlySalary: number; personalFunds: number };
@@ -46,7 +50,7 @@ export type GameState = {
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 1.5";
+export const BUILD = "TEN TRENER Build 1.6";
 export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
 export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
 export const LICENSE_COURSES: Partial<Record<License, { weeks: number; cost: number }>> = {
@@ -122,6 +126,10 @@ export const LEVEL_ENVIRONMENTS: Record<number, LevelEnvironment> = {
 };
 
 export function environmentForTier(tier: number): LevelEnvironment { return LEVEL_ENVIRONMENTS[Math.max(1, Math.min(10, tier))]; }
+export function environmentForPack(pack: Pick<LeaguePack, "tier" | "competition">): LevelEnvironment {
+  const profileTier = ({ Ekstraklasa: 1, "I liga": 2, "II liga": 3, "III liga": 4, "IV liga": 5, "V liga": 6, "Klasa okręgowa": 7, "Klasa A": 8, "Klasa B": 9, "Klasa C": 10 } as Record<string, number>)[pack.competition] ?? pack.tier;
+  return { ...environmentForTier(profileTier), tier: pack.tier, label: pack.competition };
+}
 export const DEVELOPMENT_GOALS: Omit<DevelopmentGoal, "progress">[] = [
   { id: "tactics", label: "Taktyka", description: "Rozpocznij 8 meczów z gotowością taktyczną minimum 72%.", target: 8 },
   { id: "motivation", label: "Motywacja", description: "Rozpocznij 10 meczów ze średnim morale wyjściowej XI minimum 68.", target: 10 },
@@ -168,22 +176,38 @@ const regional: [string, string, string[]][] = [
   ["Zachodniopomorski ZPN", "Szczecin", ["Kasta Szczecin", "Okręt Szczecin", "Pionier Szczecin", "Znicz Niedźwiedź", "Rybak Trzebież", "Błękit Pniewo", "Wołczkowo-Bezrzecze", "Sztorm Szczecin", "Grot Gardno", "Wicher Reptowo"]],
 ];
 
-export const LEAGUE_PACKS: LeaguePack[] = [
+const LEGACY_LEAGUE_PACKS: LeaguePack[] = [
   { id: "ekstraklasa", association: "PZPN — rozgrywki centralne", district: "Polska", competition: "Ekstraklasa", group: "liga ogólnopolska", tier: 1, teams: ["Legia Warszawa", "Lech Poznań", "Raków Częstochowa", "Jagiellonia Białystok", "Pogoń Szczecin", "Górnik Zabrze", "Widzew Łódź", "Cracovia", "Zagłębie Lubin", "Korona Kielce"] },
   { id: "pierwsza-liga", association: "PZPN — rozgrywki centralne", district: "Polska", competition: "I liga", group: "liga ogólnopolska", tier: 2, teams: ["Wisła Kraków", "Ruch Chorzów", "ŁKS Łódź", "Miedź Legnica", "Polonia Warszawa", "Stal Rzeszów", "GKS Tychy", "Odra Opole", "Puszcza Niepołomice", "Chrobry Głogów"] },
   { id: "druga-liga", association: "PZPN — rozgrywki centralne", district: "Polska", competition: "II liga", group: "liga ogólnopolska", tier: 3, teams: ["Zagłębie Sosnowiec", "KKS Kalisz", "Świt Szczecin", "Podbeskidzie Bielsko-Biała", "Chojniczanka Chojnice", "Resovia", "Hutnik Kraków", "Olimpia Grudziądz", "Rekord Bielsko-Biała", "ŁKS II Łódź"] },
   { id: "trzecia-liga-iv", association: "PZPN — rozgrywki centralne", district: "grupa IV", competition: "III liga", group: "grupa IV", tier: 4, teams: ["JKS Jarosław", "Sokół Kolbuszowa Dolna", "KSZO Ostrowiec Świętokrzyski", "Siarka Tarnobrzeg", "Star Starachowice", "Avia Świdnik", "Podlasie Biała Podlaska", "Wisłoka Dębica", "Chełmianka Chełm", "Korona II Kielce"], source: "90minut.pl, sezon 2026/27" },
   { id: "podkarpacka-iv", association: "Podkarpacki ZPN", district: "województwo", competition: "IV liga", group: "podkarpacka", tier: 5, teams: ["Karpaty Krosno", "Cosmos Nowotaniec", "Stal Łańcut", "Sokół Sieniawa", "Izolator Boguchwała", "Polonia Przemyśl", "Ekoball Stal Sanok", "Stal II Rzeszów", "Legion Pilzno", "Igloopol Dębica"], source: "90minut.pl, sezon 2026/27" },
-  { id: "podkarpacka-okregowa-jaroslaw", association: "Podkarpacki ZPN", district: "Jarosław", competition: "Klasa okręgowa", group: "Jarosław", tier: 7, teams: ["Czuwaj Przemyśl", "Start Lisie Jamy", "Płomień Morawsko", "Orzeł Przeworsk", "Wiraż Chłopice", "Sanoczanka Święte", "Orzeł Torki", "Promyk Urzejowice", "Huragan Gniewczyna", "Piast Tuczempy"], source: "90minut.pl, sezon 2026/27" },
-  { id: "podkarpacka-a-krosno-ii", association: "Podkarpacki ZPN", district: "Krosno", competition: "Klasa A", group: "Krosno II", tier: 8, teams: ["Karpaty II Krosno", "Zamczysko Odrzykoń", "LKS Głowienka", "Orlew Suchodół", "Wisłok Krościenko Wyżne", "Jasiołka Świerzowa Polska", "Nafta Jedlicze", "LKS Lubatowa", "Tęcza Zręcin", "LKS Haczów"], source: "90minut.pl, sezon 2026/27" },
-  { id: "podkarpacka-a-jaroslaw", association: "Podkarpacki ZPN", district: "Jarosław", competition: "Klasa A", group: "Jarosław", tier: 8, teams: ["LKS Skołoszów", "Santos Piwoda", "MKS Radymno", "Piast II Tuczempy", "Dąb Dobkowice", "Pogórze Rokietnica", "LKS Manasterz", "Błękitni Pełkinie", "Hetman Laszki", "Orzeł Czerwona Wola"], source: "90minut.pl, sezon 2026/27" },
-  { id: "podkarpacka-b-jaroslaw", association: "Podkarpacki ZPN", district: "Jarosław", competition: "Klasa B", group: "Jarosław", tier: 9, teams: ["Łazowianka Łazy", "Wietlin", "Korona Tuchla", "San Gorzyce", "Iskra Cieszacin Wielki", "Tęcza Jankowice", "Orzeł Bystrowice", "LKS Mołodycz", "Dąb Cetula", "Zorza Zarzecze"], source: "90minut.pl, sezon 2026/27" },
-  ...regional.map(([association, district, teams], index) => ({ id: `regional-b-${index}`, association, district, competition: "Klasa B", group: district, tier: 9, teams })),
+  { id: "podkarpacka-okregowa-jaroslaw", association: "Podkarpacki ZPN", district: "Jarosław", competition: "Klasa okręgowa", group: "Jarosław", tier: regionalTier("Podkarpacki ZPN", "Klasa okręgowa"), teams: ["Czuwaj Przemyśl", "Start Lisie Jamy", "Płomień Morawsko", "Orzeł Przeworsk", "Wiraż Chłopice", "Sanoczanka Święte", "Orzeł Torki", "Promyk Urzejowice", "Huragan Gniewczyna", "Piast Tuczempy"], source: "Podkarpacki ZPN / 90minut.pl, sezon 2026/27" },
+  { id: "podkarpacka-a-krosno-ii", association: "Podkarpacki ZPN", district: "Krosno", competition: "Klasa A", group: "Krosno II", tier: regionalTier("Podkarpacki ZPN", "Klasa A"), teams: ["Karpaty II Krosno", "Zamczysko Odrzykoń", "LKS Głowienka", "Orlew Suchodół", "Wisłok Krościenko Wyżne", "Jasiołka Świerzowa Polska", "Nafta Jedlicze", "LKS Lubatowa", "Tęcza Zręcin", "LKS Haczów"], source: "Podkarpacki ZPN / 90minut.pl, sezon 2026/27" },
+  { id: "podkarpacka-a-jaroslaw", association: "Podkarpacki ZPN", district: "Jarosław", competition: "Klasa A", group: "Jarosław", tier: regionalTier("Podkarpacki ZPN", "Klasa A"), teams: ["LKS Skołoszów", "Santos Piwoda", "MKS Radymno", "Piast II Tuczempy", "Dąb Dobkowice", "Pogórze Rokietnica", "LKS Manasterz", "Błękitni Pełkinie", "Hetman Laszki", "Orzeł Czerwona Wola"], source: "Podkarpacki ZPN / 90minut.pl, sezon 2026/27" },
+  { id: "podkarpacka-b-jaroslaw", association: "Podkarpacki ZPN", district: "Jarosław", competition: "Klasa B", group: "Jarosław", tier: regionalTier("Podkarpacki ZPN", "Klasa B"), teams: ["Łazowianka Łazy", "Wietlin", "Korona Tuchla", "San Gorzyce", "Iskra Cieszacin Wielki", "Tęcza Jankowice", "Orzeł Bystrowice", "LKS Mołodycz", "Dąb Cetula", "Zorza Zarzecze"], source: "Podkarpacki ZPN / 90minut.pl, sezon 2026/27" },
+  ...regional.map(([association, district, teams], index) => ({ id: `regional-b-${index}`, association, district, competition: "Klasa B", group: district, tier: regionalTier(association, "Klasa B"), teams })),
 ];
+
+const verifiedIds = new Set<string>(VERIFIED_LEAGUE_PACKS.map((pack) => pack.id));
+const verifiedTeamsByAssociation = new Map<string, Set<string>>();
+for (const pack of VERIFIED_LEAGUE_PACKS) {
+  const teams = verifiedTeamsByAssociation.get(pack.association) ?? new Set<string>();
+  pack.teams.forEach((team: string) => teams.add(team));
+  verifiedTeamsByAssociation.set(pack.association, teams);
+}
+const remainingLegacyPacks = LEGACY_LEAGUE_PACKS
+  .filter((pack) => !verifiedIds.has(pack.id) && !(pack.id.startsWith("regional-b-") && VERIFIED_LEAGUE_PACKS.some((verified) => verified.association === pack.association && verified.district === pack.district && verified.competition === pack.competition)))
+  .map((pack) => ({ ...pack, teams: pack.teams.filter((team) => !verifiedTeamsByAssociation.get(pack.association)?.has(team)) }))
+  .filter((pack) => pack.teams.length >= 8);
+export const LEAGUE_PACKS: LeaguePack[] = [
+  ...VERIFIED_LEAGUE_PACKS,
+  ...remainingLegacyPacks,
+].map((pack) => ({ ...pack, teams: [...pack.teams] })) as LeaguePack[];
 
 export const FIRST_NAMES = ["Adam", "Adrian", "Aleksander", "Bartosz", "Błażej", "Dawid", "Dominik", "Emil", "Filip", "Grzegorz", "Hubert", "Igor", "Jakub", "Jan", "Kacper", "Kamil", "Karol", "Konrad", "Krystian", "Łukasz", "Maciej", "Marcel", "Marek", "Mateusz", "Michał", "Mikołaj", "Miłosz", "Norbert", "Oskar", "Patryk", "Paweł", "Piotr", "Przemysław", "Rafał", "Robert", "Sebastian", "Szymon", "Tomasz", "Wiktor", "Wojciech"];
 export const LAST_NAMES = ["Adamski", "Bąk", "Bednarek", "Bielecki", "Błaszczyk", "Borowski", "Brzozowski", "Chmiel", "Cieślak", "Czarnecki", "Duda", "Dziedzic", "Gajda", "Głowacki", "Grabowski", "Janik", "Jankowski", "Kaczmarek", "Kamiński", "Kasprzak", "Kowal", "Krawczyk", "Król", "Kubiak", "Kurek", "Lis", "Maj", "Makowski", "Marciniak", "Mazur", "Michalak", "Nowak", "Olejniczak", "Olszewski", "Pawlak", "Piasecki", "Pietrzak", "Przybylski", "Rutkowski", "Sikora", "Sokołowski", "Stępień", "Szulc", "Tomaszewski", "Urban", "Walczak", "Wasilewski", "Włodarczyk", "Wrona", "Zając", "Zieliński"];
 export const TIER_OVR: Record<number, number> = { 1: 76, 2: 69, 3: 63, 4: 58, 5: 54, 6: 50, 7: 46, 8: 42, 9: 38, 10: 34 };
 
 export function randomInt(seed: number, min: number, max: number) { const r = rngNext(seed); return { value: Math.floor(r.value * (max - min + 1)) + min, seed: r.seed }; }
-export { buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, dismissalProbability, effectiveOVR, environmentIncidentOccurs, goalSatisfied, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversTier, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, requiredLicenseForTier, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, updateTeamResult, weeklyBurnoutDelta, winterBreakDays };
+export { buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, defaultMicrocycle, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, goalSatisfied, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, requiredLicenseForTier, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, updateTeamResult, weeklyBurnoutDelta, winterBreakDays };
