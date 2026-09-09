@@ -568,3 +568,39 @@ body {
 @media (min-width: 960px) {
   .menu-button, .mobile-brand, .menu-backdrop, .bottom-nav { display: none; }
 }
+
+/* BUILD 1.4 — pełny terminarz i kronika wieloletniej kariery */
+.full-schedule { padding: 0; overflow: hidden; }
+.full-schedule > .panel-title { padding: .85rem; margin: 0; background: #1f455e; color: #fff; }
+.full-schedule > .panel-title small { color: #d8e0e3; }
+.schedule-list { display: grid; }
+.schedule-list > div { display: grid; grid-template-columns: 6.7rem 2.2rem 2.7rem minmax(0, 1fr) 2.5rem; align-items: center; gap: .45rem; min-height: 3.1rem; padding: .5rem .7rem; border-top: 1px dotted #766e5f; color: #4e493f; font-size: .72rem; }
+.schedule-list > div:nth-child(even) { background: rgba(31,69,94,.06); }
+.schedule-list > div.current { border-left: 6px solid #a33028; background: #ead9ab; }
+.schedule-list > div.played { color: #71695b; }
+.schedule-list strong { overflow: hidden; color: #211e19; text-overflow: ellipsis; white-space: nowrap; }
+.schedule-list em { color: #a33028; font-family: Impact, "Arial Black", sans-serif; font-size: 1rem; font-style: normal; text-align: right; }
+.schedule-date { font-weight: 800; }
+.venue { padding: .18rem; background: #d6c9ae; font-size: .58rem; font-weight: 900; text-align: center; }
+.winter-break { display: flex; justify-content: space-between; gap: .7rem; padding: .7rem .85rem; border-top: 4px double #403b31; background: #d8ceb7; color: #403b31; font-size: .7rem; }
+.winter-break span { color: #1f455e; font-weight: 1000; letter-spacing: .08em; }
+.job-grid { display: grid; gap: .8rem; }
+.job-offer { border-top: 7px solid #1f455e; }
+.job-offer > span { color: #a33028; font-size: .65rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.job-offer h2 { margin: .4rem 0; font-family: Georgia, serif; }
+.job-offer p, .license-compliance p, .retirement-card p { color: #554f44; font-size: .78rem; line-height: 1.5; }
+.career-summary { border-top: 7px solid #a33028; }
+.career-numbers { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid #514b40; }
+.career-numbers span { display: grid; justify-items: center; gap: .1rem; padding: .7rem .2rem; border-right: 1px solid #817765; border-bottom: 1px solid #817765; color: #5e574b; font-size: .62rem; text-transform: uppercase; }
+.career-numbers b { color: #1f455e; font-family: Impact, "Arial Black", sans-serif; font-size: 1.45rem; }
+.season-records > div:not(.panel-title) { display: grid; grid-template-columns: 4.8rem minmax(0, 1fr); gap: .18rem .7rem; padding: .65rem 0; border-bottom: 1px dotted #766e5f; font-size: .72rem; }
+.season-records strong { color: #211e19; }
+.season-records span, .season-records small { color: #5e574b; }
+.license-compliance.warning { border-left: 7px solid #a33028; }
+.retirement-card { border: 3px double #a33028; }
+.retirement-card > div { display: flex; align-items: center; gap: .55rem; }
+.retirement-card svg { width: 1.1rem; color: #a33028; }
+@media (min-width: 640px) {
+  .job-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .career-numbers { grid-template-columns: repeat(6, 1fr); }
+}

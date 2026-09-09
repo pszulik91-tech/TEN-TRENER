@@ -1,7 +1,7 @@
 import {
   BUILD, DEVELOPMENT_GOALS, FIRST_NAMES, FORMATIONS, GameState, LAST_NAMES,
-  LeaguePack, LICENSE_CHALLENGES, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
-  buildSchedule, positionPenalty, randomInt, selectBestLineup,
+  JobOffer, LeaguePack, LEAGUE_PACKS, LICENSE_CHALLENGES, LICENSE_MIN_TIER, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
+  buildSchedule, offseasonBaseChange, positionPenalty, randomInt, rngNext, selectBestLineup, shouldRetirePlayer,
   environmentForTier, environmentIncidentOccurs,
 } from "./game-data";
 import type { Coach, CoachProfile } from "./game-data";
@@ -23,7 +23,7 @@ export function skillSet(profile: CoachProfile, playingExperience: string, coach
   return { skills, reputation: Math.min(45, 8 + playingBonus + Math.round(coachingBonus / 2)) };
 }
 
-function makePlayers(seed: number, base: number) {
+export function makePlayers(seed: number, base: number, idPrefix = "p") {
   const roles: Position[] = ["BR", "BR", "PO", "PO", "ŚO", "ŚO", "ŚO", "ŚO", "LO", "LO", "DP", "DP", "ŚP", "ŚP", "ŚP", "PP", "PP", "ŚPO", "LP", "LP", "N", "N", "N"];
   let nextSeed = seed;
   const players: Player[] = roles.map((primary, index) => {
@@ -33,7 +33,7 @@ function makePlayers(seed: number, base: number) {
     const quality = randomInt(nextSeed, -6, 6); nextSeed = quality.seed;
     const potential = randomInt(nextSeed, base + 2, Math.min(90, base + 16)); nextSeed = potential.seed;
     const positionalNeighbors = POSITIONS.filter((position) => position !== primary && positionPenalty({ primary, secondary: [] }, position) <= 0.09);
-    return { id: `p-${index}-${a.value}-${b.value}`, name: `${FIRST_NAMES[a.value]} ${LAST_NAMES[b.value]}`, age: age.value, primary, secondary: positionalNeighbors.slice(0, index % 3 === 0 ? 2 : 1), baseOVR: Math.max(20, base + quality.value), form: 48 + (index % 7), morale: 58 + (index % 11), fatigue: 8 + (index % 12), relation: 55, potential: potential.value, personality: PERSONALITIES[index % PERSONALITIES.length], status: index < 11 ? "Pierwszy skład" : index < 18 ? "Rotacja" : "Rezerwa", injuryWeeks: 0 };
+    return { id: `${idPrefix}-${index}-${a.value}-${b.value}`, name: `${FIRST_NAMES[a.value]} ${LAST_NAMES[b.value]}`, age: age.value, primary, secondary: positionalNeighbors.slice(0, index % 3 === 0 ? 2 : 1), baseOVR: Math.max(20, base + quality.value), form: 48 + (index % 7), morale: 58 + (index % 11), fatigue: 8 + (index % 12), relation: 55, potential: potential.value, personality: PERSONALITIES[index % PERSONALITIES.length], status: index < 11 ? "Pierwszy skład" : index < 18 ? "Rotacja" : "Rezerwa", injuryWeeks: 0 };
   });
   return { players, seed: nextSeed };
 }
@@ -55,7 +55,7 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
   return {
     build: BUILD, seed, coach: challengedCoach,
     club: { id: clubTeam.id, name: clubTeam.name, association: pack.association, district: pack.district, competition: pack.competition, group: pack.group, tier: pack.tier },
-    season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures: buildSchedule(teams.map((team) => team.id)), players: generated.players,
+    season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures: buildSchedule(teams.map((team) => team.id), 2026, pack.tier), players: generated.players,
     tactic: { formation: "4-2-3-1", mentality: "Zrównoważona", tempo: "Normalne", pressing: "Średni", line: "Średnia", width: "Standardowa", buildUp: "Mieszane", passingRisk: "Umiarkowane", assignments },
     training: { focus: "Taktyka", intensity: "Normalna", recovery: true, readiness: Math.min(environment.readinessCap, 62), completedRound: null }, squadPolicy: "BALANCED",
     pressures: { board: 18 + careerChallenge.pressureBonus, fans: 20 + Math.round(careerChallenge.pressureBonus * .8), media: Math.round((12 + careerChallenge.pressureBonus) * environment.mediaScale), dressing: 15, personal: 16 + Math.round(careerChallenge.pressureBonus * .7) }, burnout: 8 + Math.round(careerChallenge.pressureBonus * .15), lastBurnoutChange: 0,
@@ -67,8 +67,72 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
     seasonEvidence: { formationsWithPoints: [], youthStarters: [], analysisRounds: [], tacticalRounds: [], pressureRounds: [], positiveDecisions: [] },
     history: [`13.07.2026 — ${coach.name} podpisał kontrakt z ${clubName}. Profil: ${coach.profile}. Świat kariery: humor ${worldHumor}/100.`],
     inbox: [welcomeIssue(clubName, coach.name.split(" ")[0], careerChallenge.expectation, environment.status, environment.work)],
+    employmentStatus: "employed", jobOffers: [],
+    careerStats: { seasons: 0, matches: 0, wins: 0, draws: 0, losses: 0, promotions: 0, relegations: 0, goalsCompleted: 0, highestTier: pack.tier, clubs: [clubName] },
+    seasonRecords: [],
   };
 }
+
+export function evolveSquad(players: Player[], initialSeed: number, tier: number, seasonYear: number) {
+  let seed = initialSeed; const kept: Player[] = []; const retired: string[] = []; const changes: string[] = [];
+  for (const player of players) {
+    let roll = rngNext(seed); seed = roll.seed; const nextAge = player.age + 1;
+    if (shouldRetirePlayer(nextAge, roll.value)) { retired.push(player.name); continue; }
+    roll = rngNext(seed); seed = roll.seed; const change = offseasonBaseChange({ ...player, age: nextAge }, roll.value);
+    const baseOVR = Math.max(18, Math.min(player.potential, player.baseOVR + change));
+    if (change) changes.push(`${player.name} ${change > 0 ? "+" : ""}${change}`);
+    kept.push({ ...player, age: nextAge, baseOVR, form: 50, morale: Math.round((player.morale + 55) / 2), fatigue: 10, relation: Math.round((player.relation + 55) / 2), injuryWeeks: 0 });
+  }
+  const academy = makePlayers(seed, Math.max(22, (TIER_OVR[tier] ?? 42) - 5), `y${seasonYear}`); seed = academy.seed;
+  const needed = Math.max(0, 23 - kept.length); const graduates = academy.players.slice(0, needed).map((player, index) => ({ ...player, age: 17 + (index % 3), baseOVR: Math.min(player.baseOVR, (TIER_OVR[tier] ?? 42) - 1), potential: Math.max(player.potential, player.baseOVR + 10), status: "Młodzież" }));
+  return { players: [...kept, ...graduates], seed, retired, changes, graduates: graduates.map((player) => player.name) };
+}
+
+function packForTier(tier: number, association: string, district: string) {
+  const exact = LEAGUE_PACKS.find((pack) => pack.tier === tier && pack.association === association && pack.district === district)
+    ?? LEAGUE_PACKS.find((pack) => pack.tier === tier && pack.association === association)
+    ?? LEAGUE_PACKS.find((pack) => pack.tier === tier);
+  if (exact) return exact;
+  const neighbors = [...LEAGUE_PACKS].sort((a, b) => Math.abs(a.tier - tier) - Math.abs(b.tier - tier));
+  return neighbors[0];
+}
+
+export function buildLeagueForSeason(game: GameState, tier: number, seasonYear: number, clubName = game.club.name, forcedPack?: LeaguePack) {
+  let seed = game.seed; const pack = forcedPack ?? packForTier(tier, game.club.association, game.club.district);
+  const opponentNames = pack.teams.filter((name) => name !== clubName);
+  const names = [clubName, ...opponentNames].slice(0, Math.max(10, Math.min(18, pack.teams.length)));
+  while (names.length < 10) {
+    const fallback = LEAGUE_PACKS.flatMap((item) => item.teams).find((name) => !names.includes(name));
+    if (!fallback) break;
+    names.push(fallback);
+  }
+  const squadBaseline = game.players.length ? Math.round([...game.players].sort((a, b) => b.baseOVR - a.baseOVR).slice(0, 11).reduce((sum, player) => sum + player.baseOVR, 0) / Math.min(11, game.players.length)) : TIER_OVR[tier];
+  const teams: Team[] = names.map((name, index) => {
+    const quality = randomInt(seed, -4, 4); seed = quality.seed;
+    return { id: index === 0 ? game.club.id : `s${seasonYear}-team-${index}`, name, ovr: index === 0 ? squadBaseline : (TIER_OVR[tier] ?? 42) + quality.value, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0 };
+  });
+  return { seed, teams, fixtures: buildSchedule(teams.map((team) => team.id), seasonYear, tier), pack, club: { ...game.club, id: teams[0].id, name: clubName, association: forcedPack?.association ?? game.club.association, district: forcedPack?.district ?? game.club.district, competition: environmentForTier(tier).label, group: forcedPack?.group ?? pack.group, tier } };
+}
+
+export function generateJobOffers(game: GameState, initialSeed: number): { seed: number; offers: JobOffer[] } {
+  let seed = initialSeed; const eligible = LEAGUE_PACKS.filter((pack) => pack.tier >= LICENSE_MIN_TIER[game.coach.license]); const pool = [...eligible]; const offers: JobOffer[] = [];
+  while (pool.length && offers.length < 3) {
+    const pick = randomInt(seed, 0, pool.length - 1); seed = pick.seed; const pack = pool.splice(pick.value, 1)[0];
+    const candidates = pack.teams.filter((name) => name !== game.club.name); const clubPick = randomInt(seed, 0, candidates.length - 1); seed = clubPick.seed; const clubName = candidates[clubPick.value];
+    offers.push({ id: `job-${seasonYearFrom(game.season)}-${pack.id}-${clubPick.value}`, packId: pack.id, clubName, tier: pack.tier, competition: `${pack.competition} • ${pack.group}`, expectation: pack.tier <= 3 ? "wynik od pierwszej kolejki" : pack.tier <= 6 ? "walka o górną połowę" : "ustabilizowanie zespołu" });
+  }
+  return { seed, offers };
+}
+
+export function makePresident(initialSeed: number, tier: number) {
+  let seed = initialSeed; const values: number[] = [];
+  for (let index = 0; index < 10; index += 1) { const value = randomInt(seed, 28, 82); seed = value.seed; values.push(value.value); }
+  const surname = randomInt(seed, 0, LAST_NAMES.length - 1); seed = surname.seed;
+  const [ambition, patience, ego, footballKnowledge, financialCaution, fanPressureSensitivity, mediaPressureSensitivity, riskTolerance, localBase, unpredictability] = values;
+  return { seed, presidentName: `Prezes ${LAST_NAMES[surname.value]}`, president: { ambition: Math.min(92, ambition + Math.max(0, 6 - tier) * 3), patience, ego, footballKnowledge, financialCaution, fanPressureSensitivity, mediaPressureSensitivity, riskTolerance, localPatriotism: tier >= 7 ? Math.max(65, localBase) : localBase, unpredictability } };
+}
+
+function seasonYearFrom(season: string) { return Number(season.slice(0, 4)) + 1; }
 
 export function environmentIncident(game: GameState) {
   const roll = randomInt(game.seed, 0, 999); let seed = roll.seed;

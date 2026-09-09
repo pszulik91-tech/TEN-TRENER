@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, effectiveOVR, environmentIncidentOccurs, goalSatisfied,
-  injuryRiskFromFatigue, liveBreakdown, liveOVR, normalizeStartingLicense, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult,
-  resolveProfileScores, rngNext, selectBestLineup, simulateMatchPlan, sortedTable, updateTeamResult, weeklyBurnoutDelta,
+  buildSchedule, burnoutMatchPenalty, capReadiness, conditionFromFatigue, dismissalProbability, effectiveOVR, environmentIncidentOccurs, goalSatisfied,
+  injuryRiskFromFatigue, licenseCoversTier, liveBreakdown, liveOVR, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult,
+  requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, shouldRetirePlayer, simulateMatchPlan, sortedTable, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
 } from "../lib/game-rules.mjs";
 
 const player = (id, primary, baseOVR = 50, secondary = []) => ({ id, primary, secondary, baseOVR, form: 50, morale: 50, fatigue: 10, relation: 50 });
@@ -191,6 +191,46 @@ test("pełny sezon ligi zachowuje wszystkie inwarianty tabeli", () => {
   assert.equal(table.reduce((sum, team) => sum + team.gf, 0), table.reduce((sum, team) => sum + team.ga, 0));
   const sorted = sortedTable(table);
   assert.ok(sorted.every((team, index) => index === 0 || sorted[index - 1].points >= team.points));
+});
+
+test("terminarz 2026/27 ma jesień, przerwę zimową i pełną wiosnę", () => {
+  const fixtures = buildSchedule(Array.from({ length: 10 }, (_, index) => `t${index}`), 2026, 9);
+  const dates = seasonRoundDates(18, 2026, 9);
+  assert.equal(new Set(fixtures.map((fixture) => fixture.date)).size, 18);
+  assert.deepEqual([...new Set(fixtures.map((fixture) => fixture.date))], dates);
+  assert.ok(dates[0] >= "2026-08-01" && dates[0] <= "2026-08-15");
+  assert.ok(dates[8] >= "2026-11-14");
+  assert.ok(dates[9] >= "2027-03-01");
+  assert.ok(dates.at(-1) >= "2027-06-01");
+  assert.ok(winterBreakDays(fixtures) >= 90);
+  for (const date of dates) assert.equal(new Date(`${date}T12:00:00Z`).getUTCDay(), 6);
+});
+
+test("licencja blokuje poziom rynku, ale awans może uruchomić ścieżkę kursu", () => {
+  assert.equal(requiredLicenseForTier(9), "Grassroots C");
+  assert.equal(requiredLicenseForTier(7), "UEFA B");
+  assert.equal(requiredLicenseForTier(5), "UEFA A");
+  assert.equal(requiredLicenseForTier(1), "UEFA PRO");
+  assert.equal(licenseCoversTier("Grassroots C", 7), false);
+  assert.equal(licenseCoversTier("UEFA A", 4), true);
+  assert.equal(licenseCoversTier("UEFA PRO", 9), true);
+});
+
+test("po sezonie zawodnicy starzeją się i Base OVR zmienia się tylko według wieku", () => {
+  assert.equal(offseasonBaseChange({ age: 19, baseOVR: 40, potential: 60 }, .9), 1);
+  assert.equal(offseasonBaseChange({ age: 27, baseOVR: 50, potential: 50 }, .01), 0);
+  assert.ok(offseasonBaseChange({ age: 36, baseOVR: 50, potential: 60 }, .9) < 0);
+  assert.equal(shouldRetirePlayer(35, 0), false);
+  assert.equal(shouldRetirePlayer(39, .99), true);
+  assert.equal(offseasonBurnout(80), 36);
+  assert.equal(offseasonBurnout(10), 0);
+});
+
+test("zwolnienie zależy od pozycji, presji i cierpliwości prezesa", () => {
+  const safe = dismissalProbability({ place: 2, teamCount: 10, boardPressure: 15, patience: 75, unpredictability: 20 });
+  const crisis = dismissalProbability({ place: 10, teamCount: 10, boardPressure: 92, patience: 22, unpredictability: 75 });
+  assert.ok(safe >= .02 && safe < .12);
+  assert.ok(crisis > .65 && crisis <= .86);
 });
 
 test("30 sezonów całego świata nie tworzy NaN ani niespójnej tabeli", () => {

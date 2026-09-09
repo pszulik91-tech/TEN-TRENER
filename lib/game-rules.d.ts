@@ -3,6 +3,8 @@ export type PolicyEffect = { label: string; short: string; matchStrength: number
 export const POLICY_EFFECTS: Record<string, PolicyEffect>;
 export function clamp(value: number, min: number, max: number): number;
 export function normalizeStartingLicense(value: unknown): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
+export function requiredLicenseForTier(tier: number): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
+export function licenseCoversTier(license: unknown, tier: number): boolean;
 export function pressureDeltaForResult(result: "win" | "draw" | "loss", multiplier: number): number;
 export function capReadiness(current: number, gain: number, cap: number): number;
 export function environmentIncidentOccurs(roll: number, risk: number): boolean;
@@ -20,8 +22,14 @@ export function liveOVR(player: RatingPlayer): number;
 export function effectiveOVR(player: RatingPlayer, slot: string): number;
 export function selectBestLineup(players: RatingPlayer[], slots: readonly string[]): Record<string, string>;
 export type LeagueTeam = { id: string; name: string; ovr: number; played: number; won: number; drawn: number; lost: number; gf: number; ga: number; points: number };
-export type LeagueFixture = { round: number; home: string; away: string; played: boolean; homeGoals?: number; awayGoals?: number };
-export function buildSchedule(teamIds: string[]): LeagueFixture[];
+export type LeagueFixture = { round: number; date: string; home: string; away: string; played: boolean; homeGoals?: number; awayGoals?: number };
+export function seasonRoundDates(roundCount: number, startYear?: number, tier?: number): string[];
+export function buildSchedule(teamIds: string[], startYear?: number, tier?: number): LeagueFixture[];
+export function winterBreakDays(fixtures: LeagueFixture[]): number;
+export function offseasonBaseChange(player: { age: number; baseOVR: number; potential: number }, roll: number): number;
+export function shouldRetirePlayer(age: number, roll: number): boolean;
+export function offseasonBurnout(burnout: number): number;
+export function dismissalProbability(input: { place: number; teamCount: number; boardPressure: number; patience: number; unpredictability: number }): number;
 export function updateTeamResult(teams: LeagueTeam[], home: string, away: string, homeGoals: number, awayGoals: number): LeagueTeam[];
 export function sortedTable(teams: LeagueTeam[]): LeagueTeam[];
 export function simulateMatchPlan(seed: number, homeStrength: number, awayStrength: number, homeName?: string, awayName?: string): {
