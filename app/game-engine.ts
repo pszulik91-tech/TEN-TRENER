@@ -61,7 +61,7 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
     tactic: { formation: "4-2-3-1", mentality: "Zrównoważona", tempo: "Normalne", pressing: "Średni", line: "Średnia", width: "Standardowa", buildUp: "Mieszane", passingRisk: "Umiarkowane", assignments },
     training: { sessions: defaultMicrocycle(environment.trainingSessions), readiness: Math.min(environment.readinessCap, 62), completedRound: null, preset: "BALANCED" }, squadPolicy: "BALANCED", teamPlan: "STRONGEST",
     pressures: { board: 18 + careerChallenge.pressureBonus, fans: 20 + Math.round(careerChallenge.pressureBonus * .8), media: Math.round((12 + careerChallenge.pressureBonus) * environment.mediaScale), dressing: 15, personal: 16 + Math.round(careerChallenge.pressureBonus * .7) }, burnout: 8 + Math.round(careerChallenge.pressureBonus * .15), lastBurnoutChange: 0,
-    careerChallenge, environment, worldHumor,
+    careerChallenge, environment, worldHumor, trainingMemory: { youth: 0, analysis: 0, overload: 0, weeks: 0 },
     world: generatedWorld.world,
     worldActivity: { date: "2026-07-13", competitionsAdvanced: 0, matchesPlayed: 0, squadMoves: 0, managerChanges: 0, headlines: [] },
     president: { ambition: 58 + Math.round(careerChallenge.pressureBonus * .4), patience: Math.max(22, 54 - Math.round(careerChallenge.pressureBonus * .65)), ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
@@ -77,19 +77,37 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
   };
 }
 
-export function evolveSquad(players: Player[], initialSeed: number, tier: number, seasonYear: number) {
-  let seed = initialSeed; const kept: Player[] = []; const retired: string[] = []; const changes: string[] = [];
+export function squadBaseOVR(players: Player[]) {
+  const starters = [...players].sort((a, b) => b.baseOVR - a.baseOVR).slice(0, Math.min(11, players.length));
+  return starters.length ? Number((starters.reduce((sum, player) => sum + player.baseOVR, 0) / starters.length).toFixed(1)) : 0;
+}
+
+export function evolveSquad(players: Player[], initialSeed: number, tier: number, seasonYear: number, movement: "awans" | "utrzymanie" | "spadek" = "utrzymanie", trainingMemory?: { youth: number; analysis: number; overload: number; weeks: number }) {
+  let seed = initialSeed; const kept: Player[] = []; const retired: string[] = []; const changes: string[] = []; const beforeOVR = squadBaseOVR(players);
+  const weeks = Math.max(1, trainingMemory?.weeks ?? 1); const youthShare = (trainingMemory?.youth ?? 0) / weeks; const overloadShare = (trainingMemory?.overload ?? 0) / weeks;
   for (const player of players) {
     let roll = rngNext(seed); seed = roll.seed; const nextAge = player.age + 1;
     if (shouldRetirePlayer(nextAge, roll.value)) { retired.push(player.name); continue; }
-    roll = rngNext(seed); seed = roll.seed; const change = offseasonBaseChange({ ...player, age: nextAge }, roll.value);
+    roll = rngNext(seed); seed = roll.seed; let change = offseasonBaseChange({ ...player, age: nextAge }, roll.value);
+    if (nextAge <= 22 && youthShare >= .45 && player.baseOVR < player.potential) { const developmentRoll = rngNext(seed); seed = developmentRoll.seed; if (developmentRoll.value < Math.min(.55, youthShare * .45)) change += 1; }
+    if (overloadShare >= .8 && nextAge >= 30) { const overloadRoll = rngNext(seed); seed = overloadRoll.seed; if (overloadRoll.value < .22) change -= 1; }
+    change = Math.max(-3, Math.min(2, change));
     const baseOVR = Math.max(18, Math.min(player.potential, player.baseOVR + change));
     if (change) changes.push(`${player.name} ${change > 0 ? "+" : ""}${change}`);
     kept.push({ ...player, age: nextAge, baseOVR, form: 50, morale: Math.round((player.morale + 55) / 2), fatigue: 10, relation: Math.round((player.relation + 55) / 2), injuryWeeks: 0, absenceRounds: 0, absenceReason: undefined });
   }
   const academy = makePlayers(seed, Math.max(22, (TIER_OVR[tier] ?? 42) - 5), `y${seasonYear}`); seed = academy.seed;
   const needed = Math.max(0, 23 - kept.length); const graduates = academy.players.slice(0, needed).map((player, index) => ({ ...player, age: 17 + (index % 3), baseOVR: Math.min(player.baseOVR, (TIER_OVR[tier] ?? 42) - 1), potential: Math.max(player.potential, player.baseOVR + 10), status: "Młodzież" }));
-  return { players: [...kept, ...graduates], seed, retired, changes, graduates: graduates.map((player) => player.name) };
+  let nextPlayers = [...kept, ...graduates]; const recruits: string[] = []; const departures: string[] = [];
+  if (movement === "awans") {
+    const generated = makePlayers(seed, Math.max(22, (TIER_OVR[tier] ?? 42) - 1), `transfer${seasonYear}`); seed = generated.seed;
+    const arrivals = generated.players.sort((a, b) => b.baseOVR - a.baseOVR).slice(0, tier <= 4 ? 6 : 5).map((player, index) => ({ ...player, id: `${player.id}-in-${index}`, morale: 58, fatigue: 8, status: index < 3 ? "Pierwszy skład" : "Rotacja" }));
+    const outgoing = [...nextPlayers].sort((a, b) => a.baseOVR - b.baseOVR).slice(0, arrivals.length); const outgoingIds = new Set(outgoing.map((player) => player.id)); departures.push(...outgoing.map((player) => player.name)); recruits.push(...arrivals.map((player) => player.name)); nextPlayers = [...nextPlayers.filter((player) => !outgoingIds.has(player.id)), ...arrivals];
+  } else if (movement === "spadek" && nextPlayers.length > 13) {
+    const leaders = [...nextPlayers].sort((a, b) => b.baseOVR - a.baseOVR).slice(0, 2); const leaderIds = new Set(leaders.map((player) => player.id)); departures.push(...leaders.map((player) => player.name));
+    const generated = makePlayers(seed, (TIER_OVR[tier] ?? 42) + 1, `rebuild${seasonYear}`); seed = generated.seed; const arrivals = generated.players.slice(0, 2).map((player, index) => ({ ...player, id: `${player.id}-rebuild-${index}`, morale: 52, fatigue: 8, status: "Rotacja" })); recruits.push(...arrivals.map((player) => player.name)); nextPlayers = [...nextPlayers.filter((player) => !leaderIds.has(player.id)), ...arrivals];
+  }
+  return { players: nextPlayers, seed, retired, changes, graduates: graduates.map((player) => player.name), recruits, departures, beforeOVR, afterOVR: squadBaseOVR(nextPlayers) };
 }
 
 function packForTier(tier: number, association: string, district: string) {
@@ -110,7 +128,7 @@ export function buildLeagueForSeason(game: GameState, tier: number, seasonYear: 
     if (!fallback) break;
     names.push(fallback);
   }
-  const squadBaseline = game.players.length ? Math.round([...game.players].sort((a, b) => b.baseOVR - a.baseOVR).slice(0, 11).reduce((sum, player) => sum + player.baseOVR, 0) / Math.min(11, game.players.length)) : TIER_OVR[tier];
+  const squadBaseline = game.players.length ? Math.round(squadBaseOVR(game.players)) : TIER_OVR[tier];
   const teams: Team[] = names.map((name, index) => {
     const quality = randomInt(seed, -4, 4); seed = quality.seed;
     return { id: index === 0 ? game.club.id : `s${seasonYear}-team-${index}`, name, ovr: index === 0 ? squadBaseline : (TIER_OVR[tier] ?? 42) + quality.value, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0, form: 50, morale: 55, fatigue: 14, lastFive: [] };
@@ -119,11 +137,17 @@ export function buildLeagueForSeason(game: GameState, tier: number, seasonYear: 
 }
 
 export function generateJobOffers(game: GameState, initialSeed: number): { seed: number; offers: JobOffer[] } {
-  let seed = initialSeed; const eligible = LEAGUE_PACKS.filter((pack) => licenseCoversCompetition(game.coach.license, pack.competition)); const pool = [...eligible]; const offers: JobOffer[] = [];
+  let seed = initialSeed; const eligible = LEAGUE_PACKS.filter((pack) => {
+    if (!licenseCoversCompetition(game.coach.license, pack.competition)) return false;
+    const reputationFloor = 5 + (10 - pack.tier) * 5;
+    const localBonus = pack.association === game.club.association ? 6 : 0;
+    return game.coach.reputation + localBonus >= reputationFloor - 8;
+  }); const pool = [...eligible]; const offers: JobOffer[] = [];
   while (pool.length && offers.length < 3) {
     const pick = randomInt(seed, 0, pool.length - 1); seed = pick.seed; const pack = pool.splice(pick.value, 1)[0];
     const candidates = pack.teams.filter((name) => name !== game.club.name); const clubPick = randomInt(seed, 0, candidates.length - 1); seed = clubPick.seed; const clubName = candidates[clubPick.value];
-    offers.push({ id: `job-${seasonYearFrom(game.season)}-${pack.id}-${clubPick.value}`, packId: pack.id, clubName, tier: pack.tier, competition: `${pack.competition} • ${pack.group}`, expectation: pack.tier <= 3 ? "wynik od pierwszej kolejki" : pack.tier <= 6 ? "walka o górną połowę" : "ustabilizowanie zespołu" });
+    const reputationFloor = 5 + (10 - pack.tier) * 5; const localBonus = pack.association === game.club.association ? 6 : 0; const fit = Math.max(1, Math.min(99, 55 + game.coach.reputation + localBonus - reputationFloor));
+    offers.push({ id: `job-${seasonYearFrom(game.season)}-${pack.id}-${clubPick.value}`, packId: pack.id, clubName, tier: pack.tier, competition: `${pack.competition} • ${pack.group}`, expectation: pack.tier <= 3 ? "wynik od pierwszej kolejki" : pack.tier <= 6 ? "walka o górną połowę" : "ustabilizowanie zespołu", fit });
   }
   return { seed, offers };
 }

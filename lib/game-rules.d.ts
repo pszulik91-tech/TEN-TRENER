@@ -15,7 +15,8 @@ export function startingLicenseEligibility(license: string, playingExperience: s
 export function highestEligibleStartingLicense(playingExperience: string, coachingExperience: string, age?: number): "Grassroots C" | "UEFA B" | "UEFA A" | "UEFA PRO";
 export function readinessStrengthImpact(readiness: number): number;
 export function tacticalPlanImpact(tactic: Record<string, string>, averageCondition?: number, readiness?: number): number;
-export function buildMatchStrength(input: { lineupOVR: number; readiness: number; coachTactics: number; averageCondition: number; tactic: Record<string, unknown>; policyStrength?: number; burnout?: number; incidentPenalty?: number }): { factors: Record<string, number>; total: number };
+export function trainingTacticSynergy(sessions?: Array<{ focus: string; intensity: string }>, tactic?: Record<string, unknown>, teamPlan?: string): { shortTerm: number; youthLegacy: number; analysisLegacy: number; overloadLegacy: number; reasons: string[] };
+export function buildMatchStrength(input: { lineupOVR: number; readiness: number; coachTactics: number; averageCondition: number; tactic: Record<string, unknown>; policyStrength?: number; burnout?: number; incidentPenalty?: number; trainingSynergy?: number }): { factors: Record<string, number>; total: number };
 export function pressureDeltaForResult(result: "win" | "draw" | "loss", multiplier: number): number;
 export function capReadiness(current: number, gain: number, cap: number): number;
 export function trainingPresetSessions(sessionCount?: number, presetId?: string): Array<{ id: string; day: string; focus: string; intensity: string }>;

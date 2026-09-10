@@ -963,3 +963,98 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .training-preset-grid { grid-template-columns: 1fr; }
   .training-preset { min-height: auto; }
 }
+
+/* BUILD 2.2 — Studio 92: nocny teletekst, magnetowid i stadionowe światło */
+:root {
+  --background: #080b10; --foreground: #f4f2e8; --card: #111822; --card-foreground: #f4f2e8;
+  --popover: #151e29; --popover-foreground: #f4f2e8; --primary: #31d8ff; --primary-foreground: #061018;
+  --secondary: #1a2531; --secondary-foreground: #f4f2e8; --muted: #151d27; --muted-foreground: #98a8b6;
+  --accent: #ffb000; --accent-foreground: #0d0b07; --destructive: #ff3b5c; --border: #34495b;
+  --input: #243444; --ring: #31d8ff; --radius: .12rem; --sidebar: #080c12; --sidebar-foreground: #f4f2e8;
+}
+html, body { background: #080b10; }
+body { color: #f4f2e8; background-image: radial-gradient(circle at 80% -10%, rgba(49,216,255,.12), transparent 30rem); }
+.game-shell, .setup-screen { background: #080b10; color: #f4f2e8; }
+.game-main, .game-content, .setup-content { position: relative; }
+.game-content::before, .setup-screen::before { content: ""; position: fixed; z-index: 0; inset: 0; pointer-events: none; opacity: .16; background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(119,196,218,.16) 4px); }
+.game-content > *, .setup-content > * { position: relative; z-index: 1; }
+.topbar, .side-nav, .bottom-nav, .setup-header { background: #080c12 !important; border-color: #31d8ff !important; box-shadow: none !important; }
+.mobile-brand small, .side-brand small { color: #ffb000 !important; letter-spacing: .18em; }
+.page-heading h1, .setup-content > h1, .start-panel h1 { color: #f4f2e8 !important; font-family: Impact, "Arial Black", sans-serif !important; letter-spacing: .02em; text-shadow: 3px 3px 0 #182a39; }
+.page-heading p, .setup-subtitle, .start-copy { color: #9fb0be !important; }
+.eyebrow, .section-label { color: #ff3b5c !important; }
+.panel, .hero-card, .match-week, .environment-preview, .license-choice, .goal-card, .club-card, .choice-card, .training-preset, .team-plan-card, .archive-console section, .post-match-report {
+  color: #f4f2e8 !important; background: #111822 !important; border: 1px solid #3b5368 !important; border-left: 5px solid #31d8ff !important; border-radius: 0 !important; box-shadow: 7px 7px 0 #030507 !important;
+}
+.panel p, .hero-card p, .panel span, .panel small, .team-plan-card p, .training-preset span, .license-choice p, .goal-card p, .club-card small { color: #a9b7c2; }
+.panel h2, .panel h3, .panel strong, .hero-card strong, .team-plan-card strong, .training-preset strong, .license-choice strong, .goal-card strong, .club-card strong { color: #f4f2e8; }
+.panel-title { border-color: #496077 !important; }
+.panel-title svg, .dashboard-shortcuts svg { color: #31d8ff !important; }
+button, [role="button"] { border-radius: 0 !important; }
+.primary-cta, .match-action-dock button, .report-close, .job-offer button, .stay-card button, .setup-footer button:last-child { color: #071018 !important; background: #31d8ff !important; border: 1px solid #9aefff !important; box-shadow: 4px 4px 0 #004e62 !important; font-weight: 950 !important; }
+.field input, .field select, .age-stepper, .age-stepper button, .age-stepper output, .intensity-options button { color: #f4f2e8 !important; background: #0c131b !important; border-color: #425d74 !important; border-radius: 0 !important; }
+.field input:focus, .field select:focus { outline: 2px solid #31d8ff; }
+.desk-tabs, .dashboard-shortcuts, .archive-tabs, .market-rules { color: #f4f2e8; background: #101924 !important; border-color: #405b72 !important; }
+.desk-tabs button, .dashboard-shortcuts button, .archive-tabs button { color: #b5c2cc !important; background: transparent !important; border-color: #354b5f !important; }
+.desk-tabs button.active, .dashboard-shortcuts button:hover, .archive-tabs button.active { color: #080b10 !important; background: #31d8ff !important; box-shadow: inset 0 -5px #ff3b5c !important; }
+.desk-tabs button b { color: #080b10; background: #ffb000 !important; }
+.live-score, .match-scoreboard { color: #f4f2e8 !important; background: #0b2a3b !important; border: 2px solid #31d8ff !important; outline: 3px solid #080b10; box-shadow: 7px 7px 0 #030507 !important; }
+.live-pill { color: #ffb000 !important; }
+.minute-bar { background: #071018 !important; }
+.minute-bar span { background: #ffb000 !important; }
+.match-control-room .events article { background: #151f2a !important; border-color: #354b5e !important; color: #dce4e8 !important; }
+.match-control-room .events article.goal { border-left-color: #ff3b5c !important; }
+.match-action-dock { color: #f4f2e8; background: #0b1119 !important; border-color: #31d8ff !important; box-shadow: none; }
+.match-action-dock > span, .match-action-dock > span b { color: #ffb000 !important; }
+.coach-moment { margin: .5rem 0; padding: .8rem; color: #f4f2e8; background: #24160a; border: 2px solid #ffb000; box-shadow: inset 5px 0 #ff3b5c; }
+.match-control-room .timeline { grid-template-rows: auto minmax(0, 1fr) auto auto; }
+.coach-moment > small { color: #ffb000; font-weight: 950; letter-spacing: .1em; }
+.coach-moment h3 { margin: .3rem 0; font-family: Impact, sans-serif; font-size: 1.4rem; letter-spacing: .03em; }
+.coach-moment p { margin: 0 0 .65rem; color: #e2d3b2; }
+.coach-moment > div { display: grid; gap: .45rem; }
+.coach-moment button { display: grid; gap: .16rem; padding: .65rem; text-align: left; color: #f4f2e8; background: #111822; border: 1px solid #6f5c36; }
+.coach-moment button:hover { border-color: #31d8ff; box-shadow: inset 4px 0 #31d8ff; }
+.coach-moment button span { color: #b9c4cb; font-size: .76rem; }
+.coach-moment button small { color: #ffb000; font-size: .66rem; }
+.post-match-window-backdrop { background: rgba(2,4,7,.9); backdrop-filter: blur(4px); }
+.post-match-window { background: #0c131b !important; border: 2px solid #31d8ff !important; outline: 4px solid #030507 !important; box-shadow: 12px 12px 0 #000 !important; }
+.post-match-report header, .analysis-result { background: #0d2a3b !important; }
+.probability-strip, .report-metrics, .strength-breakdown span, .report-columns > div, .decisive-factor { color: #f4f2e8 !important; background: #111822 !important; border-color: #435a6c !important; }
+.job-market-screen .market-rules { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid #405b72; }
+.market-rules span { display: grid; gap: .2rem; padding: .7rem; color: #9fb0be; border-right: 1px solid #405b72; font-size: .72rem; }
+.market-rules span:last-child { border-right: 0; }
+.market-rules b { color: #ffb000; font-size: 1.25rem; }
+.job-offer.observed { border-left-color: #ffb000 !important; }
+.job-offer > span { color: #ffb000 !important; }
+.club-mark { display: inline-grid; place-items: center; width: 2.9rem; height: 2.9rem; flex: 0 0 2.9rem; }
+.club-mark.tiny { width: 1.8rem; height: 1.8rem; flex-basis: 1.8rem; }
+.club-mark.large { width: 4rem; height: 4rem; flex-basis: 4rem; }
+.club-mark-core { --crest-primary: #ffb000; --crest-secondary: #102b3d; position: relative; display: grid; place-items: center; width: 88%; height: 88%; overflow: hidden; color: var(--crest-secondary); background: linear-gradient(90deg, var(--crest-primary) 0 58%, var(--crest-secondary) 58%); border: 2px solid #f4f2e8; box-shadow: 0 0 0 2px #070a0e; }
+.club-mark-core b { z-index: 2; padding: .12rem; color: #fff; background: rgba(4,8,12,.66); font: 950 .66rem/1 Arial, sans-serif; letter-spacing: -.04em; }
+.club-mark-core i { position: absolute; width: 100%; height: 20%; transform: rotate(-22deg); background: rgba(255,255,255,.35); }
+.club-mark-core.roundel { border-radius: 50%; }
+.club-mark-core.shield { clip-path: polygon(6% 4%,94% 4%,88% 72%,50% 100%,12% 72%); }
+.club-mark-core.diamond { clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); }
+.club-mark-core.pennant { clip-path: polygon(5% 0,95% 0,83% 100%,17% 82%); }
+.club-mark-core.hexagon { clip-path: polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); }
+.club-mark.large .club-mark-core b { font-size: .84rem; }
+.club-crest { display: inline-grid !important; place-items: center; width: 2.9rem !important; height: 2.9rem !important; flex: 0 0 2.9rem; border: 2px solid #f4f2e8 !important; border-radius: 0 !important; clip-path: polygon(6% 3%,94% 3%,87% 73%,50% 100%,13% 73%); color: #071018 !important; background: linear-gradient(90deg, #ffb000 0 57%, #31d8ff 57%) !important; box-shadow: none !important; }
+.club-crest.large { width: 4rem !important; height: 4rem !important; flex-basis: 4rem; }
+.club-crest.away { clip-path: polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); background: linear-gradient(135deg, #f4f2e8 0 55%, #687d8e 55%) !important; }
+.club-card:nth-child(5n + 2) .club-crest { clip-path: circle(48%); }
+.club-card:nth-child(5n + 3) .club-crest { clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); }
+.club-card:nth-child(5n + 4) .club-crest { clip-path: polygon(5% 0,95% 0,83% 100%,17% 82%); }
+.club-card:nth-child(5n + 5) .club-crest { clip-path: polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); }
+.compact-match-card, .opponent-dossier, .archive-masthead { box-shadow: 7px 7px 0 #030507 !important; }
+.opponent-dossier::after { background: #ff3b5c !important; }
+.dossier-grid, .world-pulse-metrics, .league-table, .table-row { border-color: #3d5367 !important; }
+.dossier-grid b, .archive-seasons strong, .table-row strong { color: #f4f2e8 !important; }
+.archive-masthead { color: #f4f2e8; background: #111822 !important; border-color: #405b72 !important; border-left-color: #ff3b5c !important; }
+.archive-page p, .archive-seasons span, .archive-seasons small, .world-headlines p { color: #9fb0be !important; border-color: #3c5265 !important; }
+@media (max-width: 639px) {
+  .match-scoreboard { top: 4.15rem; }
+  .match-control-room .timeline { height: calc(100dvh - 19.4rem); min-height: 24rem; }
+  .coach-moment { max-height: 16rem; overflow-y: auto; }
+  .job-market-screen .market-rules { grid-template-columns: 1fr; }
+  .market-rules span { border-right: 0; border-bottom: 1px solid #405b72; }
+}

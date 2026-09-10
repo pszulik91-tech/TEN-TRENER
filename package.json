@@ -16,6 +16,7 @@
     "audit:plans": "node scripts/team-plan-audit.mjs",
     "audit:events": "node scripts/event-diversity-audit.mjs",
     "audit:world": "node scripts/world-audit.mjs",
+    "audit:tiers": "node scripts/tier-career-audit.mjs",
     "import:regional": "node scripts/import-regional-catalog.mjs",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"

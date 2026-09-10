@@ -1,6 +1,6 @@
 import {
   buildMatchStrength, buildSchedule, burnoutMatchPenalty, capReadiness, coachingExperienceEligibility, conditionFromFatigue, defaultMicrocycle, diagnoseMatchOutcome, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, expectedOutcomeProbabilities, goalSatisfied, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS,
-  highestEligibleCoachingExperience, highestEligibleStartingLicense, naturalRecoveryForGap, playerAvailable, positionPenalty, pressureDeltaForResult, readinessStrengthImpact, requiredLicenseForCompetition, requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, selectLineupForPlan, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, tacticalPlanImpact, TEAM_PLANS, teamLiveStrength, TRAINING_PRESETS, trainingPresetSessions, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
+  highestEligibleCoachingExperience, highestEligibleStartingLicense, naturalRecoveryForGap, playerAvailable, positionPenalty, pressureDeltaForResult, readinessStrengthImpact, requiredLicenseForCompetition, requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, selectLineupForPlan, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, tacticalPlanImpact, trainingTacticSynergy, TEAM_PLANS, teamLiveStrength, TRAINING_PRESETS, trainingPresetSessions, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
 } from "../lib/game-rules.mjs";
 import type { CareerIssue } from "../lib/career-events.mjs";
 import type { WorldState } from "../lib/world-engine.mjs";
@@ -28,7 +28,9 @@ export type Fixture = { round: number; date: string; home: string; away: string;
 export type MatchEvent = { minute: number; text: string; kind: "goal" | "card" | "injury" | "chance" | "info"; side: "home" | "away" | "neutral" };
 export type StrengthFactor = { label: string; value: number };
 export type PostMatchReport = { verdict: string; summary: string; positives: string[]; warnings: string[]; boardChange: number; burnoutChange: number; averageCondition: number; analysisOutcome: string; decisiveFactor?: string; winChance?: number; drawChance?: number; lossChance?: number; userXg?: number; opponentXg?: number; strengthFactors?: StrengthFactor[] };
-export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean; homeStrength?: number; awayStrength?: number; homeXg?: number; awayXg?: number; expectedHomeWin?: number; expectedDraw?: number; expectedAwayWin?: number; userStrengthFactors?: StrengthFactor[]; preparationReadiness?: number; preMatchPressure?: number; analysisAttempted?: boolean; analysisStartBalance?: number; postMatchReport?: PostMatchReport };
+export type MatchMomentChoice = { id: string; label: string; preview: string; strength: number; fatigue: number; morale: number; pressure: number };
+export type MatchMoment = { id: string; minute: number; title: string; body: string; choices: MatchMomentChoice[]; resolvedChoiceId?: string; outcome?: string };
+export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean; homeStrength?: number; awayStrength?: number; homeXg?: number; awayXg?: number; expectedHomeWin?: number; expectedDraw?: number; expectedAwayWin?: number; userStrengthFactors?: StrengthFactor[]; preparationReadiness?: number; preMatchPressure?: number; analysisAttempted?: boolean; analysisStartBalance?: number; postMatchReport?: PostMatchReport; reportSeen?: boolean; coachMoments?: MatchMoment[]; activeMomentId?: string; coachImpact?: number; coachFatigue?: number; coachMorale?: number };
 export type DevelopmentGoal = { id: string; label: string; description: string; progress: number; target: number; winterProgress?: number };
 export type SeasonEvidence = { formationsWithPoints: string[]; youthStarters: string[]; analysisRounds: number[]; tacticalRounds: number[]; pressureRounds: number[]; positiveDecisions: string[] };
 export type Coach = { name: string; age: number; region: string; playingExperience: string; coachingExperience: string; profile: CoachProfile; license: License; reputation: number; skills: Record<string, number> };
@@ -36,7 +38,7 @@ export type Club = { id: string; name: string; association: string; district: st
 export type Tactic = { formation: keyof typeof FORMATIONS; mentality: string; tempo: string; pressing: string; line: string; width: string; buildUp: string; passingRisk: string; assignments: Record<string, string> };
 export type SeasonRecord = { season: string; club: string; tier: number; place: number; matches: number; wins: number; draws: number; losses: number; outcome: "awans" | "utrzymanie" | "spadek"; goalsCompleted: number };
 export type CareerStats = { seasons: number; matches: number; wins: number; draws: number; losses: number; promotions: number; relegations: number; goalsCompleted: number; highestTier: number; clubs: string[] };
-export type JobOffer = { id: string; packId: string; clubName: string; tier: number; competition: string; expectation: string };
+export type JobOffer = { id: string; packId: string; clubName: string; tier: number; competition: string; expectation: string; stage?: "obserwacja" | "oferta"; fit?: number };
 export type WorldActivity = { date: string; competitionsAdvanced: number; matchesPlayed: number; squadMoves: number; managerChanges: number; headlines: string[] };
 export type DecisionOutcome = { title: string; choice: string; feedback: string; changes: string[] };
 export type PendingSeason = { year: number; targetTier: number; place: number; outcome: "awans" | "utrzymanie" | "spadek" };
@@ -44,7 +46,7 @@ export type GameState = {
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
   training: { sessions: TrainingSession[]; readiness: number; completedRound: number | null; preset?: string };
   squadPolicy: string; teamPlan: string; pressures: Record<string, number>; burnout: number; lastBurnoutChange: number; president: Record<string, number>; presidentName: string;
-  careerChallenge: CareerChallenge; environment: LevelEnvironment; worldHumor: number;
+  careerChallenge: CareerChallenge; environment: LevelEnvironment; worldHumor: number; trainingMemory?: { youth: number; analysis: number; overload: number; weeks: number };
   world: WorldState; worldActivity: WorldActivity;
   finances: { monthlySalary: number; personalFunds: number };
   licenseCourse?: { target: License; weeksRemaining: number; totalWeeks: number; funding: "self" | "club" };
@@ -55,7 +57,7 @@ export type GameState = {
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 2.1";
+export const BUILD = "TEN TRENER Build 2.2";
 export const DATABASE_STATS = LEAGUE_CATALOG_STATS;
 export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
 export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
@@ -219,4 +221,4 @@ export const LAST_NAMES = ["Adamski", "Bąk", "Bednarek", "Bielecki", "Błaszczy
 export const TIER_OVR: Record<number, number> = { 1: 76, 2: 69, 3: 63, 4: 58, 5: 54, 6: 50, 7: 46, 8: 42, 9: 38, 10: 34 };
 
 export function randomInt(seed: number, min: number, max: number) { const r = rngNext(seed); return { value: Math.floor(r.value * (max - min + 1)) + min, seed: r.seed }; }
-export { buildMatchStrength, buildSchedule, burnoutMatchPenalty, capReadiness, coachingExperienceEligibility, conditionFromFatigue, defaultMicrocycle, diagnoseMatchOutcome, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, expectedOutcomeProbabilities, goalSatisfied, highestEligibleCoachingExperience, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, naturalRecoveryForGap, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, playerAvailable, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, readinessStrengthImpact, requiredLicenseForCompetition, requiredLicenseForTier, rngNext, seasonRoundDates, selectBestLineup, selectLineupForPlan, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, tacticalPlanImpact, TEAM_PLANS, teamLiveStrength, TRAINING_PRESETS, trainingPresetSessions, updateTeamResult, weeklyBurnoutDelta, winterBreakDays };
+export { buildMatchStrength, buildSchedule, burnoutMatchPenalty, capReadiness, coachingExperienceEligibility, conditionFromFatigue, defaultMicrocycle, diagnoseMatchOutcome, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, expectedOutcomeProbabilities, goalSatisfied, highestEligibleCoachingExperience, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, naturalRecoveryForGap, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, playerAvailable, POLICY_EFFECTS, positionPenalty, pressureDeltaForResult, readinessStrengthImpact, requiredLicenseForCompetition, requiredLicenseForTier, rngNext, seasonRoundDates, selectBestLineup, selectLineupForPlan, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, tacticalPlanImpact, trainingTacticSynergy, TEAM_PLANS, teamLiveStrength, TRAINING_PRESETS, trainingPresetSessions, updateTeamResult, weeklyBurnoutDelta, winterBreakDays };
