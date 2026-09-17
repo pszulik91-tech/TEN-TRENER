@@ -144,7 +144,7 @@ test("wypalenie jest liczone raz na tydzień i nie może skoczyć do 47 po starc
   for (const result of ["win", "draw", "loss"]) for (const intensity of ["Niska", "Normalna", "Wysoka"]) for (const recovery of [false, true]) for (const policy of Object.values(POLICY_EFFECTS)) for (const pressure of [10, 60, 85]) for (const profile of ["Generał", "Trener od zapierdolu", "Spokojny pragmatyk"]) {
     maximum = Math.max(maximum, weeklyBurnoutDelta({ result, intensity, recovery, policyBurnout: policy.burnout, pressure, profile }));
   }
-  assert.equal(maximum, 6);
+  assert.equal(maximum, 3);
   assert.ok(8 + maximum < 20);
   assert.equal(burnoutMatchPenalty(35), 0);
   assert.ok(burnoutMatchPenalty(47) > 0);

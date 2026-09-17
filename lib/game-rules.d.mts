@@ -55,3 +55,6 @@ export function simulateMatchPlan(seed: number, homeStrength: number, awayStreng
 };
 export function expectedOutcomeProbabilities(homeXg: number, awayXg: number): { home: number; draw: number; away: number };
 export function diagnoseMatchOutcome(input: { result: "win" | "draw" | "loss"; readiness: number; expectedWin: number; expectedLoss: number; userGoals: number; opponentGoals: number; userXg: number; opponentXg: number; userShots: number; opponentShots: number }): string;
+
+export function defaultMicrocycle(count?:number): Array<{id:string;day:string;focus:string;intensity:string}>;
+export function evaluateMicrocycle(sessions?:Array<{focus:string;intensity:string}>): { readinessGain:number;fatigueDelta:number;moraleDelta:number;formDelta:number;youthFormDelta:number;averageIntensity:string;hasRecovery:boolean;risk:string };

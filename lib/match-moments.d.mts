@@ -4,3 +4,5 @@ export function matchMomentCount(context: { tier?: number; round?: number; total
 export function generateMatchMoments(seed: number, context?: { tier?: number; round?: number; totalRounds?: number; pressure?: number; strengthGap?: number }): { seed: number; moments: MatchMoment[] };
 export function resolveMatchMoment(seed: number, moment: MatchMoment, choiceId: string): { seed: number; choice: MatchMomentChoice; strength: number; verdict: string };
 export function matchMomentStats(): { scenarios: number; choices: number };
+
+export function contextualizeMatchMoment(moment: MatchMoment, context: { balance:number; minute:number; tier:number; hasYouth:boolean; setPieces:boolean; recentTitles?:string[] }): MatchMoment;

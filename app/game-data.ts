@@ -30,7 +30,7 @@ export type StrengthFactor = { label: string; value: number };
 export type PostMatchReport = { verdict: string; summary: string; positives: string[]; warnings: string[]; boardChange: number; burnoutChange: number; averageCondition: number; analysisOutcome: string; decisiveFactor?: string; winChance?: number; drawChance?: number; lossChance?: number; userXg?: number; opponentXg?: number; strengthFactors?: StrengthFactor[] };
 export type MatchMomentChoice = { id: string; label: string; preview: string; strength: number; fatigue: number; morale: number; pressure: number };
 export type MatchMoment = { id: string; minute: number; title: string; body: string; choices: MatchMomentChoice[]; resolvedChoiceId?: string; outcome?: string };
-export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean; homeStrength?: number; awayStrength?: number; homeXg?: number; awayXg?: number; expectedHomeWin?: number; expectedDraw?: number; expectedAwayWin?: number; userStrengthFactors?: StrengthFactor[]; preparationReadiness?: number; preMatchPressure?: number; analysisAttempted?: boolean; analysisStartBalance?: number; postMatchReport?: PostMatchReport; reportSeen?: boolean; coachMoments?: MatchMoment[]; activeMomentId?: string; coachImpact?: number; coachFatigue?: number; coachMorale?: number };
+export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean; homeStrength?: number; awayStrength?: number; homeXg?: number; awayXg?: number; expectedHomeWin?: number; expectedDraw?: number; expectedAwayWin?: number; userStrengthFactors?: StrengthFactor[]; preparationReadiness?: number; preMatchPressure?: number; analysisAttempted?: boolean; analysisStartBalance?: number; lastInstructionMinute?: number; simulationSeed?: number; postMatchReport?: PostMatchReport; reportSeen?: boolean; coachMoments?: MatchMoment[]; activeMomentId?: string; coachImpact?: number; coachFatigue?: number; coachMorale?: number };
 export type DevelopmentGoal = { id: string; label: string; description: string; progress: number; target: number; winterProgress?: number };
 export type SeasonEvidence = { formationsWithPoints: string[]; youthStarters: string[]; analysisRounds: number[]; tacticalRounds: number[]; pressureRounds: number[]; positiveDecisions: string[] };
 export type Coach = { name: string; age: number; region: string; playingExperience: string; coachingExperience: string; profile: CoachProfile; license: License; reputation: number; skills: Record<string, number> };
@@ -46,8 +46,8 @@ export type GameState = {
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
   training: { sessions: TrainingSession[]; readiness: number; completedRound: number | null; preset?: string };
   squadPolicy: string; teamPlan: string; pressures: Record<string, number>; burnout: number; lastBurnoutChange: number; president: Record<string, number>; presidentName: string;
-  careerChallenge: CareerChallenge; environment: LevelEnvironment; worldHumor: number; trainingMemory?: { youth: number; analysis: number; overload: number; weeks: number };
-  world: WorldState; worldActivity: WorldActivity;
+  careerChallenge: CareerChallenge; environment: LevelEnvironment; worldHumor: number; promises?: { due:number;plan:string;source:string }[]; trainingMemory?: { youth: number; analysis: number; overload: number; weeks: number };
+  world: WorldState; nextWorld?: WorldState; worldActivity: WorldActivity;
   finances: { monthlySalary: number; personalFunds: number };
   licenseCourse?: { target: License; weeksRemaining: number; totalWeeks: number; funding: "self" | "club" };
   licenseMessage?: string;
@@ -57,7 +57,7 @@ export type GameState = {
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 2.2";
+export const BUILD = "TEN TRENER Build 2.3 · beta";
 export const DATABASE_STATS = LEAGUE_CATALOG_STATS;
 export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
 export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };
@@ -154,7 +154,7 @@ export const DEVELOPMENT_GOALS: Omit<DevelopmentGoal, "progress">[] = [
   { id: "tactics", label: "Taktyka", description: "Rozpocznij 8 meczów z gotowością taktyczną minimum 72%.", target: 8 },
   { id: "motivation", label: "Motywacja", description: "Rozpocznij 10 meczów ze średnim morale wyjściowej XI minimum 68.", target: 10 },
   { id: "people", label: "Zarządzanie ludźmi", description: "Rozwiąż 4 problemy bez zwiększenia presji w szatni.", target: 4 },
-  { id: "analysis", label: "Analiza", description: "Po 30. minucie skoryguj pressing lub mentalność i popraw wynik meczu — 6 razy.", target: 6 },
+  { id: "analysis", label: "Analiza", description: "W 6 meczach wykonaj trening „Analiza rywala” i podejmij decyzję przy ławce po 30. minucie. Wynik nie warunkuje zaliczenia.", target: 6 },
   { id: "pressure", label: "Odporność na presję", description: "Nie przegraj 5 meczów rozpoczynanych przy presji minimum 45%.", target: 5 },
   { id: "adaptability", label: "Adaptacyjność", description: "Zdobądź punkty trzema różnymi formacjami.", target: 3 },
   { id: "youth", label: "Rozwój młodych", description: "Wystaw od pierwszej minuty trzech różnych zawodników U21.", target: 3 },

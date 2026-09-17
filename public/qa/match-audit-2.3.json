@@ -1,0 +1,69 @@
+{
+  "samples_per_gap": 20000,
+  "total_matches": 100000,
+  "deterministic": true,
+  "report": {
+    "gap_-8": {
+      "win_pct": 27.78,
+      "draw_pct": 25.26,
+      "loss_pct": 46.96,
+      "goals_per_match": 2.73,
+      "shots_per_match": 12.71,
+      "extreme_upset_pct": 0
+    },
+    "gap_-4": {
+      "win_pct": 35.62,
+      "draw_pct": 26.04,
+      "loss_pct": 38.34,
+      "goals_per_match": 2.73,
+      "shots_per_match": 12.72,
+      "extreme_upset_pct": 0
+    },
+    "gap_0": {
+      "win_pct": 45.16,
+      "draw_pct": 25.51,
+      "loss_pct": 29.34,
+      "goals_per_match": 2.73,
+      "shots_per_match": 12.74,
+      "extreme_upset_pct": 0
+    },
+    "gap_4": {
+      "win_pct": 53.51,
+      "draw_pct": 24.06,
+      "loss_pct": 22.43,
+      "goals_per_match": 2.71,
+      "shots_per_match": 12.8,
+      "extreme_upset_pct": 2.04
+    },
+    "gap_8": {
+      "win_pct": 62.04,
+      "draw_pct": 22.14,
+      "loss_pct": 15.82,
+      "goals_per_match": 2.73,
+      "shots_per_match": 12.83,
+      "extreme_upset_pct": 1.04
+    }
+  },
+  "preparation": {
+    "50": {
+      "impact": -1.6,
+      "total_strength": 48.68
+    },
+    "62": {
+      "impact": -0.64,
+      "total_strength": 49.64
+    },
+    "70": {
+      "impact": 0,
+      "total_strength": 50.28
+    },
+    "80": {
+      "impact": 0.8,
+      "total_strength": 51.08
+    },
+    "90": {
+      "impact": 1.6,
+      "total_strength": 51.88
+    }
+  }
+}

@@ -9,7 +9,7 @@ test("mecz generuje deterministycznie 2–5 reakcji zależnie od stawki", () => 
   assert.equal(matchMomentCount({ tier: 9, round: 2, totalRounds: 22, pressure: 20, strengthGap: 5 }), 2);
   assert.equal(matchMomentCount({ tier: 1, round: 34, totalRounds: 34, pressure: 82, strengthGap: 0 }), 5);
   const a = generateMatchMoments(12345, { tier: 3, round: 31, totalRounds: 34, pressure: 60, strengthGap: 1 }); const b = generateMatchMoments(12345, { tier: 3, round: 31, totalRounds: 34, pressure: 60, strengthGap: 1 });
-  assert.deepEqual(a, b); assert.ok(a.moments.length >= 2 && a.moments.length <= 5); assert.equal(matchMomentStats().scenarios, 12);
+  assert.deepEqual(a, b); assert.ok(a.moments.length >= 2 && a.moments.length <= 5); assert.ok(matchMomentStats().scenarios >= 36);
   const resolved = resolveMatchMoment(a.seed, a.moments[0], a.moments[0].choices[0].id); assert.ok(Number.isFinite(resolved.strength)); assert.match(resolved.verdict, /Reakcja|Korekta|Ryzyko/);
 });
 

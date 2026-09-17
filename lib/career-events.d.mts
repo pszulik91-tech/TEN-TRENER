@@ -1,4 +1,4 @@
-export type IssueEffects = { pressures?: Record<string, number>; burnout?: number; teamMorale?: number; teamFatigue?: number; relation?: number; readiness?: number; reputation?: number; unavailable?: { min: number; max: number; rounds: number; reason: string } };
+export type IssueEffects = { teamPlan?: string; pressures?: Record<string, number>; burnout?: number; teamMorale?: number; teamFatigue?: number; relation?: number; readiness?: number; reputation?: number; unavailable?: { min: number; max: number; rounds: number; reason: string } };
 export type ResolvedIssueEffects = Omit<IssueEffects, "unavailable"> & { unavailable?: { count: number; rounds: number; reason: string } };
 export type IssueChoice = { id: string; label: string; feedback: string; effects: IssueEffects };
 export type CareerIssue = { id: string; category: string; title: string; body: string; choices: IssueChoice[]; resolved: boolean };

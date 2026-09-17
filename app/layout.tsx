@@ -1,5 +1,7 @@
+import { ThemeStudio } from "./theme-studio";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./themes.css";
 
 export const metadata: Metadata = {
   title: "TEN TRENER — kariera polskiego trenera",
@@ -17,7 +19,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#07120f",
+  themeColor: "#e9eced",
 };
 
 export default function RootLayout({
@@ -27,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pl">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">{children}<ThemeStudio /></body>
     </html>
   );
 }
