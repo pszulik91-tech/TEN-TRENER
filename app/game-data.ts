@@ -43,6 +43,7 @@ export type WorldActivity = { date: string; competitionsAdvanced: number; matche
 export type DecisionOutcome = { title: string; choice: string; feedback: string; changes: string[] };
 export type PendingSeason = { year: number; targetTier: number; place: number; outcome: "awans" | "utrzymanie" | "spadek" };
 export type GameState = {
+  narrative?: import("../lib/career-stories.mjs").NarrativeMemory;
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
   training: { sessions: TrainingSession[]; readiness: number; completedRound: number | null; preset?: string };
   squadPolicy: string; teamPlan: string; pressures: Record<string, number>; burnout: number; lastBurnoutChange: number; president: Record<string, number>; presidentName: string;
@@ -57,7 +58,7 @@ export type GameState = {
 };
 
 export const SAVE_KEY = "ten-trener-save-v1";
-export const BUILD = "TEN TRENER Build 2.3 · beta";
+export const BUILD = "TEN TRENER Build 2.4 · beta testowa";
 export const DATABASE_STATS = LEAGUE_CATALOG_STATS;
 export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
 export const LICENSE_MIN_TIER: Record<License, number> = { "Grassroots C": 8, "UEFA B": 6, "UEFA A": 3, "UEFA PRO": 1 };

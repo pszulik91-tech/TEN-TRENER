@@ -7,6 +7,7 @@ import { createGame, skillSet, currentFixture } from '../app/game-engine.ts';
 import { LEAGUE_PACKS, trainingPresetSessions, FORMATIONS, TEAM_PLANS, DEVELOPMENT_GOALS, startingLicenseEligibility } from '../app/game-data.ts';
 import { EVENT_POOL } from '../lib/career-events.mjs';
 import { languageBankStats } from '../lib/game-language.mjs';
+import { narrativeStats } from '../lib/career-stories.mjs';
 import { matchMomentStats } from '../lib/match-moments.mjs';
 
 const checks={matches:0,seasons:0,saves:0,moments:0,decisions:0,worldMatches:0};
@@ -55,5 +56,5 @@ const odd=LEAGUE_PACKS.find(p=>p.teams.length%2===1);if(odd){const h=harness(mak
 const longPack=LEAGUE_PACKS.find(p=>p.competition==='Klasa B');const h=harness(make(longPack,3));const long=[];
 for(let year=0;year<32;year++){long.push(playSeason(h,year%4));nextSeason(h);if(year%5===4)console.log(`Career checkpoint ${year+1} seasons, age ${h.game.coach.age}`);}
 assert.equal(h.game.coach.age,67);h.act('retireCareer');assert.equal(h.game.careerEnded,true,'voluntary retirement after 65');
-const report={build:h.game.build,checks,content:{careerScenarios:EVENT_POOL.length,careerChoices:EVENT_POOL.reduce((n,e)=>n+e.choices.length,0),...languageBankStats(),matchMoments:matchMomentStats()},tiers:results,fullCareer:long,limitations:['Beta movement uses data-driven regional parent leagues and simplified promotion places; no official playoffs.','This verifies functional invariants, not that any style is universally balanced or entertaining.']};
+const report={build:h.game.build,checks,content:{narrative:narrativeStats(),careerScenarios:EVENT_POOL.length,careerChoices:EVENT_POOL.reduce((n,e)=>n+e.choices.length,0),...languageBankStats(),matchMoments:matchMomentStats()},tiers:results,fullCareer:long,limitations:['Beta movement uses data-driven regional parent leagues and simplified promotion places; no official playoffs.','This verifies functional invariants, not that any style is universally balanced or entertaining.']};
 writeFileSync('playable-career-audit.json',JSON.stringify(report,null,2));console.log(JSON.stringify({checks,content:report.content}));

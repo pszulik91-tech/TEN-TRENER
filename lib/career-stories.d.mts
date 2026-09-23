@@ -1,0 +1,6 @@
+import type {CareerIssue,IssueChoice} from './career-events.mjs';
+export type NarrativeMemory={clubId:string;active:Array<{arcId:string;clubId:string;step:number;due:number;started:number;waitingEventId?:string;previousChoice?:string;previousFeedback?:string}>;seen:Record<string,{count:number;last:number}>;recent:string[];lastStart:number;completed:number;decisions:Array<{arcId:string;step:number;match:number;choice:string;title:string;clubId:string}>};
+export function normalizeNarrative(memory:NarrativeMemory|undefined,clubId:string):NarrativeMemory;
+export function generateCareerIssues(input:{seed:number;round:number;tier:number;result:'win'|'draw'|'loss';worldHumor:number;recentTitles?:string[];recentCategories?:string[];maxEvents?:number;memory?:NarrativeMemory;match:number;clubId:string;context?:{fatigue:number;burnout:number}}):{seed:number;memory:NarrativeMemory;events:CareerIssue[]};
+export function recordStoryDecision(memory:NarrativeMemory|undefined,event:CareerIssue,choice:IssueChoice,match:number,clubId:string,seed:number):{seed:number;memory:NarrativeMemory};
+export function narrativeStats():{standalone:number;arcs:number;episodes:number;choices:number;totalSituations:number;totalChoices:number};

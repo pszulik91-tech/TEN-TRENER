@@ -35,7 +35,7 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [savedPulse, setSavedPulse] = useState(false);
-  const [draft, setDraft] = useState<CoachDraft>({ name: "Piotr Szulik", age: 35, region: "Śląskie", playingExperience: "Amator", coachingExperience: "Debiutant", profile: "Mentor" as CoachProfile, license: "Grassroots C" as License, psychAnswers: {} });
+  const [draft, setDraft] = useState<CoachDraft>({ name: "", age: 35, region: "Śląskie", playingExperience: "Amator", coachingExperience: "Debiutant", profile: "Mentor" as CoachProfile, license: "Grassroots C" as License, psychAnswers: {} });
   const [selectedAssociation, setSelectedAssociation] = useState("Podkarpacki ZPN");
   const [selectedCompetition, setSelectedCompetition] = useState("Klasa B");
   const [selectedDistrict, setSelectedDistrict] = useState("Jarosław");

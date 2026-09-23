@@ -1,0 +1,559 @@
+{
+  "build": "2.4",
+  "generatorRuns": 60,
+  "matchesPerRun": 1000,
+  "totalGeneratorRounds": 60000,
+  "totalEvents": 77435,
+  "totalCompleted": 9627,
+  "catalog": {
+    "standalone": 139,
+    "arcs": 24,
+    "episodes": 72,
+    "choices": 216,
+    "totalSituations": 211,
+    "totalChoices": 633
+  },
+  "runs": [
+    {
+      "tier": 1,
+      "scenario": 0,
+      "uniqueSituations": 110,
+      "events": 1239,
+      "continuations": 308,
+      "completed": 152,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 1,
+      "scenario": 1,
+      "uniqueSituations": 110,
+      "events": 1248,
+      "continuations": 309,
+      "completed": 153,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 1,
+      "scenario": 2,
+      "uniqueSituations": 110,
+      "events": 1262,
+      "continuations": 309,
+      "completed": 153,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 1,
+      "scenario": 3,
+      "uniqueSituations": 110,
+      "events": 1254,
+      "continuations": 311,
+      "completed": 154,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 1,
+      "scenario": 4,
+      "uniqueSituations": 110,
+      "events": 1243,
+      "continuations": 309,
+      "completed": 153,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 1,
+      "scenario": 5,
+      "uniqueSituations": 110,
+      "events": 1223,
+      "continuations": 310,
+      "completed": 153,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 2,
+      "scenario": 0,
+      "uniqueSituations": 112,
+      "events": 1261,
+      "continuations": 309,
+      "completed": 154,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 2,
+      "scenario": 1,
+      "uniqueSituations": 112,
+      "events": 1232,
+      "continuations": 310,
+      "completed": 154,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 2,
+      "scenario": 2,
+      "uniqueSituations": 112,
+      "events": 1275,
+      "continuations": 309,
+      "completed": 153,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 2,
+      "scenario": 3,
+      "uniqueSituations": 112,
+      "events": 1264,
+      "continuations": 310,
+      "completed": 153,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 2,
+      "scenario": 4,
+      "uniqueSituations": 112,
+      "events": 1263,
+      "continuations": 308,
+      "completed": 152,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 2,
+      "scenario": 5,
+      "uniqueSituations": 112,
+      "events": 1251,
+      "continuations": 308,
+      "completed": 153,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 3,
+      "scenario": 0,
+      "uniqueSituations": 122,
+      "events": 1301,
+      "continuations": 331,
+      "completed": 164,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 3,
+      "scenario": 1,
+      "uniqueSituations": 122,
+      "events": 1246,
+      "continuations": 328,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 3,
+      "scenario": 2,
+      "uniqueSituations": 122,
+      "events": 1267,
+      "continuations": 331,
+      "completed": 165,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 3,
+      "scenario": 3,
+      "uniqueSituations": 122,
+      "events": 1255,
+      "continuations": 328,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 3,
+      "scenario": 4,
+      "uniqueSituations": 122,
+      "events": 1280,
+      "continuations": 330,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 3,
+      "scenario": 5,
+      "uniqueSituations": 122,
+      "events": 1277,
+      "continuations": 329,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 4,
+      "scenario": 0,
+      "uniqueSituations": 137,
+      "events": 1319,
+      "continuations": 369,
+      "completed": 183,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 4,
+      "scenario": 1,
+      "uniqueSituations": 137,
+      "events": 1349,
+      "continuations": 370,
+      "completed": 184,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 4,
+      "scenario": 2,
+      "uniqueSituations": 137,
+      "events": 1327,
+      "continuations": 369,
+      "completed": 183,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 4,
+      "scenario": 3,
+      "uniqueSituations": 137,
+      "events": 1330,
+      "continuations": 369,
+      "completed": 183,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 4,
+      "scenario": 4,
+      "uniqueSituations": 137,
+      "events": 1317,
+      "continuations": 369,
+      "completed": 183,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 4,
+      "scenario": 5,
+      "uniqueSituations": 137,
+      "events": 1341,
+      "continuations": 369,
+      "completed": 183,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 5,
+      "scenario": 0,
+      "uniqueSituations": 159,
+      "events": 1350,
+      "continuations": 393,
+      "completed": 196,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 5,
+      "scenario": 1,
+      "uniqueSituations": 159,
+      "events": 1351,
+      "continuations": 395,
+      "completed": 196,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 5,
+      "scenario": 2,
+      "uniqueSituations": 159,
+      "events": 1321,
+      "continuations": 393,
+      "completed": 196,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 5,
+      "scenario": 3,
+      "uniqueSituations": 159,
+      "events": 1346,
+      "continuations": 395,
+      "completed": 196,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 5,
+      "scenario": 4,
+      "uniqueSituations": 159,
+      "events": 1346,
+      "continuations": 395,
+      "completed": 196,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 5,
+      "scenario": 5,
+      "uniqueSituations": 159,
+      "events": 1335,
+      "continuations": 395,
+      "completed": 196,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 6,
+      "scenario": 0,
+      "uniqueSituations": 148,
+      "events": 1288,
+      "continuations": 330,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 6,
+      "scenario": 1,
+      "uniqueSituations": 148,
+      "events": 1281,
+      "continuations": 331,
+      "completed": 164,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 6,
+      "scenario": 2,
+      "uniqueSituations": 148,
+      "events": 1281,
+      "continuations": 328,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 6,
+      "scenario": 3,
+      "uniqueSituations": 148,
+      "events": 1262,
+      "continuations": 328,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 6,
+      "scenario": 4,
+      "uniqueSituations": 148,
+      "events": 1282,
+      "continuations": 328,
+      "completed": 162,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 6,
+      "scenario": 5,
+      "uniqueSituations": 148,
+      "events": 1261,
+      "continuations": 330,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 7,
+      "scenario": 0,
+      "uniqueSituations": 158,
+      "events": 1282,
+      "continuations": 329,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 7,
+      "scenario": 1,
+      "uniqueSituations": 158,
+      "events": 1277,
+      "continuations": 328,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 7,
+      "scenario": 2,
+      "uniqueSituations": 158,
+      "events": 1292,
+      "continuations": 330,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 7,
+      "scenario": 3,
+      "uniqueSituations": 158,
+      "events": 1291,
+      "continuations": 329,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 7,
+      "scenario": 4,
+      "uniqueSituations": 158,
+      "events": 1297,
+      "continuations": 327,
+      "completed": 162,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 7,
+      "scenario": 5,
+      "uniqueSituations": 158,
+      "events": 1257,
+      "continuations": 328,
+      "completed": 163,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 8,
+      "scenario": 0,
+      "uniqueSituations": 151,
+      "events": 1283,
+      "continuations": 290,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 8,
+      "scenario": 1,
+      "uniqueSituations": 151,
+      "events": 1322,
+      "continuations": 288,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 8,
+      "scenario": 2,
+      "uniqueSituations": 151,
+      "events": 1291,
+      "continuations": 288,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 8,
+      "scenario": 3,
+      "uniqueSituations": 151,
+      "events": 1338,
+      "continuations": 290,
+      "completed": 144,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 8,
+      "scenario": 4,
+      "uniqueSituations": 151,
+      "events": 1316,
+      "continuations": 289,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 8,
+      "scenario": 5,
+      "uniqueSituations": 151,
+      "events": 1301,
+      "continuations": 289,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 9,
+      "scenario": 0,
+      "uniqueSituations": 145,
+      "events": 1313,
+      "continuations": 291,
+      "completed": 145,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 9,
+      "scenario": 1,
+      "uniqueSituations": 145,
+      "events": 1288,
+      "continuations": 289,
+      "completed": 144,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 9,
+      "scenario": 2,
+      "uniqueSituations": 145,
+      "events": 1304,
+      "continuations": 288,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 9,
+      "scenario": 3,
+      "uniqueSituations": 145,
+      "events": 1306,
+      "continuations": 288,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 9,
+      "scenario": 4,
+      "uniqueSituations": 145,
+      "events": 1272,
+      "continuations": 289,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 9,
+      "scenario": 5,
+      "uniqueSituations": 145,
+      "events": 1320,
+      "continuations": 289,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 10,
+      "scenario": 0,
+      "uniqueSituations": 143,
+      "events": 1288,
+      "continuations": 291,
+      "completed": 144,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 10,
+      "scenario": 1,
+      "uniqueSituations": 143,
+      "events": 1295,
+      "continuations": 289,
+      "completed": 142,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 10,
+      "scenario": 2,
+      "uniqueSituations": 143,
+      "events": 1317,
+      "continuations": 289,
+      "completed": 144,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 10,
+      "scenario": 3,
+      "uniqueSituations": 143,
+      "events": 1288,
+      "continuations": 290,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 10,
+      "scenario": 4,
+      "uniqueSituations": 143,
+      "events": 1258,
+      "continuations": 288,
+      "completed": 143,
+      "repeatWithin8": 0
+    },
+    {
+      "tier": 10,
+      "scenario": 5,
+      "uniqueSituations": 143,
+      "events": 1311,
+      "continuations": 289,
+      "completed": 143,
+      "repeatWithin8": 0
+    }
+  ],
+  "meaning": "Generator and memory audit, not 60 full simulated football careers; no claim of proving entertainment value."
+}

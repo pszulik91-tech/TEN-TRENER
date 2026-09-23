@@ -1,0 +1,43 @@
+{
+  "build": "TEN TRENER Build 2.4 · beta testowa",
+  "date": "2026-09-23",
+  "browser": "Chrome",
+  "mobileLayout": {
+    "width": 390,
+    "height": 844,
+    "physicalDevice": false,
+    "nextStepButton": {
+      "top": 708.015625,
+      "bottom": 756.015625,
+      "height": 48
+    }
+  },
+  "checks": {
+    "newCareer": true,
+    "questionnaire8Answers": true,
+    "amateurProBlocked": true,
+    "oneGoalStartBlocked": true,
+    "twoGoalsStart": true,
+    "clubSelection": true,
+    "fullMicrocycle": true,
+    "desktopFullMatch": true,
+    "coachDecisions": true,
+    "reportDismissedNotReopened": true,
+    "reloadAndLoad": true,
+    "analysisGoalProgress": true,
+    "tableUpdated": true,
+    "worldAiMatchesVisible": 2784,
+    "mobileFullMatch": true,
+    "testerReportPrepared": true
+  },
+  "observations": {
+    "firstMatch": "Pierwszy Chwałowice 1:0 KS Wielopole",
+    "secondMatch": "Dąb Dębieńsko 0:2 Pierwszy Chwałowice",
+    "bugFound": "Crisis event after a win; fixed with result and round requirements, covered by regression test."
+  },
+  "limitations": [
+    "Mobile layout simulated in a 390×844 iframe, not a physical iPhone or Android.",
+    "Full seasons and long career use production actions in automated harness, not browser clicks.",
+    "Downloaded report success status checked; browser download file not manually inspected."
+  ]
+}
