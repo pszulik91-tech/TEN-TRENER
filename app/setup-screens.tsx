@@ -2,15 +2,14 @@
 import { ThemeButton } from "./theme-studio";
 
 import { BadgeCheck, ChevronRight, Play, Save, Target } from "lucide-react";
-import { useState } from "react";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { BUILD, coachingExperienceEligibility, DATABASE_STATS, DEVELOPMENT_GOALS, environmentForPack, highestEligibleCoachingExperience, highestEligibleStartingLicense, LICENSE_CHALLENGES, LICENSES, PROFILE_NOTE, PSYCH_QUESTIONS, resolveCoachProfile, startingLicenseEligibility } from "./game-data";
-import type { CoachProfile, LeaguePack, License } from "./game-data";
+import { BUILD, DATABASE_STATS, DEVELOPMENT_GOALS, environmentForPack } from "./game-data";
+import type { LeaguePack } from "./game-data";
 
-export type CoachDraft = { name: string; age: number; region: string; playingExperience: string; coachingExperience: string; profile: CoachProfile; license: License; psychAnswers: Record<string, number> };
-const COACH_REGIONS = ["Dolnośląskie", "Kujawsko-pomorskie", "Lubelskie", "Lubuskie", "Łódzkie", "Małopolskie", "Mazowieckie", "Opolskie", "Podkarpackie", "Podlaskie", "Pomorskie", "Śląskie", "Świętokrzyskie", "Warmińsko-mazurskie", "Wielkopolskie", "Zachodniopomorskie"];
+import type { CoachDraft } from "./coach-onboarding";
+export type { CoachDraft } from "./coach-onboarding";
 type ClubPickerProps = {
   draft: CoachDraft; competitionOptions: { competition: string; available: boolean; required: string }[]; associations: string[]; districts: string[]; packs: LeaguePack[]; pack?: LeaguePack;
   selectedCompetition: string; selectedAssociation: string; selectedDistrict: string; selectedPackId: string; selectedClub: string;
@@ -22,47 +21,7 @@ export function StartScreen({ hasSave, onNew, onLoad }: { hasSave: boolean; onNe
   return <main className="start-screen min-h-dvh"><div className="stadium-grid" /><section className="start-panel"><div className="brand-mark"><span>TT</span></div><div><p className="eyebrow">POLSKA • SEZON 2026/27</p><h1>TEN<br /><em>TRENER</em></h1><p className="start-copy">Nie budujesz klubu. Budujesz własne nazwisko — od błotnistej B-klasy po europejskie wieczory.</p></div><div className="start-actions"><ThemeButton /><Button className="primary-cta" size="lg" onClick={onNew}><Play /> Nowa kariera</Button><Button className="secondary-cta" variant="outline" size="lg" disabled={!hasSave} onClick={onLoad}><Save /> Wczytaj zapis</Button></div><div className="build-row"><span className="live-dot" /> {BUILD} <span>•</span> zapis lokalny</div></section></main>;
 }
 
-export function Creator({ draft, setDraft, onNext, onBack }: { draft: CoachDraft; setDraft: Dispatch<SetStateAction<CoachDraft>>; onNext: () => void; onBack: () => void }) {
-  const firstMissing = PSYCH_QUESTIONS.findIndex((question) => draft.psychAnswers[question.id] === undefined);
-  const [questionIndex, setQuestionIndex] = useState(firstMissing < 0 ? PSYCH_QUESTIONS.length - 1 : firstMissing);
-  const update = (key: keyof CoachDraft, value: CoachDraft[keyof CoachDraft]) => setDraft((current) => {
-    const next = { ...current, [key]: value } as CoachDraft;
-    if (["age", "playingExperience"].includes(key) && !coachingExperienceEligibility(next.age, next.playingExperience, next.coachingExperience).eligible) next.coachingExperience = highestEligibleCoachingExperience(next.age, next.playingExperience);
-    if (["age", "playingExperience", "coachingExperience"].includes(key) && !startingLicenseEligibility(next.license, next.playingExperience, next.coachingExperience, next.age).eligible) next.license = highestEligibleStartingLicense(next.playingExperience, next.coachingExperience, next.age);
-    return next;
-  });
-  const answerCount = PSYCH_QUESTIONS.filter((question) => draft.psychAnswers[question.id] !== undefined).length;
-  const questionnaireDone = answerCount === PSYCH_QUESTIONS.length;
-  const question = PSYCH_QUESTIONS[questionIndex];
-  const chooseAnswer = (choiceIndex: number) => {
-    setDraft((current) => {
-      const psychAnswers = { ...current.psychAnswers, [question.id]: choiceIndex };
-      return { ...current, psychAnswers, profile: resolveCoachProfile(psychAnswers) };
-    });
-    if (questionIndex < PSYCH_QUESTIONS.length - 1) setQuestionIndex(questionIndex + 1);
-  };
-  return <SetupShell step="1 / 3" title="Kim jesteś, trenerze?" subtitle="Twoja przeszłość otwiera drzwi. Licencja ustala poziom wejścia i cenę oczekiwań." onBack={onBack}>
-    <div className="form-grid">
-      <label className="field wide"><span>Imię i nazwisko</span><input placeholder="Imię lub pseudonim trenera" maxLength={60} value={draft.name} onChange={(e) => update("name", e.target.value)} /></label>
-      <div className="field"><span>Wiek startowy</span><div className="age-stepper"><button aria-label="Zmniejsz wiek" disabled={draft.age <= 30} onClick={() => update("age", draft.age - 1)}>−</button><output aria-label="Wiek trenera">{draft.age}</output><button aria-label="Zwiększ wiek" disabled={draft.age >= 45} onClick={() => update("age", draft.age + 1)}>+</button></div><small>Zakres 30–45 lat. Przyciski nie otwierają klawiatury telefonu.</small></div>
-      <label className="field"><span>Region</span><NativeSelect value={draft.region} onChange={(e) => update("region", e.target.value)} className="w-full">{COACH_REGIONS.map((region) => <NativeSelectOption key={region}>{region}</NativeSelectOption>)}</NativeSelect></label>
-      <label className="field"><span>Doświadczenie zawodnicze</span><NativeSelect value={draft.playingExperience} onChange={(e) => update("playingExperience", e.target.value)} className="w-full"><NativeSelectOption>Brak</NativeSelectOption><NativeSelectOption>Amator</NativeSelectOption><NativeSelectOption>Niższe ligi</NativeSelectOption><NativeSelectOption>Zawodowiec</NativeSelectOption><NativeSelectOption>Reprezentant</NativeSelectOption></NativeSelect></label>
-      <label className="field"><span>Doświadczenie trenerskie</span><NativeSelect value={draft.coachingExperience} onChange={(e) => update("coachingExperience", e.target.value)} className="w-full">{["Debiutant", "1–3 lata", "4–10 lat", "Ponad 10 lat"].map((experience) => { const eligibility = coachingExperienceEligibility(draft.age, draft.playingExperience, experience); const label = experience === "4–10 lat" && eligibility.eligible && eligibility.availableYears < 10 ? `4–${eligibility.availableYears} lat (maksimum dla życiorysu)` : experience; return <NativeSelectOption disabled={!eligibility.eligible} key={experience} value={experience}>{label}{!eligibility.eligible ? " — niemożliwe w tym życiorysie" : ""}</NativeSelectOption>; })}</NativeSelect><small>{coachingExperienceEligibility(draft.age, draft.playingExperience, draft.coachingExperience).reason}</small></label>
-    </div>
-    <div className="section-label">Licencja startowa • wybór poziomu wyzwania</div>
-    <div className="license-choice-grid">{LICENSES.map((license) => { const challenge = LICENSE_CHALLENGES[license]; const eligibility = startingLicenseEligibility(license, draft.playingExperience, draft.coachingExperience, draft.age); return <button disabled={!eligibility.eligible} key={license} className={`license-choice ${draft.license === license ? "selected" : ""} ${!eligibility.eligible ? "locked" : ""}`} onClick={() => update("license", license)}><span>{license}</span><strong>{eligibility.eligible ? challenge.label : "Niedostępna dla tego życiorysu"}</strong><p>{eligibility.eligible ? challenge.description : eligibility.reason}</p><small>{eligibility.eligible ? `Presja wynikowa ×${challenge.pressureMultiplier.toFixed(2)} • reputacja +${challenge.reputationBonus}` : "Wiek, przeszłość zawodnicza i lata pracy muszą tworzyć możliwą historię."}</small></button>; })}</div>
-    <p className="setup-note">Grassroots C jest podstawowym początkiem kariery. Wyższa licencja otwiera wyższe ligi, ale zwiększa oczekiwania, presję i koszt błędów od pierwszego dnia.</p>
-    <div className="section-label">Ankieta profilu psychologicznego • {answerCount} / {PSYCH_QUESTIONS.length}</div>
-    <section className="psych-test">
-      <div className="psych-progress"><span style={{ width: `${(answerCount / PSYCH_QUESTIONS.length) * 100}%` }} /></div>
-      <small>SYTUACJA {questionIndex + 1}</small><p>{question.context}</p><h2>{question.question}</h2>
-      <div className="psych-answers">{question.choices.map((choice, index) => <button key={choice.label} className={draft.psychAnswers[question.id] === index ? "selected" : ""} onClick={() => chooseAnswer(index)}><b>{String.fromCharCode(65 + index)}</b><span>{choice.label}</span></button>)}</div>
-      <div className="psych-navigation"><Button variant="ghost" disabled={questionIndex === 0} onClick={() => setQuestionIndex(questionIndex - 1)}>Poprzednia</Button><span>{questionIndex + 1} / {PSYCH_QUESTIONS.length}</span><Button variant="ghost" disabled={questionIndex === PSYCH_QUESTIONS.length - 1 || draft.psychAnswers[question.id] === undefined} onClick={() => setQuestionIndex(questionIndex + 1)}>Następna</Button></div>
-      {questionnaireDone && <div className="profile-result"><BadgeCheck /><span><small>PROFIL PRZYDZIELONY Z ODPOWIEDZI</small><strong>{draft.profile}</strong><p>{PROFILE_NOTE[draft.profile]}</p></span></div>}
-    </section>
-    <div className="setup-footer"><Button variant="ghost" onClick={onBack}>Wstecz</Button><Button size="lg" disabled={draft.name.trim().length < 3 || draft.age < 30 || draft.age > 45 || !questionnaireDone} onClick={onNext}>Wybierz klub <ChevronRight /></Button></div>
-  </SetupShell>;
-}
+export { Creator } from "./coach-interview";
 
 export function ClubPicker(props: ClubPickerProps) {
   const { draft, competitionOptions, selectedCompetition, associations, districts, packs, pack, selectedAssociation, selectedDistrict, selectedPackId, selectedClub, onCompetition, onAssociation, onDistrict, onPack, onClub, onBack, onNext } = props;

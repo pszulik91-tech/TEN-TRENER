@@ -2,6 +2,7 @@ import { ThemeStudio } from "./theme-studio";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./themes.css";
+import "./onboarding.css";
 
 export const metadata: Metadata = {
   title: "TEN TRENER — kariera polskiego trenera",

@@ -1,0 +1,111 @@
+/* The interview uses the game's four palettes, with its own readable hierarchy. */
+.interview-screen { min-height:100dvh; background:var(--paper); color:var(--ink); font-family:var(--body-font); }
+.interview-masthead { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1rem max(1rem,calc((100vw - 76rem)/2)); background:var(--bar); color:var(--bar-ink); border-bottom:5px solid var(--brand); }
+.interview-masthead>button { text-align:left; font-weight:900; font-size:1.25rem; line-height:1.3; background:none; color:inherit; }
+.interview-masthead>button span { display:block; font:700 .75rem/1.5 var(--body-font); letter-spacing:.12em; }
+.interview-masthead .theme-open { background:transparent!important; color:var(--bar-ink)!important; border-color:var(--bar-ink)!important; }
+.interview-layout { display:grid; grid-template-columns:minmax(0,1fr) 19rem; gap:2rem; max-width:76rem; margin:auto; padding:1.5rem; align-items:start; }
+.interview-main,.interview-conversation,.coach-pass { min-width:0; }
+.interview-chapters { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border:1px solid var(--ink); }
+.interview-chapters button { display:flex; align-items:center; gap:.6rem; padding:.85rem .6rem; min-height:3.5rem; color:var(--ink); background:var(--surface); text-align:left; font-size:.875rem; line-height:1.3; border-right:1px solid var(--rule); }
+.interview-chapters button:last-child { border-right:0; }
+.interview-chapters b { font:800 1.25rem var(--title-font); }
+.interview-chapters [aria-current="step"] { background:var(--brand); color:var(--brand-ink); }
+.interview-conversation { margin-top:1.3rem; padding:clamp(1rem,3vw,2rem); border:1px solid var(--ink); border-top:5px solid var(--ink); background:var(--surface); }
+.interview-byline { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem; font-size:.875rem; margin-bottom:1rem; color:var(--ink-soft); }
+.interview-byline span { font-weight:800; color:var(--brand); }
+.interview-conversation h1 { font:800 clamp(1.6rem,3.4vw,2.5rem)/1.15 var(--title-font); letter-spacing:-.02em; color:var(--ink); margin:0 0 1rem; scroll-margin-top:1rem; overflow-wrap:anywhere; }
+.interview-lead,.interview-context { font-size:1rem; line-height:1.6; margin:0 0 1.3rem; color:var(--ink); }
+.interview-context { padding:.8rem 1rem; border-left:4px solid var(--brand); background:var(--surface-2); }
+.interview-fields { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+.interview-fields .wide { grid-column:1/-1; }
+.interview-screen .field>span { font-size:1rem; color:var(--ink)!important; }
+.interview-screen .field small { font-size:.875rem; line-height:1.5; color:var(--ink-soft)!important; }
+.interview-screen .field input,.interview-screen .field select { font-size:1rem; min-height:3.2rem; color:var(--ink)!important; background:var(--paper)!important; border:2px solid var(--ink)!important; }
+.interview-screen .field select { padding-right:2.2rem; }
+.interview-screen .age-stepper { border:2px solid var(--ink)!important; display:grid; grid-template-columns:3.2rem 1fr 3.2rem; min-height:3.2rem; }
+.interview-screen .age-stepper output { text-align:center; font-weight:800; font-size:1.4rem; padding:.4rem; }
+.interview-screen .age-stepper button { font-size:1.4rem; min-height:3rem; min-width:3rem; }
+.interview-screen fieldset { border:0; padding:0; margin:1.25rem 0 .7rem; min-width:0; }
+.interview-screen legend { font-size:1rem; font-weight:800; margin-bottom:.7rem; }
+.interview-options { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.interview-options button,.interview-licenses button { display:flex; flex-direction:column; align-items:flex-start; gap:.3rem; text-align:left; background:var(--paper); color:var(--ink); border:2px solid var(--rule); padding:.85rem; min-height:3rem; }
+.interview-options button strong,.interview-licenses strong { font-size:1rem; }
+.interview-options button span,.interview-licenses button span { font-size:.875rem; line-height:1.45; }
+.interview-options button small,.interview-licenses button small { font-size:.875rem; line-height:1.4; }
+.interview-tenure,.interview-licenses { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; }
+.interview-tenure button { color:var(--ink); background:var(--paper); border:2px solid var(--rule); padding:.75rem; min-height:3rem; font-size:1rem; }
+.interview-tenure small { display:block; font-size:.875rem; }
+.interview-screen button[aria-pressed="true"] { border-color:var(--brand); background:var(--brand); color:var(--brand-ink); }
+.interview-screen button[aria-pressed="true"] strong,.interview-screen button[aria-pressed="true"] span,.interview-screen button[aria-pressed="true"] small { color:inherit; }
+.interview-hint { font-size:.875rem; line-height:1.5; color:var(--ink-soft); margin:.9rem 0 0; }
+.interview-locked { border-block:1px solid var(--rule); margin:1rem 0; padding:.5rem 0; }
+.interview-locked summary,.coach-pass summary,.club-arrival summary { cursor:pointer; min-height:2.75rem; padding:.6rem 0; font-size:.875rem; font-weight:700; }
+.interview-locked p { font-size:.875rem; line-height:1.6; }
+.interview-consequence { padding:1rem; background:var(--surface-2); border-left:4px solid var(--brand); }
+.interview-consequence p { font-size:1rem; line-height:1.5; margin:.4rem 0; }
+.interview-consequence small { font-size:.875rem; line-height:1.5; }
+.interview-adjustment { padding:1rem; border:2px solid var(--brand); font-size:1rem; line-height:1.5; }
+.interview-answers { display:grid; gap:.65rem; }
+.interview-answers button { display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; align-items:center; padding:.9rem; min-height:3.5rem; background:var(--paper); color:var(--ink); border:2px solid var(--rule); text-align:left; font-size:1rem; line-height:1.45; }
+.interview-answers b { font:800 1.25rem var(--title-font); }
+.interview-progress { height:.4rem; background:var(--surface-2); margin:0 0 1.2rem; }
+.interview-progress span { display:block; height:100%; background:var(--brand); }
+.interview-profile { border-block:3px double var(--brand); padding:1rem 0; }
+.interview-profile>span { font-size:.875rem; font-weight:700; color:var(--brand); }
+.interview-profile h2 { font:800 1.9rem/1.2 var(--title-font); margin:.5rem 0; }
+.interview-profile p { font-size:1rem; line-height:1.5; }
+.interview-profile button { min-height:2.75rem; font-size:.875rem; text-decoration:underline; color:var(--brand); }
+.interview-review { display:grid; grid-template-columns:1fr 1fr; margin:1rem 0; gap:.8rem; }
+.interview-review dt { color:var(--ink-soft); font-size:.875rem; }
+.interview-review dd { margin:.25rem 0 0; font-weight:700; overflow-wrap:anywhere; }
+.interview-actions { position:sticky; bottom:0; z-index:5; display:flex; align-items:center; justify-content:space-between; gap:.75rem; background:var(--paper); border-top:2px solid var(--ink); padding:1rem 0 calc(1rem + env(safe-area-inset-bottom)); margin-top:1rem; }
+.interview-actions button { white-space:normal; min-height:3rem; font-size:1rem; padding:.75rem 1rem; }
+.interview-actions>span { color:var(--ink-soft); font-size:.875rem; text-align:right; }
+.interview-actions button:last-of-type:not(:first-of-type) { background:var(--brand); color:var(--brand-ink); }
+.coach-pass { position:sticky; top:1.5rem; border:2px solid var(--ink); background:var(--surface); box-shadow:6px 6px 0 var(--surface-2); }
+.coach-pass>header { display:flex; justify-content:space-between; gap:.5rem; padding:.8rem; background:var(--bar); color:var(--bar-ink); font-size:.75rem; font-weight:800; letter-spacing:.05em; }
+.coach-pass-body { padding:1.15rem; }
+.coach-pass-body>small { color:var(--ink-soft); font-size:.75rem; font-weight:700; }
+.coach-pass h2 { font:800 1.8rem/1.1 var(--title-font); margin:.6rem 0; overflow-wrap:anywhere; }
+.coach-pass p,.coach-pass details { font-size:.875rem; line-height:1.5; }
+.coach-pass dl { border-block:1px solid var(--rule); margin:1rem 0; padding:.3rem 0; }
+.coach-pass dl>div { display:flex; justify-content:space-between; gap:1rem; padding:.5rem 0; font-size:.875rem; }
+.coach-pass dt { color:var(--ink-soft); }.coach-pass dd { margin:0; text-align:right; font-weight:700; }
+.coach-pass-entry { display:grid; gap:.4rem; padding:.85rem; background:var(--brand); color:var(--brand-ink); }
+.coach-pass-entry small { font-size:.75rem; }.coach-pass-entry strong { font:800 1.6rem var(--title-font); }.coach-pass-entry span { font-size:.875rem; }
+.coach-pass>footer { padding:.8rem 1.15rem; font-size:.875rem; line-height:1.5; background:var(--surface-2); border-top:1px solid var(--rule); }
+.coach-pass-mobile { display:none; }
+.club-arrival { max-width:55rem; margin:0 auto; border:2px solid var(--ink); background:var(--surface); color:var(--ink); }
+.club-arrival>header { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem; padding:1rem; background:var(--bar); color:var(--bar-ink); font-size:.875rem; }
+.arrival-body { padding:clamp(1rem,3vw,2rem); }.arrival-scene { color:var(--brand); font-size:.875rem; font-weight:700; }
+.club-arrival h1 { font:800 clamp(1.7rem,3vw,2.6rem)/1.2 var(--title-font); margin:.6rem 0 1rem; }
+.club-arrival blockquote { margin:0 0 1.4rem; padding:0 0 0 1rem; border-left:4px solid var(--brand); }
+.club-arrival p { font-size:1rem; line-height:1.6; }.club-arrival cite { font-size:.875rem; color:var(--ink-soft); }
+.arrival-task { padding:1rem; background:var(--surface-2); }.arrival-task>span { font-size:.875rem; font-weight:800; color:var(--brand); }.arrival-task h2 { font-size:1.4rem; margin:.5rem 0; }
+.arrival-task dl { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }.arrival-task dt { font-size:.875rem; color:var(--ink-soft); }.arrival-task dd { margin:.4rem 0 0; font-weight:800; font-size:1.1rem; }
+.club-arrival .arrival-effect { color:var(--ink-soft); font-size:.875rem; }.club-arrival>footer { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.75rem; padding:1rem; border-top:1px solid var(--rule); }
+.club-arrival>footer button { min-height:3rem; font-size:1rem; white-space:normal; }
+/* Consistent touch targets and contrast also on club/goal selection. */
+.setup-screen .field>span,.setup-screen .field small,.setup-screen .goal-card p,.setup-screen .club-card small,.setup-screen .setup-subtitle { font-size:1rem; line-height:1.5; }
+.setup-screen .field input,.setup-screen .field select { min-height:3rem; font-size:1rem; border:2px solid var(--ink)!important; }
+.setup-screen .setup-footer { position:sticky; bottom:0; background:var(--paper); padding:1rem 0 calc(1rem + env(safe-area-inset-bottom)); z-index:5; }
+.setup-screen .setup-footer button { min-height:3rem; font-size:1rem; white-space:normal; }
+@media(max-width:850px) {
+  .interview-layout { grid-template-columns:minmax(0,1fr); gap:1rem; padding:1rem; }
+  .coach-pass { order:-1; position:static; box-shadow:none; border-left:5px solid var(--brand); }
+  .coach-pass>header,.coach-pass>footer,.coach-pass dl,.coach-pass-entry,.coach-pass details,.coach-pass-body>small { display:none; }
+  .coach-pass-body { padding:.7rem .85rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.3rem .8rem; }
+  .coach-pass h2 { font-size:1.15rem; margin:0; }.coach-pass p { margin:0; }
+  .coach-pass-mobile { display:block; font-size:.875rem; font-weight:700; width:100%; color:var(--brand); }
+  .interview-chapters button { flex-direction:column; align-items:flex-start; gap:.2rem; font-size:.875rem; padding:.6rem .4rem; }
+  .interview-masthead { padding:.8rem 1rem; }.interview-masthead>button span { font-size:.75rem; letter-spacing:0; }
+}
+@media(max-width:480px) {
+  .interview-fields,.interview-options { grid-template-columns:minmax(0,1fr); }
+  .interview-options button { padding:.7rem; }.interview-options button:not([aria-pressed="true"]) span { display:none; }
+  .interview-options button small { color:var(--ink-soft); }.interview-licenses { grid-template-columns:minmax(0,1fr); }
+  .interview-review { grid-template-columns:minmax(0,1fr); }.arrival-task dl { grid-template-columns:1fr 1fr; }
+  .arrival-task dl>div:last-child { grid-column:1/-1; }.club-arrival>footer button { width:100%; }
+}
+@media(prefers-reduced-motion:reduce) { .interview-screen * { scroll-behavior:auto!important; } }

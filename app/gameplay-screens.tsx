@@ -8,6 +8,8 @@ import {
 } from "./game-data";
 import type { GameState, Screen } from "./game-data";
 import { teamForId } from "./game-engine";
+import { ClubArrival } from "./club-arrival";
+import { needsClubArrival } from "./coach-onboarding";
 import { DashboardV14, Match } from "./game-screens";
 
 type Setter = Dispatch<SetStateAction<GameState>>;
@@ -24,6 +26,7 @@ function PostMatchReport({ game, compact = false }: { game: GameState; compact?:
 }
 
 export function DashboardV15(props: DashboardProps) {
+  if (needsClubArrival(props.game)) return <ClubArrival game={props.game} go={props.go} resolveDecision={props.resolveDecision} />;
   const report = props.game.matchState?.completed && props.game.matchState.postMatchReport;
   if (!report || props.game.employmentStatus !== "employed") return <DashboardV14 {...props} />;
   return <><DashboardV14 {...props} />{!props.game.matchState?.reportSeen && <ReportWindow game={props.game} close={props.dismissMatchReport} />}</>;

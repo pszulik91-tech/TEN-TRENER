@@ -12,6 +12,7 @@ import { describeResolvedEffects, generateRoundIssues, legacyIssue, resolveIssue
 import { phrase } from "../lib/game-language.mjs";
 import { ClubPicker, Creator, GoalPicker, StartScreen } from "./setup-screens";
 import type { CoachDraft } from "./setup-screens";
+import { initialCoachDraft, interviewProgress } from "./coach-onboarding";
 import { CareerV14 as Career, GameShell, Jobs, TableScreenV14 as TableScreen, Training } from "./game-screens";
 import { DashboardV15 as Dashboard, MatchV15 as Match, SquadV15 as Squad, TacticsV15 as Tactics } from "./gameplay-screens";
 import { createWorldSnapshot, evolveWorldSnapshot, simulateWorldToDate } from "../lib/world-engine.mjs";
@@ -35,13 +36,14 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [savedPulse, setSavedPulse] = useState(false);
-  const [draft, setDraft] = useState<CoachDraft>({ name: "", age: 35, region: "Śląskie", playingExperience: "Amator", coachingExperience: "Debiutant", profile: "Mentor" as CoachProfile, license: "Grassroots C" as License, psychAnswers: {} });
+  const [draft, setDraft] = useState<CoachDraft>(initialCoachDraft);
   const [selectedAssociation, setSelectedAssociation] = useState("Podkarpacki ZPN");
   const [selectedCompetition, setSelectedCompetition] = useState("Klasa B");
   const [selectedDistrict, setSelectedDistrict] = useState("Jarosław");
   const [selectedPackId, setSelectedPackId] = useState("podkarpacka-b-jaroslaw");
   const [selectedClub, setSelectedClub] = useState("Łazowianka Łazy");
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
+  const [clubStepVisited, setClubStepVisited] = useState(false);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => setHasSave((() => { try { return Boolean(localStorage.getItem(SAVE_KEY)); } catch { return false; } })()));
@@ -65,7 +67,11 @@ export default function App() {
     catch { setSaveError("Nie można odczytać kariery. Zapis zachowano; możesz pobrać go w ustawieniach."); window.alert("Nie można odczytać kariery. Zapis nie został usunięty. Otwórz Wygląd i zapis."); }
   };
 
+  const startNewCareer = () => { setGame(null); setDraft(initialCoachDraft()); setSelectedGoals([]); setClubStepVisited(false); go("creator"); };
   const startClubStep = () => {
+    if (!interviewProgress(draft).complete) return;
+    if (clubStepVisited && eligiblePacks.some(pack => pack.id === selectedPackId && pack.teams.includes(selectedClub))) { go("club"); return; }
+    setClubStepVisited(true);
     const available = LEAGUE_PACKS.filter((pack) => licenseCoversCompetition(draft.license, pack.competition));
     const bestTier = Math.min(...available.map((pack) => pack.tier)); const preferredAssociation = REGION_ASSOCIATION[draft.region];
     const defaultCompetition = draft.license === "Grassroots C" ? "Klasa B" : undefined;
@@ -79,22 +85,22 @@ export default function App() {
   const choosePack = (value: string) => { const pack = eligiblePacks.find((item) => item.id === value) as LeaguePack; setSelectedPackId(value); setSelectedClub(pack.teams[0]); };
 
   const finalizeCareer = () => {
-    if (!selectedPack || selectedGoals.length !== 2) return;
+    if (!selectedPack || selectedGoals.length !== 2 || !interviewProgress(draft).complete || !selectedPack.teams.includes(selectedClub) || !licenseCoversCompetition(draft.license, selectedPack.competition)) return;
     const credibleExperience = highestEligibleCoachingExperience(draft.age, draft.playingExperience);
     const coachingExperience = startingLicenseEligibility("Grassroots C", draft.playingExperience, draft.coachingExperience, draft.age).eligible ? draft.coachingExperience : credibleExperience;
     const startingLicense = startingLicenseEligibility(draft.license, draft.playingExperience, coachingExperience, draft.age).eligible ? draft.license : highestEligibleStartingLicense(draft.playingExperience, coachingExperience, draft.age) as License;
-    const derived = skillSet(draft.profile, draft.playingExperience, coachingExperience); const coach: Coach = { name: draft.name, age: draft.age, region: draft.region, playingExperience: draft.playingExperience, coachingExperience, profile: draft.profile, license: startingLicense, ...derived };
+    const derived = skillSet(draft.profile, draft.playingExperience, coachingExperience); const coach: Coach = { name: draft.name.trim(), age: draft.age, region: draft.region, playingExperience: draft.playingExperience, coachingExperience, profile: draft.profile, license: startingLicense, ...derived };
     setGame(createGame(coach, selectedPack, selectedClub, selectedGoals)); go("dashboard");
   };
   const saveNow = async () => { if (!game) return; try { await storeCareer(game); } catch { setSaveError("Brak miejsca na zapis. Pobierz kopię kariery."); return; } setHasSave(true); setSavedPulse(true); window.setTimeout(() => setSavedPulse(false), 1400); };
 
   const { applyTraining, prepareMatch, changeLiveInstruction, resolveMatchMoment, advanceMatch, resolveDecision, beginNextSeason, acceptJob, stayAtClub, dismissMatchReport, retireCareer, confirmNewSeasonGoals } = gameActions(game, setGame, go, selectedGoals, setSelectedGoals);
 
-  if (screen === "start") return <StartScreen hasSave={hasSave} onNew={() => go("creator")} onLoad={loadGame} />;
+  if (screen === "start") return <StartScreen hasSave={hasSave} onNew={startNewCareer} onLoad={loadGame} />;
   if (screen === "creator") return <Creator draft={draft} setDraft={setDraft} onNext={startClubStep} onBack={() => go("start")} />;
   if (screen === "club") return <ClubPicker draft={draft} competitionOptions={competitionOptions} selectedCompetition={selectedCompetition} associations={associations} districts={districts} packs={packs} pack={selectedPack} selectedAssociation={selectedAssociation} selectedDistrict={selectedDistrict} selectedPackId={selectedPackId} selectedClub={selectedClub} onCompetition={chooseCompetition} onAssociation={chooseAssociation} onDistrict={chooseDistrict} onPack={choosePack} onClub={setSelectedClub} onBack={() => go("creator")} onNext={() => go("goals")} />;
   if (screen === "goals") return <GoalPicker selected={selectedGoals} setSelected={setSelectedGoals} season={game?.season ?? "2026/27"} onBack={() => go(game ? "dashboard" : "club")} onConfirm={game ? confirmNewSeasonGoals : finalizeCareer} />;
-  if (!game) return <StartScreen hasSave={hasSave} onNew={() => go("creator")} onLoad={loadGame} />;
+  if (!game) return <StartScreen hasSave={hasSave} onNew={startNewCareer} onLoad={loadGame} />;
   return <GameShell game={game} screen={screen} go={go} menuOpen={menuOpen} setMenuOpen={setMenuOpen} saveNow={saveNow} savedPulse={savedPulse}>{saveError && <div role="alert" className="save-error">{saveError}</div>}{screen === "dashboard" && <Dashboard game={game} go={go} resolveDecision={resolveDecision} prepareMatch={prepareMatch} beginNextSeason={beginNextSeason} dismissMatchReport={dismissMatchReport} />}{screen === "squad" && <Squad game={game} setGame={value => setGame(previous => previous ? typeof value === "function" ? value(previous) : value : previous)} go={go} />}{screen === "tactics" && <Tactics game={game} setGame={value => setGame(previous => previous ? typeof value === "function" ? value(previous) : value : previous)} />}{screen === "training" && <Training game={game} setGame={value => setGame(previous => previous ? typeof value === "function" ? value(previous) : value : previous)} applyTraining={applyTraining} />}{screen === "match" && <Match game={game} go={go} advanceMatch={advanceMatch} prepareMatch={prepareMatch} changeLiveInstruction={changeLiveInstruction} dismissMatchReport={dismissMatchReport} resolveMatchMoment={resolveMatchMoment} />}{screen === "table" && <TableScreen game={game} />}{screen === "jobs" && <Jobs game={game} acceptJob={acceptJob} stayAtClub={stayAtClub} />}{screen === "career" && <Career game={game} setGame={value => setGame(previous => previous ? typeof value === "function" ? value(previous) : value : previous)} retireCareer={retireCareer} />}</GameShell>;
 }
 
