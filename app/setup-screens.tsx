@@ -1,4 +1,7 @@
 "use client";
+import { useState } from "react";
+import { VERSION, RELEASE_STAGE } from "./build-info";
+import { AboutButton } from "./about-project";
 import { ThemeButton } from "./theme-studio";
 
 import { BadgeCheck, ChevronRight, Play, Save, Target } from "lucide-react";
@@ -18,7 +21,8 @@ type ClubPickerProps = {
 };
 
 export function StartScreen({ hasSave, onNew, onLoad }: { hasSave: boolean; onNew: () => void; onLoad: () => void }) {
-  return <main className="start-screen min-h-dvh"><div className="stadium-grid" /><section className="start-panel"><div className="brand-mark"><span>TT</span></div><div><p className="eyebrow">POLSKA • SEZON 2026/27</p><h1>TEN<br /><em>TRENER</em></h1><p className="start-copy">Nie budujesz klubu. Budujesz własne nazwisko — od błotnistej B-klasy po europejskie wieczory.</p></div><div className="start-actions"><ThemeButton /><Button className="primary-cta" size="lg" onClick={onNew}><Play /> Nowa kariera</Button><Button className="secondary-cta" variant="outline" size="lg" disabled={!hasSave} onClick={onLoad}><Save /> Wczytaj zapis</Button></div><div className="build-row"><span className="live-dot" /> {BUILD} <span>•</span> zapis lokalny</div></section></main>;
+  const [confirmNew, setConfirmNew] = useState(false);
+  return <main className="start-screen min-h-dvh"><div className="stadium-grid" /><section className="start-panel"><div className="brand-mark"><span>TT</span></div><div><span className="release-label">{RELEASE_STAGE} · v{VERSION}</span><p className="eyebrow">TWOJA KARIERA W POLSKIEJ PIŁCE</p><h1>TEN<br /><em>TRENER</em></h1><p className="start-copy">Pierwsza szatnia. Pierwsza decyzja. Nazwisko, na które pracujesz przez całą karierę.</p></div><div className="start-actions"><Button className="primary-cta" size="lg" onClick={() => hasSave ? setConfirmNew(true) : onNew()}><Play /> NOWA KARIERA</Button><Button className="secondary-cta" variant="outline" size="lg" disabled={!hasSave} onClick={onLoad}><Save /> KONTYNUUJ</Button><Button variant="outline" size="lg" onClick={() => window.dispatchEvent(new Event("open-theme-studio"))}>USTAWIENIA</Button><AboutButton />{!hasSave && <p className="save-hint">Nie ma jeszcze kariery na tym urządzeniu. Zacznij nową lub wczytaj plik w ustawieniach.</p>}{confirmNew && <div className="new-career-warning" role="alert"><p>Masz już zapis. Nowa kariera zastąpi go po zakończeniu kreatora. Możesz najpierw pobrać kopię w ustawieniach.</p><button onClick={onNew}>Rozpocznij nową karierę</button><button onClick={() => setConfirmNew(false)}>Zachowaj obecną</button></div>}</div><div className="build-row"><span className="live-dot" /> {BUILD} <span>•</span> wersja testowa</div></section></main>;
 }
 
 export { Creator } from "./coach-interview";

@@ -1,8 +1,10 @@
+import { AboutProject } from "./about-project";
 import { ThemeStudio } from "./theme-studio";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./themes.css";
 import "./onboarding.css";
+import "./release.css";
 
 export const metadata: Metadata = {
   title: "TEN TRENER — kariera polskiego trenera",
@@ -30,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pl">
-      <body className="antialiased">{children}<ThemeStudio /></body>
+      <body className="antialiased">{children}<ThemeStudio /><AboutProject /></body>
     </html>
   );
 }

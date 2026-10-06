@@ -13,7 +13,7 @@ import { encodeSave, decodeSave } from '../lib/save-codec.mjs';
 const answers = Object.fromEntries(PSYCH_QUESTIONS.map(q => [q.id, 0]));
 const readyDraft = () => ({ ...initialCoachDraft(), name: 'Nowy Trener', psychAnswers: answers, profile: resolveCoachProfile(answers) });
 const root = new URL('../', import.meta.url).pathname;
-const vite = await createServer({ appType:'custom', configFile:false, root, resolve:{alias:{'@':root}}, server:{middlewareMode:true} });
+const vite = await createServer({ appType:'custom', configFile:false, root, resolve:{alias:{'@':root}}, server:{middlewareMode:true,hmr:{port:0}} });
 after(() => vite.close());
 function act(g, name, ...args) { let out=g; gameActions(g, next => out=next, () => {})[name](...args); return out; }
 
@@ -76,4 +76,13 @@ for(const competition of ['Klasa B','IV liga','Ekstraklasa']) test(`powitanie â†
   assert.equal(g.matchState.completed,true);assert.equal(g.careerStats.matches,1);assert.equal(needsClubArrival(g),false);
   g=act(g,'dismissMatchReport');assert.equal(g.matchState.reportSeen,true);
   const loaded=migrateGame(await decodeSave(await encodeSave(g)));assert.equal(needsClubArrival(loaded),false);assert.equal(loaded.matchState.reportSeen,true);assert.equal(loaded.seed,g.seed);
+});
+
+test('ekran startowy przedstawia komplet menu i bezpieczny stan bez zapisu', async () => {
+ const {StartScreen}=await vite.ssrLoadModule('/app/setup-screens.tsx');
+ const html=renderToStaticMarkup(React.createElement(StartScreen,{hasSave:false,onNew(){},onLoad(){}}));
+ for(const label of ['NOWA KARIERA','KONTYNUUJ','USTAWIENIA','O PROJEKCIE','Pre-Alpha']) assert.ok(html.includes(label));
+ assert.match(html,/<button[^>]*\sdisabled=""[^>]*>[\s\S]*?KONTYNUUJ/);
+ const saved=renderToStaticMarkup(React.createElement(StartScreen,{hasSave:true,onNew(){},onLoad(){}}));
+ assert.doesNotMatch(saved,/<button[^>]*\sdisabled=""/);
 });

@@ -10,7 +10,7 @@ import { languageBankStats } from '../lib/game-language.mjs';
 import { narrativeStats } from '../lib/career-stories.mjs';
 import { matchMomentStats } from '../lib/match-moments.mjs';
 
-const checks={matches:0,seasons:0,saves:0,moments:0,decisions:0,worldMatches:0};
+const checks={matches:0,seasons:0,saves:0,moments:0,decisions:0,worldMatches:0,promotions:0,relegations:0,jobChanges:0,licenseCompletions:0,seasonSettlements:0};
 function make(pack,variant=0){
   const profile=['Mentor','Generał','Spokojny pragmatyk','Hazardzista'][variant%4];
   const experience=pack.tier<=2?'Ponad 10 lat':'4–10 lat'; const age=pack.tier<=2?42:35; const license=pack.tier<=2?'UEFA PRO':pack.tier<=5?'UEFA A':pack.tier<=7?'UEFA B':'Grassroots C'; assert.ok(startingLicenseEligibility(license,'Zawodowiec',experience,age).eligible);
@@ -23,14 +23,14 @@ function assertFinite(game){
  assert.equal(new Set(game.players.map(p=>p.id)).size,game.players.length);
 }
 function playOne(h,variant=0){
- let g=h.game; for(const issue of g.inbox.filter(e=>!e.resolved)){h.act('resolveDecision',issue.id,issue.choices[variant%issue.choices.length].id);checks.decisions++;}
+ const licenseBefore=h.game.coach.license; let g=h.game; for(const issue of g.inbox.filter(e=>!e.resolved)){h.act('resolveDecision',issue.id,issue.choices[variant%issue.choices.length].id);checks.decisions++;}
  const plan=['STRONGEST','ROTATION','YOUTH','COUNTER'][variant%4];g=h.game;h.game={...g,teamPlan:TEAM_PLANS[plan]?plan:'STRONGEST',training:{...g.training,sessions:trainingPresetSessions(g.environment.trainingSessions,variant%3===0?'RECOVERY':'BALANCED')}};
  // Every tested career pursues Analysis with an actual pre-match session.
  g=h.game;h.game={...g,training:{...g.training,sessions:g.training.sessions.map((s,i)=>i===0?{...s,focus:'Analiza rywala',intensity:'Niska'}:s)}};
  const before=h.game.players.map(p=>p.baseOVR);h.act('applyTraining');const applied=JSON.stringify(h.game);h.act('applyTraining');assert.equal(JSON.stringify(h.game),applied,'microcycle replay');
  h.act('prepareMatch');assert.ok(h.game.matchState&&!h.game.matchState.completed,'match starts');const prepared=JSON.stringify(h.game);h.act('prepareMatch');assert.equal(JSON.stringify(h.game),prepared,'match reroll');
  let steps=0;while(!h.game.matchState.completed){assert.ok(++steps<35,'match deadlock');const m=h.game.matchState;if(m.activeMomentId){const e=m.coachMoments.find(e=>e.id===m.activeMomentId);h.act('resolveMatchMoment',e.id,e.choices[variant%e.choices.length].id);checks.moments++;}else h.act('advanceMatch');}
- checks.matches++;checks.worldMatches+=h.game.worldActivity.matchesPlayed;
+ if(h.game.coach.license!==licenseBefore)checks.licenseCompletions++;checks.matches++;checks.worldMatches+=h.game.worldActivity.matchesPlayed;
  assert.deepEqual(h.game.players.map(p=>p.baseOVR),before,'Base OVR changes mid-season');
  const m=h.game.matchState;assert.ok(m.shotsHome>=m.homeGoals&&m.shotsAway>=m.awayGoals,'goals exceed shots');
  assert.equal(m.plannedEvents.filter(e=>e.kind==='goal'&&e.side==='home').length,m.homeGoals);
@@ -44,7 +44,7 @@ function playSeason(h,variant=0){let matches=0;const first=h.game.careerStats.ma
  const g=h.game;assert.ok(g.fixtures.every(f=>f.played),'AI bye or final round left unplayed');assert.equal(g.teams.find(t=>t.id===g.club.id).played,(g.teams.length-1)*2);assert.equal(g.teams.reduce((n,t)=>n+t.gf,0),g.teams.reduce((n,t)=>n+t.ga,0));assert.ok(g.fixtures.at(-1).date.slice(5,7)>='05','season ended before spring');
  checks.seasons++;return{club:g.club.name,tier:g.club.tier,matches:g.careerStats.matches-first,condition:Math.round(g.players.reduce((n,p)=>n+100-p.fatigue,0)/g.players.length),burnout:g.burnout,goals:g.developmentGoals.map(d=>({id:d.id,progress:d.progress,target:d.target})),saveKB:Math.round(JSON.stringify(g).length/1024)};
 }
-function nextSeason(h){h.act('beginNextSeason');assert.ok(h.game.pendingSeason);if(h.game.employmentStatus==='employed')h.act('stayAtClub');else{assert.ok(h.game.jobOffers.length,'unemployment deadlock');h.act('acceptJob',h.game.jobOffers[0].id);}assert.equal(h.screen,'goals');const before=JSON.stringify(h.game);h.act('applyTraining');assert.equal(JSON.stringify(h.game),before,'goals bypass');h.act('confirmNewSeasonGoals');assert.equal(h.game.developmentGoals.length,2);}
+function nextSeason(h){const previousClub=h.game.club.name;h.act('beginNextSeason');assert.ok(h.game.pendingSeason);checks.seasonSettlements++;if(h.game.pendingSeason.outcome==='awans')checks.promotions++;if(h.game.pendingSeason.outcome==='spadek')checks.relegations++;if(h.game.employmentStatus==='employed')h.act('stayAtClub');else{assert.ok(h.game.jobOffers.length,'unemployment deadlock');h.act('acceptJob',h.game.jobOffers[0].id);}if(h.game.club.name!==previousClub)checks.jobChanges++;assert.equal(h.screen,'goals');const before=JSON.stringify(h.game);h.act('applyTraining');assert.equal(JSON.stringify(h.game),before,'goals bypass');h.act('confirmNewSeasonGoals');assert.equal(h.game.developmentGoals.length,2);}
 
 const results=[];
 for(const competition of ['Klasa C','Klasa B','Klasa A','Klasa okręgowa','V liga','IV liga','III liga','II liga','I liga','Ekstraklasa']){
@@ -56,5 +56,5 @@ const odd=LEAGUE_PACKS.find(p=>p.teams.length%2===1);if(odd){const h=harness(mak
 const longPack=LEAGUE_PACKS.find(p=>p.competition==='Klasa B');const h=harness(make(longPack,3));const long=[];
 for(let year=0;year<32;year++){long.push(playSeason(h,year%4));nextSeason(h);if(year%5===4)console.log(`Career checkpoint ${year+1} seasons, age ${h.game.coach.age}`);}
 assert.equal(h.game.coach.age,67);h.act('retireCareer');assert.equal(h.game.careerEnded,true,'voluntary retirement after 65');
-const report={build:h.game.build,checks,content:{narrative:narrativeStats(),careerScenarios:EVENT_POOL.length,careerChoices:EVENT_POOL.reduce((n,e)=>n+e.choices.length,0),...languageBankStats(),matchMoments:matchMomentStats()},tiers:results,fullCareer:long,limitations:['Beta movement uses data-driven regional parent leagues and simplified promotion places; no official playoffs.','This verifies functional invariants, not that any style is universally balanced or entertaining.']};
-writeFileSync('playable-career-audit.json',JSON.stringify(report,null,2));console.log(JSON.stringify({checks,content:report.content}));
+const report={runAt:new Date().toISOString(),harness:"production-actions",build:h.game.build,checks,content:{narrative:narrativeStats(),careerScenarios:EVENT_POOL.length,careerChoices:EVENT_POOL.reduce((n,e)=>n+e.choices.length,0),...languageBankStats(),matchMoments:matchMomentStats()},tiers:results,fullCareer:long,limitations:['Beta movement uses data-driven regional parent leagues and simplified promotion places; no official playoffs.','This verifies functional invariants, not that any style is universally balanced or entertaining.']};
+writeFileSync('docs/reports/playable-career-audit.json',JSON.stringify(report,null,2));console.log(JSON.stringify({checks,content:report.content}));
