@@ -5,6 +5,8 @@
 [build.environment]
   # Node is pinned in the root .nvmrc, shared with local development and CI.
   NPM_FLAGS = "--no-audit --no-fund"
+  # Next.js remains a legacy dependency; this deploy is the static Vite app.
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 # One build configuration for production, PR previews and branch previews.
 # Enable GitHub integration in the Netlify project; credentials never live here.
