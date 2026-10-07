@@ -1,5 +1,7 @@
 # TEN TRENER — STATUS PROFESJONALIZACJI
 
+> Aktualizacja CI z 2026-10-07: źródła i pełna historia są już w prywatnym `pszulik91-tech/TEN-TRENER`. Node 24.21.0 LTS zastępuje konfigurację 22.16.0 opisaną w historycznej części raportu. [Verify Pre-Alpha #4](https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37581257764) jest zielony: czysta instalacja, build, 106 regresji i test HTTP. Deployment Netlify nadal czeka na potwierdzenie autoryzacji GitHub. Aktualny stan: [wdrożenie](../deployment.md).
+
 Data: 2026-10-06. Wersja **Pre-Alpha v0.1.0**, oparta na Build 2.5. **Etap nie jest jeszcze zakończony: brak autoryzowanego GitHub i pierwszego deploymentu Netlify.**
 
 ## Build
