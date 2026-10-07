@@ -4,6 +4,7 @@ Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
 Aktualny zakres: GAME-01 — wiarygodny raport najbliższego rywala; DONE. Kod i testy opublikowane, bez zmian infrastruktury, CI/deployu, Netlify i SSO.
 
 ## HEAD
+- HEAD kodu/testów po GAME-03: `6e2b877cfec0c417d6c58073038f863e093d08d3` (main).
 - HEAD kodu/testów po GAME-02: `5c9484b80e35e23965da078e24ce0ad97961caa4` (main).
 - HEAD kodu/testów po GAME-01: `79297723f8a33a7d2662bf79621573dd79b0d484` (main).
 - HEAD kodu/testów po DEV-01: `5b0b09c4e0f343183cc9f33cf71f854628c19b60` (main).
@@ -259,3 +260,38 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - Bez przebudowy generatora meczu. Raport rywala, sezony, kreator, CI, Netlify i SSO bez zmian. GAME-03 niewykonane; bez ręcznego deploya i testu produkcji.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP: GAME-02 DONE.
+
+## GAME-03 — jedna sprawa klubowa z odroczoną konsekwencją: DONE (2026-10-07)
+
+- Commit kodu/testów na main: `6e2b877cfec0c417d6c58073038f863e093d08d3`; commit i publikacja przez autoryzowane połączenie GitHub. Drzewo odpowiada lokalnie przetestowanym plikom.
+- Przeczytano aktualny WORK_STATE. Verify Pre-Alpha GAME-02 dla 5c9484b80e35e23965da078e24ce0ad97961caa4: SUCCESS według aktualizacji użytkownika. Zastępuje wcześniejszy brak potwierdzenia. CI GAME-03 nie sprawdzano.
+
+### Audyt dotychczasowej architektury
+
+- STORY_ARCS w lib/story-catalog.mjs: 24 trzyczęściowe wątki z zakresem lig, kategorią, odcinkami, wyborami i istniejącymi efektami. Bazowy katalog tworzy IDs support/standards/delegate; wybory są następnie deterministycznie tasowane.
+- narrative.active zawiera arcId, clubId, step, due, started, waitingEventId oraz previousChoice/previousFeedback. normalizeNarrative klonuje aktywne historie aktualnego klubu, zachowuje znane arcId i ogranicza je do dwóch. Zmiana klubu zamyka aktywne sprawy. Pamięć seen/recent ogranicza powtórzenia; decisions przechowuje do 120 wpisów.
+- issueFor wybierał zawsze arc.episodes[active.step]. previousChoice/previousFeedback były wyłącznie prefiksem tekstu. Generowanie nie czytało wcześniejszej decyzji przy wyborze definicji odcinka ani efektów, więc wszystkie odpowiedzi prowadziły do tego samego następnego zestawu decyzji.
+- recordStoryDecision dopisuje wybór do dziennika. Po pierwszych dwóch częściach zwiększa step, wyznacza due za 2–4 mecze kariery i nadpisuje previousChoice/previousFeedback; po trzeciej usuwa historię i zwiększa completed. waitingEventId blokuje dalszy odcinek przed odpowiedzią; ponowne rozliczenie jest ignorowane. Zegar to liczba meczów kariery, nie kolejka.
+- resolveDecision już stosuje efekty przez resolveIssueEffects oraz zapisuje narrative. Skala efektów jest losowana deterministycznie; wartości katalogowe nie zawsze są dokładnymi zmianami wskaźników. Ten mechanizm pozostaje bez zmian.
+
+### Mała zmiana wyłącznie captain-voice
+
+- Wybrano preferowany wątek Kapitan: naturalny związek prywatnej konsultacji albo publicznego wyjaśnienia zasad z późniejszą rolą kapitana. Część 1 i jej efekty pozostały bez zmian.
+- Po wyborze w części 1 tylko captain-voice zapisuje opcjonalny captainBranch={route,firstChoice} w aktywnej historii. Stabilne ID support/delegate prowadzą do consultation, standards do public-standards; kolejność po tasowaniu nie ma znaczenia.
+- Dwie gałęzie części 2 i 3, po dwie decyzje w odcinku. Konsultacje: Kapitan przynosi wspólny plan → Kapitan partnerem konsultacji. Publiczne zasady: Kapitan oczekuje wyjaśnienia granic → Autorytet po publicznym sporze.
+- Gałąź zmienia definicję odcinka, dostępne ID/etykiety decyzji i efekty. Finały mają inne zakończenia: współpraca/ograniczona konsultacja albo porozumienie po sporze/podporządkowanie roli kapitana. Brak drzewa 3×3×3; wybór części 2 nie zmienia pierwszej gałęzi, ale jego efekty i feedback są zapamiętywane.
+- Każdy wariant zawiera przyczynę: To następstwo Twojej pierwszej decyzji oraz dokładną etykietę pierwszej odpowiedzi. captainBranch nie jest nadpisywany przez previousChoice części 2, więc finał nadal zna pierwszą decyzję.
+- Użyto wyłącznie istniejących efektów: teamMorale, relation, pressures.dressing, readiness, burnout. Bez nowej waluty, reputacji, ekranów lub silnika narracyjnego. Inne STORY_ARCS oraz ich definicje odcinków/wyborów bez zmian.
+- Stare aktywne historie bez captainBranch i nieznana gałąź korzystają z oryginalnych odcinków 2/3. Nie rekonstruuje się gałęzi z tekstu. Stare oczekujące zdarzenia zachowują swoje zapisane wybory; odczyt ich nie przepisuje. Pierwszy wybór ze starego, jeszcze nierozwiązanego odcinka 1 może już zapisać nową gałąź.
+
+### Testy i przykłady
+
+- npm test PASS: typecheck, produkcyjny build Vite, 125/125 regresji; git diff --check PASS. Lokalny Node 24.19.0; repo deklaruje >=24.21.0 <25. Istniejące ostrzeżenia bundla/renderera/HMR nie przerywają testów.
+- Sześć małych testów: niezmieniona część 1 i różne warianty części 2; pamięć pierwszego wyboru w finale; inne dostępne decyzje i efekty; zastosowanie efektów przez rzeczywiste gameActions.resolveDecision i jednorazowe zamknięcie; kompresowany encodeSave/decodeSave/migrateGame między odcinkami; stare/nieznane gałęzie; deterministyczność/brak mutacji. Test porównuje również oba późniejsze odcinki wszystkich pozostałych wątków z ich oryginalnymi definicjami.
+- Przykład A: Rozmawiam z nim bez świadków → Kapitan przynosi wspólny plan / Sprawdzam propozycję przez jeden mikrocykl → Kapitan partnerem konsultacji / Utrzymuję krótkie konsultacje przed odprawą. Współpraca poprawia morale i relacje, wymaga uwagi trenera.
+- Przykład B: Wyjaśniam zasady przy drużynie → Kapitan oczekuje wyjaśnienia granic / Potwierdzam jedną odprawę i egzekwuję ustalone zasady → Autorytet po publicznym sporze / Zostawiam odprawę sobie, kapitanowi przekazywanie uwag. Gotowość rośnie kosztem relacji i napięcia szatni.
+- Pliki: lib/story-catalog.mjs, lib/career-stories.mjs, lib/career-stories.d.mts, tests/captain-story.test.mjs; następnie docs/WORK_STATE.md w osobnym commicie [skip ci]. Bez zależności.
+- Nie powtarzano pełnego audytu sezonów: silnik meczu i sezonów bez zmian; pełna regresja nadal obejmuje istniejące mecze i zapis kariery.
+- Pressing, raport rywala, silnik meczu, sezony, kreator, CI, Netlify i SSO bez zmian. Bez ręcznego deploya i testu produkcji.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP: GAME-03 DONE.
