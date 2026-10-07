@@ -21,6 +21,9 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 - Nie odświeżano ponownie. Ta aktualizacja dokumentacyjna tworzy kolejny commit; jego CI nie było sprawdzane.
 
 ## Netlify — NEXT-02: BLOCKED (2026-10-07)
+- Próba odczytu ręcznego w Cloud Browser: otwarto https://app.netlify.com/projects/ten-trener; panel wyświetlił ekran Log in (Google/GitHub/GitLab/Bitbucket/email/SSO).
+- Aktualny blocker: brak zalogowanej sesji Netlify w Cloud Browser. Zatrzymano się na ekranie logowania i przekazano go użytkownikowi; nie klikano metod logowania ani nie zmieniano ustawień.
+- Repozytorium, production branch, production deploy/SHA, wynik builda i efektywne ustawienia/override’y pozostają nieodczytane. Wznowienie wyłącznie po zalogowaniu użytkownika w przekazanej karcie.
 - Cel: ustalić rzeczywisty stan produkcji; wykonano wyłącznie odczyty.
 - Połączenie z pszulik91-tech/TEN-TRENER: NIEPOTWIERDZONE. API projektu nie zwraca ustawień integracji Git.
 - Branch produkcyjny: NIEPOTWIERDZONY; nie zakładać main na podstawie brancha GitHub.
