@@ -4,7 +4,7 @@ import React from 'react';
 import { act, create } from 'react-test-renderer';
 import { createServer } from 'vite';
 
-test('NOWA KARIERA → zapis → KONTYNUUJ → pierwszy mecz → zapis wyniku', { timeout: 10000 }, async t => {
+test('NOWA KARIERA → KONTYNUUJ → dwa mecze → zapis obu wyników', { timeout: 10000 }, async t => {
   // Only browser services are stubbed; all components and career logic are real.
   const storage = new Map();
   let saved;
@@ -109,11 +109,16 @@ test('NOWA KARIERA → zapis → KONTYNUUJ → pierwszy mecz → zapis wyniku', 
   assert.equal(view.root.findByType(GameShell).props.screen, 'match');
   assert.deepEqual(game().matchState.fixture, firstFixture);
   assert.equal(game().matchState.minute, 0);
-  for (let step = 0; step < 20 && !game().matchState.completed; step++) {
-    if (game().matchState.activeMomentId) {
-      await click(view.root.findByProps({ className: 'coach-moment' }).findAllByType('button')[0]);
-    } else await click(button('Następne 15 minut'));
-  }
+  const finishMatch = async () => {
+    for (let step = 0; step < 20 && !game().matchState.completed; step++) {
+      if (game().matchState.activeMomentId) {
+        await click(view.root.findByProps({ className: 'coach-moment' }).findAllByType('button')[0]);
+      } else await click(button('Następne 15 minut'));
+    }
+    assert.equal(game().matchState.completed, true);
+    assert.equal(game().matchState.minute, 90);
+  };
+  await finishMatch();
   const completed = game();
   const match = completed.matchState;
   assert.equal(match.completed, true, 'first match finishes within bounded UI steps');
@@ -144,4 +149,45 @@ test('NOWA KARIERA → zapis → KONTYNUUJ → pierwszy mecz → zapis wyniku', 
   }
   // The reader links the report to the canonical, already played fixture.
   assert.deepEqual(game().matchState, { ...postMatchSave.matchState, fixture: result });
+
+  const nextFixture = state => state.fixtures.filter(fixture => !fixture.played &&
+    [fixture.home, fixture.away].includes(state.club.id)).sort((a, b) => a.round - b.round)[0];
+  const secondFixture = nextFixture(game());
+  assert.ok(secondFixture);
+  assert.equal(game().round, secondFixture.round);
+  assert.equal(game().date, secondFixture.date);
+  assert.ok(secondFixture.date > firstFixture.date);
+  assert.equal(game().training.completedRound, null);
+  await click(button('Trening'));
+  await click(button('Zrealizuj cały mikrocykl'));
+  assert.equal(game().training.completedRound, secondFixture.round);
+  await click(button('Mecz'));
+  await click(button('Rozpocznij mecz'));
+  assert.deepEqual(game().matchState.fixture, secondFixture);
+  assert.equal(game().matchState.minute, 0);
+  await finishMatch();
+  assert.equal(game().careerStats.matches, 2);
+  assert.equal(game().teams.find(team => team.id === game().club.id).played, 2);
+  const playedOwn = state => state.fixtures.filter(fixture => fixture.played &&
+    [fixture.home, fixture.away].includes(state.club.id));
+  const results = playedOwn(game());
+  assert.equal(results.length, 2);
+  assert.deepEqual(results[0], result, 'first result is not overwritten');
+  assert.equal(results[1].homeGoals, game().matchState.homeGoals);
+  assert.equal(results[1].awayGoals, game().matchState.awayGoals);
+  for (const score of [results[1].homeGoals, results[1].awayGoals]) assert.ok(Number.isInteger(score) && score >= 0);
+  assert.equal(game().round, nextFixture(game()).round);
+  assert.equal(game().date, nextFixture(game()).date);
+  assert.ok(game().date > secondFixture.date);
+  await click(button('Zamknij raport i wróć do gry'));
+  await click(button('Raport i pulpit'));
+  await click(button('Zapisz'));
+  const twoMatchSave = await decodeSave(storage.get(SAVE_KEY));
+  assert.deepEqual(playedOwn(twoMatchSave), results);
+  await act(() => view.unmount());
+  await act(() => { view = create(React.createElement(App)); });
+  await click(button('KONTYNUUJ'));
+  assert.equal(game().careerStats.matches, 2);
+  for (const key of ['fixtures', 'careerStats', 'round', 'date']) assert.deepEqual(game()[key], twoMatchSave[key]);
+  assert.deepEqual(playedOwn(game()), results, 'both results survive save and continue');
 });
