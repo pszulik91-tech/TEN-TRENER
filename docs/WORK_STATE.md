@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: DEV-06 — zakończenie pierwszego sezonu; DONE. Rozszerzono istniejący audyt, bez zmian aplikacji, infrastruktury i CI/deployu.
+Aktualny zakres: DEV-01 — zapamiętywanie niedokończonego kreatora; DONE. Kod i testy opublikowane, bez zmian infrastruktury, CI/deployu, Netlify i SSO.
 
 ## HEAD
+- HEAD kodu/testów po DEV-01: `5b0b09c4e0f343183cc9f33cf71f854628c19b60` (main).
 - HEAD testu po DEV-06: `8025a9b91a9220d64a83b9d2fe53ee58f7eb9887` (main).
 - HEAD testu po DEV-05: `0562365414de37881fa06930bd927597c4fe37a4` (main).
 - HEAD testu po DEV-04: `b17ad9764c7a1d9602634d23da260e2e61bc48bb` (main).
@@ -183,9 +184,28 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - Etykiety KONIEC SEZONU i Rozlicz sezon sprawdzono przez renderowanie rzeczywistego DashboardV15 w SSR. Audyt używa rzeczywistych akcji gry; nie jest pełnym testem kliknięć przeglądarki ani smoke testem produkcji.
 - Testy na Node 24.21.0: npm test PASS (typecheck, produkcyjny build Vite, 107/107 regresji); rozszerzony npm run audit:release PASS (53 sezony, 1476 meczów, 1478 odczytów zapisu, 53 rozliczenia sezonu). Różnica liczników względem bazowego audytu wynika z zastąpienia istniejącej próbki grupą Rybnik I oraz sprawdzenia jej rozliczenia.
 - Zmienione pliki: scripts/playable-career-audit.mjs i docs/WORK_STATE.md. Generowany raport audytu przywrócono; kod aplikacji i zależności bez zmian.
-- CI DEV-05: SUCCESS według aktualizacji użytkownika. CI DEV-06: IN_PROGRESS podczas jedynego sprawdzenia; https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37668783104. Nie czekano na wynik i nie odświeżano ponownie.
+- CI DEV-05: SUCCESS według aktualizacji użytkownika. CI DEV-06: SUCCESS dla `8025a9b91a9220d64a83b9d2fe53ee58f7eb9887` według aktualizacji użytkownika przed DEV-01; https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37668783104.
 - Netlify/SSO/prywatność/infrastruktura/konfiguracja CI i deployu: bez zmian; stanu nowych wdrożeń nie odczytywano i nie uruchamiano deploya ręcznie.
-- BROKEN/BLOCKED dla DEV-06: brak potwierdzonego błędu; oczekiwany wynik CI pozostaje niepotwierdzony do zakończenia powyższego runu.
+- BROKEN/BLOCKED dla DEV-06: brak; CI SUCCESS potwierdzony przez użytkownika przed DEV-01.
 - Dokumentacja: osobny commit [skip ci]; dokładny SHA: git log -1 --format=%H -- docs/WORK_STATE.md.
 - NEXT: brak autoryzowanych kolejnych prac. DEV-01 niewykonane.
 - STOP: DEV-06 DONE.
+
+## DEV-01 — zapamiętywanie niedokończonego kreatora: DONE (2026-10-07)
+
+- Commit kodu/testów na main: `5b0b09c4e0f343183cc9f33cf71f854628c19b60`; commit i push przez autoryzowane połączenie GitHub.
+- Stan przed zmianą: dane trenera i wybór klubu/celów znajdowały się tylko w stanie App, a etap wywiadu i numer pytania w lokalnym stanie Creator. Restart App je usuwał; ukończona kariera miała już poprawny zapis localStorage.
+- Rozwiązanie: etap i pytanie są kontrolowane przez App. Istniejący moduł app/save-storage.ts przechowuje mały wersjonowany szkic JSON pod CREATOR_DRAFT_KEY = SAVE_KEY + ':creator'. Szkic zawiera dane trenera, odpowiedzi, etap/pytanie, ekran creator/club/goals, wybór rozgrywek/klubu i celów. Nie powstał nowy system zapisu kariery ani nowy etap kreatora; format i klucz normalnego zapisu kariery pozostają bez zmian.
+- Po restarcie menu udostępnia WZNÓW KREATOR, który przywraca dane i ekran. Odrzuć szkic i zacznij od nowa usuwa dotychczasowy szkic i otwiera czysty etap 1 (od tej chwili zapisuje się nowy, pusty szkic). NOWA KARIERA także zaczyna od początku; ostrzeżenie dotyczące istniejącego zapisu kariery pozostaje aktywne.
+- Szkic jest usuwany dopiero po pomyślnym zapisie utworzonej kariery. Niedokończony kreator nie nadpisuje SAVE_KEY. Wczytanie starszej ukończonej kariery przez KONTYNUUJ nie usuwa równoległego szkicu.
+- Odczyt szkicu waliduje wersję, strukturę, etap/pytanie, dane trenera, odpowiedzi, cele i spójność wybranego klubu dla ekranów club/goals. Uszkodzony szkic nie blokuje startu aplikacji. Błędy zapisu są przechwytywane; błąd localStorage nie blokuje samego rozpoczęcia kreatora.
+- Rozszerzono istniejący mały test integracyjny tests/career-creation.test.mjs: wpisanie pseudonimu i zmiana wieku → etap 2 → restart/wznowienie → etap 3/pytanie 2 → restart/wznowienie → zgodność całego CoachDraft i numeru pytania → menu → odrzucenie i czysty etap 1. Sprawdzono też restart na wizytówce (etap 4), po wyborze klubu i po jednym celu, ukończenie kariery, brak szkicu, aktywne KONTYNUUJ i zachowanie tej samej kariery. Istniejące dwa mecze i zapis wyników nadal przechodzą. Dodatkowo szkic drugiej kariery nie zmienia istniejącego zapisu i nie przeszkadza w KONTYNUUJ.
+- tests/onboarding.test.mjs dostosowano do kontrolowanych props stage/questionIndex; dotychczasowe asercje renderowania pozostają. Test integracyjny używa rzeczywistych komponentów i akcji, z pamięciową mapą localStorage zamiast przeglądarki. Osobnego smoke testu produkcji nie wykonywano.
+- Pliki zmienione: app/page.tsx, app/coach-interview.tsx, app/setup-screens.tsx, app/save-storage.ts, tests/career-creation.test.mjs, tests/onboarding.test.mjs, następnie docs/WORK_STATE.md. Bez nowych zależności.
+- Testy na Node 24.21.0: npm test PASS — typecheck, produkcyjny build Vite i 107/107 regresji; git diff --check PASS. Nie powtarzano pełnego audytu sezonów, ponieważ silnik meczu/sezonów nie był zmieniany.
+- CI DEV-06: SUCCESS według aktualizacji użytkownika. CI DEV-01: IN_PROGRESS podczas jedynego odczytu; https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37670482332. Nie czekano ani nie odświeżano ponownie.
+- Netlify, SSO, prywatność, infrastruktura, workflow CI i konfiguracja deployu: bez zmian; nowego deploya nie sprawdzano ani nie uruchamiano ręcznie.
+- BROKEN/BLOCKED dla DEV-01: brak potwierdzonego blokera; wynik trwającego CI jeszcze niepotwierdzony.
+- Dokumentacja: osobny commit [skip ci]; SHA: git log -1 --format=%H -- docs/WORK_STATE.md.
+- NEXT: brak autoryzowanych kolejnych prac.
+- STOP: DEV-01 DONE.
