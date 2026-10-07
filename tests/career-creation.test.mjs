@@ -4,7 +4,7 @@ import React from 'react';
 import { act, create } from 'react-test-renderer';
 import { createServer } from 'vite';
 
-test('NOWA KARIERA → KONTYNUUJ → dwa mecze → zapis obu wyników', { timeout: 10000 }, async t => {
+test('szkic kreatora → wznowienie/odrzucenie → kariera → KONTYNUUJ → dwa mecze', { timeout: 10000 }, async t => {
   // Only browser services are stubbed; all components and career logic are real.
   const storage = new Map();
   let saved;
@@ -22,7 +22,8 @@ test('NOWA KARIERA → KONTYNUUJ → dwa mecze → zapis obu wyników', { timeou
   });
   stubGlobal('localStorage', {
     getItem: key => storage.get(key) ?? null,
-    setItem: (key, value) => { storage.set(key, value); saved(); },
+    setItem: (key, value) => { storage.set(key, value); if (!key.endsWith(':creator')) saved(); },
+    removeItem: key => storage.delete(key),
   });
   const root = new URL('../', import.meta.url).pathname;
   const vite = await createServer({ appType: 'custom', configFile: false, root,
@@ -42,6 +43,41 @@ test('NOWA KARIERA → KONTYNUUJ → dwa mecze → zapis obu wyników', { timeou
     await act(() => node.props.onClick());
   };
   const stage = number => assert.ok(view.root.findAllByType('b').some(node => text(node) === `ETAP ${number} / 4`));
+  const { CREATOR_DRAFT_KEY, readCreatorDraft } = await vite.ssrLoadModule('/app/save-storage.ts');
+  storage.set(CREATOR_DRAFT_KEY, '{broken');
+  assert.equal(readCreatorDraft(), null, 'invalid draft cannot break startup');
+  storage.delete(CREATOR_DRAFT_KEY);
+  const restart = async () => {
+    await act(() => view.unmount());
+    await act(() => { view = create(React.createElement(App)); });
+  };
+  await click(button('NOWA KARIERA'));
+  await act(() => view.root.findByType('input').props.onChange({ target: { value: 'Szkic trenera' } }));
+  await click(view.root.findByProps({ 'aria-label': 'Zwiększ wiek' }));
+  await click(button('O doświadczeniu'));
+  await restart();
+  await click(button('WZNÓW KREATOR'));
+  stage(2);
+  await click(button('Porozmawiajmy o szatni'));
+  await click(view.root.findAllByType('button').find(node => text(node).startsWith('A')));
+  const draftBeforeRestart = JSON.parse(storage.get(CREATOR_DRAFT_KEY));
+  assert.equal(draftBeforeRestart.stage, 2);
+  assert.equal(draftBeforeRestart.questionIndex, 1);
+  await restart();
+  assert.ok(button('WZNÓW KREATOR'));
+  assert.equal(button('KONTYNUUJ').props.disabled, true);
+  await click(button('WZNÓW KREATOR'));
+  const { Creator } = await vite.ssrLoadModule('/app/coach-interview.tsx');
+  assert.deepEqual(view.root.findByType(Creator).props.draft, draftBeforeRestart.draft);
+  assert.ok(view.root.findAllByType('b').some(node => text(node) === 'PYTANIE 2 / 8'));
+  await click(view.root.findByProps({ 'aria-label': 'Wróć do menu głównego' }));
+  await click(button('Odrzuć szkic i zacznij od nowa'));
+  stage(1);
+  assert.equal(view.root.findByType('input').props.value, '');
+  assert.equal(view.root.findByType(Creator).props.draft.age, 35);
+  assert.deepEqual(view.root.findByType(Creator).props.draft.psychAnswers, {});
+  assert.equal(JSON.parse(storage.get(CREATOR_DRAFT_KEY)).draft.name, '');
+  await click(button('Menu'));
   assert.equal(button('KONTYNUUJ').props.disabled, true);
   await click(button('NOWA KARIERA'));
   stage(1);
@@ -55,15 +91,24 @@ test('NOWA KARIERA → KONTYNUUJ → dwa mecze → zapis obu wyników', { timeou
     await click(view.root.findAllByType('button').find(node => text(node).startsWith('A')));
   }
   stage(4);
+  await restart();
+  await click(button('WZNÓW KREATOR'));
+  stage(4);
   await click(button('Wybierz pierwszy klub'));
   const clubs = view.root.findAllByType('button').filter(node => node.props.className?.startsWith('club-card'));
   const chosenClub = text(clubs[2].findByType('strong'));
   await click(clubs[2]);
+  await restart();
+  await click(button('WZNÓW KREATOR'));
+  assert.equal(text(view.root.findAllByType('button').find(node => node.props.className === 'club-card selected').findByType('strong')), chosenClub);
   await click(button('Cele sezonu'));
   assert.equal(button('Rozpocznij karierę').props.disabled, true);
   const goals = () => view.root.findAllByType('button').filter(node => node.props.className?.startsWith('goal-card'));
   await click(goals()[0]);
   assert.equal(button('Rozpocznij karierę').props.disabled, true);
+  await restart();
+  await click(button('WZNÓW KREATOR'));
+  assert.equal(goals().filter(node => node.props.className.includes('selected')).length, 1);
   await click(goals()[3]);
   await click(button('Rozpocznij karierę'));
   assert.equal(text(view.root.findByProps({ id: 'arrival-heading' })), `Witamy w ${chosenClub}.`);
@@ -83,11 +128,13 @@ test('NOWA KARIERA → KONTYNUUJ → dwa mecze → zapis obu wyników', { timeou
   const { decodeSave } = await import('../lib/save-codec.mjs');
   const beforeRestart = JSON.parse(JSON.stringify(career));
   assert.ok(storage.get(SAVE_KEY), 'created career is persisted');
+  assert.equal(storage.has(CREATOR_DRAFT_KEY), false, 'successful career save clears setup draft');
   assert.deepEqual(await decodeSave(storage.get(SAVE_KEY)), beforeRestart);
   await act(() => view.unmount());
   await act(() => { view = create(React.createElement(App)); });
   assert.equal(view.root.findAllByProps({ id: 'arrival-heading' }).length, 0);
   assert.equal(button('KONTYNUUJ').props.disabled, false);
+  assert.equal(button('WZNÓW KREATOR'), undefined);
   await click(button('KONTYNUUJ'));
   assert.equal(text(view.root.findByProps({ id: 'arrival-heading' })), `Witamy w ${chosenClub}.`);
   const { GameShell } = await vite.ssrLoadModule('/app/game-screens.tsx');
@@ -190,4 +237,15 @@ test('NOWA KARIERA → KONTYNUUJ → dwa mecze → zapis obu wyników', { timeou
   assert.equal(game().careerStats.matches, 2);
   for (const key of ['fixtures', 'careerStats', 'round', 'date']) assert.deepEqual(game()[key], twoMatchSave[key]);
   assert.deepEqual(playedOwn(game()), results, 'both results survive save and continue');
+  await restart();
+  const existingSave = storage.get(SAVE_KEY);
+  await click(button('NOWA KARIERA'));
+  await click(button('Rozpocznij nową karierę'));
+  await act(() => view.root.findByType('input').props.onChange({ target: { value: 'Drugi szkic' } }));
+  await restart();
+  assert.equal(storage.get(SAVE_KEY), existingSave, 'draft does not overwrite saved career');
+  assert.ok(button('WZNÓW KREATOR'));
+  await click(button('KONTYNUUJ'));
+  assert.equal(game().careerStats.matches, 2);
+  assert.equal(JSON.parse(storage.get(CREATOR_DRAFT_KEY)).draft.name, 'Drugi szkic', 'loading existing career keeps unfinished setup');
 });

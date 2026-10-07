@@ -44,7 +44,7 @@ test('wizytówka pokazuje dostępne szczeble zgodnie z regułami, a nie wiekiem 
 
 test('pierwszy ekran ma tylko tożsamość i wizytówkę, a ukończony wywiad pozwala wrócić z wyboru klubu', async () => {
   const {Creator}=await vite.ssrLoadModule('/app/coach-interview.tsx');
-  const render=draft=>renderToStaticMarkup(React.createElement(Creator,{draft,setDraft(){},onBack(){},onNext(){}}));
+  const render=draft=>renderToStaticMarkup(React.createElement(Creator,{draft,stage:interviewProgress(draft).complete?3:0,setStage(){},questionIndex:0,setQuestionIndex(){},setDraft(){},onBack(){},onNext(){}}));
   const start=render(initialCoachDraft());
   assert.match(start,/Jak mamy pana przedstawić/);assert.match(start,/O doświadczeniu/);
   assert.equal((start.match(/<option\b/g)||[]).length,16);

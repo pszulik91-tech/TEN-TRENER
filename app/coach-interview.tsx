@@ -18,10 +18,8 @@ const PLAYING = [
 ];
 const EXPERIENCE = ["Debiutant", "1–3 lata", "4–10 lat", "Ponad 10 lat"];
 
-export function Creator({ draft, setDraft, onNext, onBack }: { draft: CoachDraft; setDraft: Dispatch<SetStateAction<CoachDraft>>; onNext: () => void; onBack: () => void }) {
+export function Creator({ draft, setDraft, stage, setStage, questionIndex, setQuestionIndex, onNext, onBack }: { stage: number; setStage: (stage: number) => void; questionIndex: number; setQuestionIndex: (index: number) => void; draft: CoachDraft; setDraft: Dispatch<SetStateAction<CoachDraft>>; onNext: () => void; onBack: () => void }) {
   const progress = interviewProgress(draft);
-  const [stage, setStage] = useState(progress.complete ? 3 : 0);
-  const [questionIndex, setQuestionIndex] = useState(Math.max(0, PSYCH_QUESTIONS.findIndex(q => draft.psychAnswers[q.id] === undefined)));
   const [adjustment, setAdjustment] = useState("");
   const heading = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
