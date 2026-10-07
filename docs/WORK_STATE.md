@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: DEV-01 — zapamiętywanie niedokończonego kreatora; DONE. Kod i testy opublikowane, bez zmian infrastruktury, CI/deployu, Netlify i SSO.
+Aktualny zakres: GAME-01 — wiarygodny raport najbliższego rywala; DONE. Kod i testy opublikowane, bez zmian infrastruktury, CI/deployu, Netlify i SSO.
 
 ## HEAD
+- HEAD kodu/testów po GAME-01: `79297723f8a33a7d2662bf79621573dd79b0d484` (main).
 - HEAD kodu/testów po DEV-01: `5b0b09c4e0f343183cc9f33cf71f854628c19b60` (main).
 - HEAD testu po DEV-06: `8025a9b91a9220d64a83b9d2fe53ee58f7eb9887` (main).
 - HEAD testu po DEV-05: `0562365414de37881fa06930bd927597c4fe37a4` (main).
@@ -209,3 +210,19 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - Dokumentacja: osobny commit [skip ci]; SHA: git log -1 --format=%H -- docs/WORK_STATE.md.
 - NEXT: brak autoryzowanych kolejnych prac.
 - STOP: DEV-01 DONE.
+
+## GAME-01 — wiarygodny raport najbliższego rywala: DONE (2026-10-07)
+
+- Commit kodu/testów na main: `79297723f8a33a7d2662bf79621573dd79b0d484`; publikacja przez autoryzowane połączenie GitHub (terminal push bez poświadczeń). Drzewo odpowiada lokalnie przetestowanym plikom.
+- Przeczytano aktualny WORK_STATE. Verify Pre-Alpha DEV-01 dla 5b0b09c4e0f343183cc9f33cf71f854628c19b60: SUCCESS według aktualizacji użytkownika. Zastępuje wcześniejszy zapis IN_PROGRESS; brak blokera DEV-01. CI GAME-01 nie sprawdzano.
+- Audyt opponentDossier: ostatnie wyniki i OVR pochodziły z Team; zmęczenie wybierało pulę zaleceń. Konkretne zalecenie, mocne/słabe strony i komentarze wybierał hash sezon/kolejka/ID. Pewność i pozorne źródła obserwacji zależały od poziomu ligi, częściowo od hasha.
+- Obecny Team: id/nazwa, ovr, played/won/drawn/lost, gf/ga/points, opcjonalne form/morale/fatigue/lastFive. Terminarz zawiera wyniki. teamLiveStrength wykorzystuje OVR/formę/morale/zmęczenie. Nie ma atrybutów dośrodkowań, sektorów, niskiego bloku ani odporności na pressing.
+- Mała czysta funkcja app/opponent-report.ts zastępuje dotychczasowy generator; istniejący panel Rywal pokazuje cztery fakty: OVR obu drużyn; punkty/mecze/bramki; ostatnie pięć rezultatów od najnowszego; zmęczenie. Brak danych jest jawny. Usunięto hash, pozorne cechy taktyczne, fikcyjne źródła, komentarze obserwacyjne i deklaracje pewności.
+- Jedno zalecenie: przy OVR rywala > nasz OVR + 2 plan Najsilniejsza XI; w pozostałych przypadkach zrównoważona mentalność jako punkt wyjścia. Uzasadnienie podaje dokładne OVR i regułę. To propozycja sztabu, nie prognoza wyniku.
+- npm test PASS: typecheck, produkcyjny build Vite, 111/111 regresji; git diff --check PASS. Dostępny Node 24.19.0; wymagany przez repo >=24.21.0 <25. Istniejące ostrzeżenia bundla/renderera/portu HMR nie przerwały testów. Nie potwierdzano ponownie CI.
+- Cztery małe testy: dokładne fakty, reakcja na rzeczywiste dane i granicę OVR, zgodność uzasadnienia, deterministyczność/brak mutacji, niezależność od ID/sezonu/kolejki/ligi, brakujące dane bez wymyślonych wartości.
+- Przykłady z createGame/currentFixture dla nowych karier: Ruch Bolesław — LKS Bojanów (OVR 32/36), Jagiellonia II Białystok — Ząbkovia Ząbki (58/54), Lech Poznań — Raków Częstochowa (72/75). Każdy przed sezonem: 0 pkt, 0 meczów, bramki 0:0, brak ostatnich wyników, zmęczenie 14/100.
+- Zmieniono app/game-screens.tsx, app/opponent-report.ts, tests/opponent-report.test.mjs; następnie docs/WORK_STATE.md w osobnym commicie [skip ci]. Bez nowych zależności/atrybutów drużyn i zmian silnika.
+- GAME-02/GAME-03 niewykonane; CI, Netlify, SSO bez zmian. Nie uruchamiano ręcznego deploya ani smoke testu produkcji.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP: GAME-01 DONE.
