@@ -35,6 +35,7 @@ export function liveBreakdown(player: RatingPlayer): { form: number; morale: num
 export function liveOVR(player: RatingPlayer): number;
 export function effectiveOVR(player: RatingPlayer, slot: string): number;
 export function playerAvailable(player: RatingPlayer): boolean;
+export function lineupSelectionReason(player: RatingPlayer, slot: string, planId: string): string;
 export function selectLineupForPlan(players: RatingPlayer[], slots: readonly string[], planId?: string): Record<string, string>;
 export function selectBestLineup(players: RatingPlayer[], slots: readonly string[]): Record<string, string>;
 export type LeagueTeam = { id: string; name: string; ovr: number; played: number; won: number; drawn: number; lost: number; gf: number; ga: number; points: number; form?: number; morale?: number; fatigue?: number; lastFive?: string[] };

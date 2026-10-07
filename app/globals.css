@@ -1058,3 +1058,9 @@ button, [role="button"] { border-radius: 0 !important; }
   .job-market-screen .market-rules { grid-template-columns: 1fr; }
   .market-rules span { border-right: 0; border-bottom: 1px solid #405b72; }
 }
+
+/* Read-only squad presentation on the team plan screen. */
+.lineup-change, .selection-reason { overflow-wrap: anywhere; }
+.selection-reason { margin-top: .6rem; font-size: .8rem; line-height: 1.5; }
+.roster-cards > .player-card { min-width: 0; }
+.player-card header strong { overflow-wrap: anywhere; }
