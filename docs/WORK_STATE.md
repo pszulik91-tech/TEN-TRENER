@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: DEV-04 — pierwszy mecz kariery i zapis wyniku; rozszerzenie testu bez zmian kodu aplikacji, infrastruktury i konfiguracji CI/deployu.
+Aktualny zakres: DEV-05 — przejście do drugiego mikrocyklu/meczu i zachowanie obu wyników; rozszerzenie testu bez zmian aplikacji, infrastruktury i CI/deployu.
 
 ## HEAD
+- HEAD testu po DEV-05: `0562365414de37881fa06930bd927597c4fe37a4` (main).
 - HEAD testu po DEV-04: `b17ad9764c7a1d9602634d23da260e2e61bc48bb` (main).
 - HEAD testu po DEV-03: `0074e44f136be15f8920ee2ca7350cde0cf88b8c` (main).
 - HEAD kodu/testu po DEV-02: `ad7959f43b44517b695731cb2e711404158f72a2`.
@@ -143,8 +144,27 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - Pliki zmienione: `tests/career-creation.test.mjs`, następnie `docs/WORK_STATE.md`. Bez nowych zależności.
 - Testy na Node 24.21.0: `npm test` PASS — typecheck, build Vite, 107/107 regresji, w tym rozszerzony scenariusz pierwszego meczu.
 - CI DEV-03: SUCCESS według aktualizacji użytkownika.
-- CI DEV-04: IN_PROGRESS podczas jedynego sprawdzenia; https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37666155203. Bez czekania i ponownego odświeżania.
+- CI DEV-04: SUCCESS — aktualizacja użytkownika przed DEV-05 dla `b17ad9764c7a1d9602634d23da260e2e61bc48bb`. Run: https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37666155203. W sesji DEV-04 obserwowano jeszcze IN_PROGRESS.
 - Netlify, SSO, prywatność, infrastruktura i konfiguracja deployu: bez zmian; nowego deploya nie sprawdzano ani nie uruchamiano ręcznie.
 - BROKEN/BLOCKED dla DEV-04: brak. DEV-01 niewykonane; nowy scenariusz kończy się po pierwszym meczu, bez testu całego sezonu.
 - Dokumentacja: osobny commit `[skip ci]`; jego SHA: `git log -1 --format=%H -- docs/WORK_STATE.md`.
 - STOP: DEV-04 DONE. Kolejne zadanie wymaga osobnego polecenia użytkownika.
+
+## DEV-05 — przejście do drugiego meczu: DONE (2026-10-07)
+
+- Commit testu na main: `0562365414de37881fa06930bd927597c4fe37a4`; commit i publikacja przez autoryzowane połączenie GitHub.
+- Sprawdzono istniejące przesuwanie terminarza po meczu, reset completedRound, applyTraining, currentFixture oraz usuwanie zakończonego matchState przy wejściu do następnego meczu. Scenariusz działa; błędu aplikacji nie stwierdzono.
+- Rozszerzono istniejący `tests/career-creation.test.mjs` o minimalną kontynuację po odczycie zapisu pierwszego meczu: Trening → Zrealizuj cały mikrocykl → Mecz → Rozpocznij mecz → kroki po 15 minut/reakcje → raport → pulpit → Zapisz → ponowny start App → KONTYNUUJ.
+- Ten sam ograniczony fragment obsługi meczu wykorzystano dla obu spotkań. Bez zmian kalendarza, mikrocyklu, silnika lub systemu zapisu i bez nowych zależności.
+- Potwierdzono dostęp do nowego mikrocyklu (completedRound=null, potem numer właściwej kolejki), właściwy kolejny termin, start drugiego meczu od minuty 0 oraz zakończenie po 90 minutach.
+- Potwierdzono careerStats.matches 1→2 i played=2 w tabeli klubu. Kolejka i data przed drugim oraz po drugim meczu zgadzają się z najbliższym niegranym terminem własnego klubu; data rośnie. Test uwzględnia terminarz, nie zakłada braku pauz.
+- Potwierdzono dwa rozegrane spotkania własnego klubu, niezmieniony pierwszy wynik oraz zgodność bramek drugiego meczu z terminarzem. Oba wyniki, cały terminarz, statystyki, kolejka i data pozostają poprawne po zapisie i KONTYNUUJ.
+- Test integracyjny korzysta z prawdziwych komponentów App i silnika; tylko usługi przeglądarki są zastąpione w pamięci. Nie wykonano dodatkowego testu w Cloud Browser.
+- Zmienione pliki: `tests/career-creation.test.mjs`, następnie `docs/WORK_STATE.md`.
+- Testy na Node 24.21.0: rozszerzony scenariusz PASS; `npm test` PASS — typecheck, build Vite i 107/107 testów regresji.
+- CI DEV-04: SUCCESS według aktualizacji użytkownika.
+- CI DEV-05: IN_PROGRESS podczas jedynego odczytu; https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37666659481. Nie czekano i nie odświeżano ponownie.
+- Netlify, SSO, infrastruktura, CI i konfiguracja deployu: bez zmian; nowego deploya nie sprawdzano ani nie uruchamiano ręcznie.
+- BROKEN/BLOCKED dla DEV-05: brak. DEV-01 niewykonane; nowy scenariusz kończy się po dwóch meczach, bez testu całego sezonu.
+- Dokumentacja: osobny commit `[skip ci]`; SHA: `git log -1 --format=%H -- docs/WORK_STATE.md`.
+- STOP: DEV-05 DONE. Następne zadanie wymaga osobnego polecenia użytkownika.
