@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
-Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-05 — jeden mierzalny cel sportowy zarządu; DONE. Kod i testy opublikowane. STOP po GAME-05.
+Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
+Aktualny zakres: GAME-06 — oferta pracy z konkretnym powodem; DONE. Kod i testy opublikowane. STOP po GAME-06.
 
 ## HEAD
+- HEAD kodu/testów po GAME-06: `1c39f3fe43d0c5ab5ebe5c00b682845c6575d8a9` (main).
 - HEAD kodu/testów po GAME-05: `178ff7b9a97caf243af63b028dcc602c920ce3de` (main).
 - HEAD kodu/testów po GAME-04: `d586fc668ef12c971681c67f80842b776ade2670` (main).
 - HEAD kodu/testów po GAME-03: `6e2b877cfec0c417d6c58073038f863e093d08d3` (main).
@@ -333,3 +334,42 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - Pliki: app/club-arrival.tsx, app/game-actions.ts, app/game-data.ts, app/game-engine.ts, app/game-screens.tsx, app/board-goal-panel.tsx, lib/board-goal.mjs, lib/board-goal.d.mts, tests/board-goal.test.mjs, docs/reports/playable-career-audit.json; następnie ten checkpoint w osobnym commicie [skip ci].
 - GAME-06 niewykonane. Bez zmian innych mechanik, konfiguracji CI/Netlify/SSO i bez ręcznego deploya.
 - STOP po GAME-05.
+
+
+## GAME-06 — oferta pracy z konkretnym powodem: DONE (2026-10-08)
+
+- Commit kodu/testów na main: `1c39f3fe43d0c5ab5ebe5c00b682845c6575d8a9`. Publikacja przez autoryzowany konektor GitHub. Potwierdzono origin/main, identyczność z lokalnie przetestowanym commitem 392162df1a5395c2df38c63d40c6e8e977d6df1d i pełne drzewo de2c18ad671b7226a991a2715786e0a95dd8ef7f; git diff --exit-code PASS.
+- Verify Pre-Alpha GAME-05 dla 178ff7b9a97caf243af63b028dcc602c920ce3de: SUCCESS według aktualizacji użytkownika przed GAME-06. CI GAME-06 nie sprawdzano.
+
+### Stan przed zmianą
+
+- generateJobOffers filtrował LEAGUE_PACKS przez istniejącą licencję, próg reputacji i premię +6 za ten sam ZPN co obecny klub; potem losował maksymalnie trzy ligi i dowolny klub w każdej. Latem korzystał z nazw nextWorld, poza nim z katalogu pack.teams, bez sprawdzenia game.world i bez oceny danych klubu. expectation zależało tylko od poziomu ligi. Fit zależał od reputacji, poziomu i lokalności.
+- Aktywna liga jest symulowana osobno w game.teams; game.world.competitions zawiera pozostałe rozgrywki. rolloverCareerWorld tworzy nextWorld z przesunięciami ligowymi, nowym OVR i wyzerowaną tabelą. managerChanges jest licznikiem rozgrywek, bez identyfikacji stanowiska/klubu.
+- Zimowa ewaluacja zapisywała OBSERWACJA, akceptacja wymagała pendingSeason i odrzucała obserwacje. Rozliczenie sezonu tworzyło letnie OFERTA. Te warunki i rollover pozostają bez zmian. UI sugerował Wakat musi mieć przyczynę, OBSERWACJA / WAKAT i brak potwierdzonego wakatu bez źródła takich informacji.
+
+### Zmiana ograniczona do rynku pracy
+
+- Nowy lib/job-market wybiera wyłącznie istniejące zespoły: latem z nextWorld; w sezonie z game.world plus game.teams dla ligi obecnego klubu, która zastępuje ewentualny nieaktualny duplikat tej ligi w świecie. Brak fallbacku do samych nazw katalogu. Pack służy do istniejących filtrów i prawidłowego przejścia do sezonu; własny klub wykluczony.
+- assessClubProject wylicza orientacyjną pozycję OVR z liczby silniejszych i środka grupy równych OVR. Rzeczywiste miejsce pochodzi z sortedTable. Po co najmniej 3 meczach różnica minimum 2 miejsc poniżej pozycji OVR daje projekt poprawy rezultatów. Dolne 30% według OVR daje trudną stabilizację; pozostałe kluby otrzymują projekt wykorzystania silnej kadry albo rozwoju środka stawki. To sportowe uzasadnienia zainteresowania, nie potwierdzone wakaty lub zwolnienia.
+- Prosta ocena potrzeby: poniżej potencjału 80+min(20,2×różnica miejsc), słaba kadra 60+20×pozycjaOVR/liczba klubów, środek stawki 45, silna kadra 35. Ranking kandydatów: potrzeba+fit/2; remis rozstrzygają stabilne packId i clubId. Maksymalnie 3 unikalne kluby w całym rynku, również z tej samej ligi, jeśli ich projekty są najwyżej ocenione. Brak losowania; generator nie zużywa seed.
+- Istniejące filtry licencji i reputacji, premia +6 za ten sam ZPN i dotychczasowy fit 1–99% zachowane. Dlaczego ty wskazuje spełnioną licencję, faktyczną reputację i premię ZPN tylko tam, gdzie rzeczywiście działa. Region wpisany w profil trenera nie jest traktowany jako dodatkowy bonus.
+- Nowe opcjonalne pola: clubId, reason, situation, coachReason, sporting (OVR/rank, liczba klubów, miejsce jeśli klub ma mecze, mecze/punkty/bramki, rok sezonu i data). Zapisuje się stan z chwili zainteresowania. Przy zerowej liczbie meczów brak pozycji/wyników do oceny; lato nie rekonstruuje poprzedniego sezonu.
+- Zimowy wywołujący przekazuje już zaktualizowane teams i worldUpdate.world oraz datę zakończonego meczu. Obserwacja bez możliwości przejścia; formalna oferta nadal akceptowana tylko latem. UI pokazuje klub/rozgrywki, projekt, Powód zainteresowania, Sytuację sportową ze stanem na dzień i sezon, Dlaczego ty, fit oraz istniejące sesje/status/ryzyko. Licznik managerChanges opisano jako zbiorczy, niewskazujący klubów.
+- Stare oferty bez nowych pól pozostają zapisane i akceptowalne zgodnie z dotychczasowymi zasadami. UI uczciwie informuje o braku zapisanego powodu, sytuacji i uzasadnienia; migracja nie wymyśla historycznych danych ani nie regeneruje tych pól.
+
+### Weryfikacja
+
+- npm test PASS: typecheck, build Vite i 146/146 testów; git diff --check PASS. Dziewięć nowych testów obejmuje rzeczywiste pochodzenie kandydatów i brak katalogowego fallbacku, zgodność opisów ze stanem, zmianę priorytetu po zmianie rezultatów, game.teams zamiast starego duplikatu, niezależność od managerChanges, filtry/fit/licencję/ZPN, stabilny tie-break i brak mutacji, zimową produkcyjną ewaluację po meczu i blokadę akceptacji, nextWorld i skuteczną letnią akceptację, zapis/odczyt starych oraz nowych ofert i renderowanie Jobs bez fikcyjnego wakatu. Zaktualizowano wcześniejszy test wymagający starego napisu OBSERWACJA / WAKAT.
+- Końcowy npm run audit:release PASS: 1288 meczów, 53 sezony, 1290 kontroli zapisu, 4377 momentów, 1710 decyzji, 3769060 meczów świata, 13 awansów, 1 spadek, 13 zmian klubu, 53 rozliczenia sezonów. Długa kariera 32 sezony i dobrowolna emerytura po 65 r.ż.; zapis pod koniec sezonu, ekran końca i następny sezon PASS. Raport docs/reports/playable-career-audit.json odświeżony końcowym przebiegiem.
+- Lokalny Node 24.19.0; repo deklaruje >=24.21.0 <25. Istniejące ostrzeżenia bundla/renderera/HMR nie przerwały weryfikacji. Nie wykonywano testu produkcji ani ręcznego deploya.
+
+### Trzy karty z odrębnej symulowanej kariery testowej
+
+- Harpagan Gliwice, Klasa C / Zabrze, OBSERWACJA na 2026-11-21: 15. miejsce, 14 pkt/15 meczów, bramki 19:30, OVR37 i orientacyjna 4. kadra ligi 16 klubów → wyniki poniżej potencjału, projekt poprawy rezultatów → Grassroots C, reputacja8/100 spełnia warunki, fit58%, brak bonusu tego samego ZPN.
+- LKS Bojanów, Klasa C / Racibórz I, stan początkowy 2026-07-13: brak rozegranych meczów, OVR30 i 8. kadra ligi 8 klubów → trudny projekt stabilizacji → Grassroots C, reputacja8/100, fit58%, bez bonusu ZPN. Nie przypisano nieistniejących wyników.
+- LKS Bojanów, Klasa C / Racibórz I, FORMALNA OFERTA po rolloverze, 2027-07-01: sezon2027/28, tabela wyzerowana, OVR29 i 8. kadra ligi 8 klubów → stabilizacja w nowym sezonie, bez twierdzeń o poprzednich wynikach → Grassroots C, reputacja10/100, fit60%, bez bonusu ZPN. Przykłady pochodzą z faktycznych danych wygenerowanego świata, nie realnych wyników tych klubów.
+
+- Pliki: app/game-actions.ts, app/game-data.ts, app/game-engine.ts, app/game-screens.tsx, lib/job-market.mjs, lib/job-market.d.mts, tests/job-market.test.mjs, tests/build-22.test.mjs, docs/reports/playable-career-audit.json; następnie docs/WORK_STATE.md w osobnym commicie [skip ci]. Bez nowych zależności.
+- GAME-05, system licencji, pensje, negocjacje, transfery, silnik meczu, pressing, XI, cele zarządu i rolloverCareerWorld bez zmian. Bez systemu stanowisk trenerów i bez zmian CI/Netlify/SSO.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP po GAME-06.
