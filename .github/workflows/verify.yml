@@ -11,34 +11,41 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    # Keep the build image stable; validate Ubuntu 26 before upgrading.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm test
       - run: npm run test:http
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.1
         with:
           name: ten-trener-pre-alpha
           path: dist
+          if-no-files-found: error
   careers:
     if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm run audit:release
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.1
         with:
           name: career-audit
           path: docs/reports/playable-career-audit.json
+          if-no-files-found: error
