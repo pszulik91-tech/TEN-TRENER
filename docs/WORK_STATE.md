@@ -4,6 +4,7 @@ Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
 Aktualny zakres: GAME-01 — wiarygodny raport najbliższego rywala; DONE. Kod i testy opublikowane, bez zmian infrastruktury, CI/deployu, Netlify i SSO.
 
 ## HEAD
+- HEAD kodu/testów po GAME-02: `5c9484b80e35e23965da078e24ce0ad97961caa4` (main).
 - HEAD kodu/testów po GAME-01: `79297723f8a33a7d2662bf79621573dd79b0d484` (main).
 - HEAD kodu/testów po DEV-01: `5b0b09c4e0f343183cc9f33cf71f854628c19b60` (main).
 - HEAD testu po DEV-06: `8025a9b91a9220d64a83b9d2fe53ee58f7eb9887` (main).
@@ -226,3 +227,35 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - GAME-02/GAME-03 niewykonane; CI, Netlify, SSO bez zmian. Nie uruchamiano ręcznego deploya ani smoke testu produkcji.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP: GAME-01 DONE.
+
+## GAME-02 — pressing jako świadomy kompromis: DONE (2026-10-07)
+
+- Commit kodu/testów na main: `5c9484b80e35e23965da078e24ce0ad97961caa4`; commit i publikacja przez autoryzowane połączenie GitHub. Drzewo odpowiada przetestowanym plikom.
+- Przeczytano aktualny WORK_STATE. Verify Pre-Alpha GAME-01 dla 79297723f8a33a7d2662bf79621573dd79b0d484: SUCCESS według aktualizacji użytkownika. Zastępuje wcześniejszy brak potwierdzenia. CI GAME-02 nie sprawdzano.
+
+### Audyt stanu przed GAME-02
+
+- Przy prepareMatch: tacticalPlanImpact dodawał 0 dla Niski/Średni; Wysoki/Bardzo wysoki jednakowo +0.3 przy averageCondition >= 76, inaczej -0.4. Cały plan jest ograniczony do [-1.1, 0.7]; wysoka linia z niskim pressingiem ma istniejącą karę -0.35. Synergia mikrocyklu dla obu wysokich intensywności: +0.35 za Pressing/Motorykę, inaczej -0.3, regeneracja +0.12. Pozostałe składniki planu i treningu także mogą wpływać na ograniczenie końcowej sumy.
+- Zmiana live używała odrębnych stałych instructionImpact: Niski -0.1, Średni 0, Wysoki +0.45, Bardzo wysoki +0.65. Dodawała różnicę nowych/starych wartości do siły, bez uwzględnienia kondycji.
+- prepareMatch wylicza całe 90 minut przez simulateMatchPlan. changeLiveInstruction i resolveMatchMoment przeliczają plan tym samym ziarnem oraz nową siłą, zachowując zdarzenia do aktualnej minuty i wymieniając wyłącznie przyszłość. advanceMatch przesuwa czas do kolejnych 15 minut lub do sytuacji z ławki; sam nie przelicza zdarzeń.
+- fatigue zawodników zmieniało się dopiero po meczu: dla XI baza 8 + koszt polityki + 2 za dowolny wysoki pressing + 1 za wysokie tempo + koszt wyborów z ławki; rezerwa -2. Istniejące limity fatigue [0,100] i test ryzyka urazu. Pressing był odczytywany wyłącznie z końcowej instrukcji. Brak historii/czasu; przełączenie na niski kasowało dodatkowe 2.
+
+### Minimalna zmiana
+
+- lib/pressing.mjs: funkcja wpływu pressingu na podstawie istniejącej kondycji XI (100-fatigue). Wysoki i Bardzo wysoki zmieniają skuteczność płynnie wokół kondycji 76; zakres samego wkładu wynosi odpowiednio [-0.45,+0.45] i [-0.65,+0.65]. Niski/Średni mają zerowy wkład intensywnego pressingu. Brak nowej staminy lub atrybutów zawodników.
+- tacticalPlanImpact używa tej funkcji na starcie. Zmiana pressingu live liczy różnicę istniejącego planu i jego synergii treningowej, zamiast odrębnego stałego bonusu. Czynniki plan/trening w raporcie zachowują odpowiednie wartości. Mentalność, tempo, linia, inne instrukcje i ich reguły pozostają bez zmian.
+- Jedno opcjonalne pressingExposure w MatchState: high, veryHigh, minute. Inicjalizacja przy starcie; akumulacja podczas faktycznego przesunięcia czasu, również do momentu zatrzymania przy ławce i do 90. minuty. Zmiana instrukcji rozlicza czas starej instrukcji, nie usuwa ekspozycji. Wielokrotna akcja w tej samej minucie nie dopisuje czasu.
+- Po meczu dawne +2 zastępuje koszt proporcjonalny do ekspozycji: pełne 90 minut Wysoki +4 fatigue, Bardzo wysoki +8; mieszane odcinki sumowane, zaokrąglenie dopiero dla końcowego kosztu. Obciążenie trafia do istniejącej fatigue wyjściowej XI oraz istniejącej oceny ryzyka urazu. Pozostałe koszty meczu bez zmian.
+- Brak pressingExposure w starszym zapisie nie blokuje odczytu. Nie da się odzyskać nieistniejącej historii: fallback przypisuje dotychczas rozegrane minuty do zapisanej bieżącej instrukcji. Od pierwszej akcji kolejne odcinki są zapamiętywane dokładnie. Ukończone stare mecze nie są ponownie rozliczane.
+- UI: poradę dodano na używanym ekranie wyboru planu i przy selektorze pressingu w meczu. Kondycja XI, opis wpływu kondycji, poziom kosztu oraz zebrane obciążenie; bez wzorów i ukrytych współczynników. Odpoczynek po meczu nadal działa przez istniejące mechanizmy.
+
+### Weryfikacja i zakres
+
+- npm test PASS: typecheck, produkcyjny build Vite, 119/119 testów regresji; git diff --check PASS. Lokalny Node 24.19.0; repo wymaga >=24.21.0 <25. Istniejące ostrzeżenia bundla/renderera/HMR nie przerwały testów.
+- Osiem testów pressingu: świeża vs zmęczona XI na starcie i live; większy koszt Bardzo wysoki; 75 vs 15 minut; zachowanie obciążenia po przełączeniu; rzeczywisty czas przy ławce; deterministyczność; kompresowany zapis/odczyt i stare zapisy; brak zmiany innych instrukcji/dopisania siły oraz zachowanie przeszłych zdarzeń; renderowanie używanych ekranów.
+- npm run audit:release PASS: 53 sezony, 1572 mecze, 1574 odczyty zapisu, 53 rozliczenia sezonów. Audyt używa istniejących akcji gry. Kod sezonów/audytu nie zmieniony; wygenerowany raport audytu przywrócono. Przebieg kariery zmienia się wskutek nowych wyników/kondycji, więc liczniki meczów nie muszą odpowiadać poprzedniej wersji.
+- Przykłady mechaniki: kondycja 90% + Wysoki ma dodatni wkład pressingu; kondycja 50% + Wysoki ma ujemny wkład. W obu przypadkach 75 minut Wysoki zostawia +3 fatigue za pressing, również po końcowych 15 minutach Niski. 90 minut Bardzo wysoki zostawia +8 fatigue (Wysoki +4), niezależnie od pozostałego zwykłego obciążenia.
+- Zmienione pliki: app/game-actions.ts, app/game-data.ts, app/game-screens.tsx, app/gameplay-screens.tsx, lib/game-rules.mjs, lib/pressing.mjs, tests/pressing.test.mjs; następnie docs/WORK_STATE.md w osobnym commicie [skip ci]. Bez nowych zależności.
+- Bez przebudowy generatora meczu. Raport rywala, sezony, kreator, CI, Netlify i SSO bez zmian. GAME-03 niewykonane; bez ręcznego deploya i testu produkcji.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP: GAME-02 DONE.
