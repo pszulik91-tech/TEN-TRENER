@@ -20,36 +20,25 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 - Wynik: https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37658627109
 - Nie odświeżano ponownie. Ta aktualizacja dokumentacyjna tworzy kolejny commit; jego CI nie było sprawdzane.
 
-## Netlify — NEXT-02: BLOCKED (2026-10-07)
-- Próba odczytu ręcznego w Cloud Browser: otwarto https://app.netlify.com/projects/ten-trener; panel wyświetlił ekran Log in (Google/GitHub/GitLab/Bitbucket/email/SSO).
-- Aktualny blocker: brak zalogowanej sesji Netlify w Cloud Browser. Zatrzymano się na ekranie logowania i przekazano go użytkownikowi; nie klikano metod logowania ani nie zmieniano ustawień.
-- Repozytorium, production branch, production deploy/SHA, wynik builda i efektywne ustawienia/override’y pozostają nieodczytane. Wznowienie wyłącznie po zalogowaniu użytkownika w przekazanej karcie.
-- Cel: ustalić rzeczywisty stan produkcji; wykonano wyłącznie odczyty.
-- Połączenie z pszulik91-tech/TEN-TRENER: NIEPOTWIERDZONE. API projektu nie zwraca ustawień integracji Git.
-- Branch produkcyjny: NIEPOTWIERDZONY; nie zakładać main na podstawie brancha GitHub.
-- Wdrożony commit/SHA: NIEPOTWIERDZONY.
-- Ostatni production build: NIEPOTWIERDZONY. Stan current potwierdza publikację, ale nie identyfikuje ostatniego builda ani jego wyniku.
-- Aktualny adres zwrócony przez API: http://ten-trener.netlify.app (HTTPS: https://ten-trener.netlify.app; przekierowania nie testowano).
-- Ostatni zwrócony adres wersji: http://6ac6811c6183477f3fd06220--ten-trener.netlify.app
-- Odczyt szczegółów tej wersji przez get_deploy_for_site: 404. Prefiks URL nie stanowi potwierdzenia SHA Git.
-- SSO: requiresSSOTeamLogin=true, whichProjectsRequireSSOTeamLogin=all; requiresPassword=false. Według konfiguracji API wymagane jest logowanie członka zespołu Netlify. Rzeczywistego wejścia anonimowego nie testowano (NEXT-03 niewykonane).
-- Build command w netlify.toml: npm run build && npm run test:regression.
-- Publish directory w netlify.toml: dist.
-- Ocena konfiguracji repozytorium: SPÓJNA. package.json uruchamia typecheck i vite build --config vite.web.config.ts; konfiguracja Vite ustawia outDir=dist; test:regression istnieje. npm test w poprzednim zielonym CI obejmował build i testy regresji.
-- Efektywne ustawienia Netlify (integracja, branch, base directory, command/publish i ewentualne nadpisania): NIEPOTWIERDZONE; dostępne API projektu ich nie udostępnia.
-- Nie wykryto potwierdzonego błędu build command/publish w repozytorium. Wymóg SSO ogranicza dostęp publiczny; nie zmieniano go.
-- Do zamknięcia NEXT-02 potrzebny odczyt panelu Netlify: ustawienia ciągłego wdrażania oraz szczegóły ostatniego production deploya (repo, branch, commit, wynik i efektywna konfiguracja).
-- Bez zmian Netlify, deploya ręcznego, kodu gry, workflow i CI.
+## Netlify — NEXT-02: DONE (odczyt panelu, 2026-10-07)
 
-### Wcześniejszy odczyt
-- Projekt: ten-trener, ID 167eaa74-4806-4eb2-8747-996de31ea60d.
-- Panel: https://app.netlify.com/projects/ten-trener
-- Adres: https://ten-trener.netlify.app
-- API projektu wskazuje opublikowany deploy: current.
-- Zwrócony adres wersji: http://6ac67fad0bdff35613bd8052--ten-trener.netlify.app
-- Szczegóły deploya pod ID z adresu zwróciły 404; SHA deploya i wynik ostatniego builda Netlify niepotwierdzone.
-- API wskazuje wymóg logowania SSO dla odwiedzających; dostęp anonimowy nie był testowany.
-- Nie zmieniano ustawień ani nie wyzwalano ręcznego deploya.
+- Cloud Browser: po zalogowaniu użytkownika odczytano Project overview, Deploys i Developer settings.
+- Projekt: ten-trener, ID 167eaa74-4806-4eb2-8747-996de31ea60d (potwierdzony przez badge w panelu).
+- Podłączone repozytorium Git: BRAK. Developer settings → Repository: „Current repository: Not linked”. Repozytorium pszulik91-tech/TEN-TRENER nie jest połączone z tym projektem.
+- Production branch: BRAK brancha dla integracji Git; integracja nie istnieje.
+- Ostatni production deploy: BRAK. Overview i Deploys wyświetlają „Project has not yet been deployed”; brak wpisów wdrożeń.
+- Commit/SHA wdrożenia: NIE DOTYCZY — brak wdrożenia.
+- Wynik ostatniego production builda: NIE DOTYCZY — brak wdrożenia/production builda widocznego w panelu.
+- Adres przypisany projektowi: ten-trener.netlify.app (link Go to site w Overview). Nie potwierdzono działania gry pod adresem; NEXT-03 nie wykonano.
+- Overview: „Private project”; „Make public” nieaktywne, „Available after your first successful deploy”. SSO/dostęp nie były zmieniane.
+- Build command i publish directory w panelu: niewidoczne jako skonfigurowane ustawienia budowania z Git; przy Not linked panel nie pokazuje sekcji build settings/production branch.
+- Konfiguracja repozytorium z poprzedniego odczytu: netlify.toml command = npm run build && npm run test:regression; publish = dist. Jest spójna z Vite, ale nie ma podstaw twierdzić, że projekt Netlify ją obecnie wykorzystuje bez podłączonego repozytorium.
+- Override’y względem netlify.toml: nie potwierdzono żadnych; brak integracji Git i builda uniemożliwia porównanie efektywnej konfiguracji. Nie zakładać, że override’y istnieją ani że konfiguracja została zastosowana.
+- Potwierdzony blocker wdrożenia: niepodłączone repozytorium; brak pierwszego skutecznego deploya.
+- KOREKTA wcześniejszych zapisów: API „current” i adresy wersji nie stanowiły wiarygodnego potwierdzenia publikacji. Zalogowany panel tego samego projektu wskazuje BRAK WDROŻENIA; wcześniejsze stwierdzenie o opublikowanym deployu wycofano.
+- Dowody UI: https://app.netlify.com/projects/ten-trener/overview ; https://app.netlify.com/projects/ten-trener/deploys ; https://app.netlify.com/projects/ten-trener/configuration/developer-settings
+- NEXT-02 DONE oznacza zakończenie odczytu i rozpoznanie przyczyny. Samo wdrożenie pozostaje BLOCKED.
+- Nie podłączano repozytorium, nie uruchamiano deploya, nie zmieniano SSO ani innych ustawień; NEXT-03 niewykonane.
 
 ## DONE
 - Potwierdzono oczekiwany HEAD main.
@@ -60,11 +49,11 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 ## BROKEN/BLOCKED
 - Brak potwierdzonego blokera CI na zweryfikowanym HEAD.
 - Użytkownik przed sesją potwierdził SUCCESS najnowszego Verify Pre-Alpha dla ce761669cbcb732f1ed6e74426520b9672b97cd4; nie odczytywano CI ponownie (zakres tylko NEXT-02).
-- NEXT-02 BLOCKED: API Netlify zwraca 404 dla szczegółów deploya i nie udostępnia integracji Git, brancha ani efektywnych ustawień builda. Wdrożony SHA i wynik ostatniego production builda pozostają niepotwierdzone.
+- Wdrożenie Netlify BLOCKED: Current repository = Not linked; projekt nie został jeszcze wdrożony. NEXT-02 zakończony odczytem panelu.
 
 ## NEXT
 - NEXT-01: Odczytać wynik Verify Pre-Alpha dla commita checkpointu, jeśli przy jednorazowym sprawdzeniu jeszcze trwał.
-- NEXT-02 [BLOCKED]: Uzupełnić z panelu Netlify repozytorium, branch, SHA, ostatni production build i efektywne ustawienia builda; odczyt API wykonany.
+- NEXT-02 [DONE]: Odczytano panel Netlify; brak połączenia Git i brak wdrożenia. Ewentualna naprawa wymaga osobnego polecenia.
 - NEXT-03: Sprawdzić dostęp do wdrożonej gry i wykonać krótki smoke test.
 
 STOP: sesja NEXT-02 zakończona. Nie wykonywać NEXT-03, nowych funkcji ani zmian SSO/konfiguracji.
