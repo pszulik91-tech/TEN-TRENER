@@ -5,7 +5,8 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 
 ## HEAD
 - HEAD zweryfikowany przed checkpointem: `40164e8b361133eec1f8aa46cb987ad50b97e4b2`.
-- Commit checkpointu: commit wprowadzający ten plik; dokładny SHA: `git log -1 --format=%H -- docs/WORK_STATE.md`. SHA własnego commita nie można wpisać do jego treści bez utworzenia kolejnego commita.
+- Commit checkpointu sprawdzony po zapisie: `729e13dfcec892713be445069a93023b1964ddac`.
+- Aktualny commit dokumentacyjny: commit ostatniej aktualizacji tego pliku; dokładny SHA: `git log -1 --format=%H -- docs/WORK_STATE.md`. SHA własnego commita nie można wpisać do jego treści bez utworzenia kolejnego commita.
 
 ## CI / Node / build
 - Node: `24.21.0`, potwierdzony w .nvmrc.
@@ -14,7 +15,9 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 - build-and-test: SUCCESS; npm ci, npm test i npm run test:http: SUCCESS.
 - careers / npm run audit:release: SUCCESS.
 - Status builda: job build-and-test zielony. Osobny build produkcyjny nie był uruchamiany ani potwierdzany w tej sesji.
-- CI nowego commita dokumentacyjnego: do jednokrotnego sprawdzenia po zapisie; wynik poprzedniego HEAD nie jest wynikiem nowego commita.
+- CI commita checkpointu `729e13dfcec892713be445069a93023b1964ddac`: IN_PROGRESS podczas jedynego sprawdzenia, run ID 37658627109.
+- Wynik: https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37658627109
+- Nie odświeżano ponownie. Ta aktualizacja dokumentacyjna tworzy kolejny commit; jego CI nie było sprawdzane.
 
 ## Netlify
 - Projekt: ten-trener, ID 167eaa74-4806-4eb2-8747-996de31ea60d.
@@ -34,7 +37,7 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 
 ## BROKEN/BLOCKED
 - Brak potwierdzonego blokera CI na zweryfikowanym HEAD.
-- Niepotwierdzony wynik CI commita dokumentacyjnego do czasu odczytu.
+- CI checkpointu w toku przy jedynym odczycie; brak końcowego wyniku. CI ostatniej aktualizacji dokumentu nie sprawdzano.
 - Odczyt szczegółów Netlify: 404; brak potwierdzenia SHA i ostatniego builda produkcyjnego.
 
 ## NEXT
