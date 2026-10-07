@@ -4,7 +4,7 @@ import React from 'react';
 import { act, create } from 'react-test-renderer';
 import { createServer } from 'vite';
 
-test('NOWA KARIERA → cztery etapy → klub → dwa cele → zapis → ponowny start → KONTYNUUJ', { timeout: 10000 }, async t => {
+test('NOWA KARIERA → zapis → KONTYNUUJ → pierwszy mecz → zapis wyniku', { timeout: 10000 }, async t => {
   // Only browser services are stubbed; all components and career logic are real.
   const storage = new Map();
   let saved;
@@ -18,7 +18,7 @@ test('NOWA KARIERA → cztery etapy → klub → dwa cele → zapis → ponowny 
   stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   stubGlobal('window', {
     requestAnimationFrame: callback => { callback(); return 1; },
-    cancelAnimationFrame() {}, addEventListener() {}, removeEventListener() {}, scrollTo() {},
+    cancelAnimationFrame() {}, addEventListener() {}, removeEventListener() {}, scrollTo() {}, setTimeout() {},
   });
   stubGlobal('localStorage', {
     getItem: key => storage.get(key) ?? null,
@@ -97,4 +97,51 @@ test('NOWA KARIERA → cztery etapy → klub → dwa cele → zapis → ponowny 
   for (const key of ['season', 'round', 'date', 'seed', 'careerStats', 'developmentGoals', 'training', 'fixtures', 'players']) {
     assert.deepEqual(restored[key], beforeRestart[key], `restored ${key}`);
   }
+
+  const game = () => view.root.findByType(GameShell).props.game;
+  const firstFixture = restored.fixtures.find(fixture => !fixture.played && fixture.round === restored.round &&
+    [fixture.home, fixture.away].includes(restored.club.id));
+  assert.ok(firstFixture, 'created career has a first fixture');
+  await click(button('Ułóż pierwszy mikrocykl'));
+  await click(button('Zrealizuj cały mikrocykl'));
+  await click(button('Mecz'));
+  await click(button('Rozpocznij mecz'));
+  assert.equal(view.root.findByType(GameShell).props.screen, 'match');
+  assert.deepEqual(game().matchState.fixture, firstFixture);
+  assert.equal(game().matchState.minute, 0);
+  for (let step = 0; step < 20 && !game().matchState.completed; step++) {
+    if (game().matchState.activeMomentId) {
+      await click(view.root.findByProps({ className: 'coach-moment' }).findAllByType('button')[0]);
+    } else await click(button('Następne 15 minut'));
+  }
+  const completed = game();
+  const match = completed.matchState;
+  assert.equal(match.completed, true, 'first match finishes within bounded UI steps');
+  assert.equal(match.minute, 90);
+  for (const score of [match.homeGoals, match.awayGoals]) assert.ok(Number.isInteger(score) && score >= 0);
+  const result = completed.fixtures.find(fixture => fixture.round === firstFixture.round &&
+    fixture.home === firstFixture.home && fixture.away === firstFixture.away);
+  assert.equal(result.played, true);
+  assert.equal(result.homeGoals, match.homeGoals);
+  assert.equal(result.awayGoals, match.awayGoals);
+  assert.equal(completed.careerStats.matches, restored.careerStats.matches + 1);
+  assert.equal(completed.teams.find(team => team.id === completed.club.id).played, 1);
+  assert.ok(completed.round > restored.round);
+  assert.ok(match.postMatchReport);
+  assert.ok(view.root.findByProps({ role: 'dialog', 'aria-label': 'Raport pomeczowy' }));
+  await click(button('Zamknij raport i wróć do gry'));
+  await click(button('Raport i pulpit'));
+  await click(button('Zapisz'));
+  const postMatchSave = await decodeSave(storage.get(SAVE_KEY));
+  assert.deepEqual(postMatchSave.matchState, JSON.parse(JSON.stringify(game().matchState)));
+  await act(() => view.unmount());
+  await act(() => { view = create(React.createElement(App)); });
+  await click(button('KONTYNUUJ'));
+  assert.deepEqual(game().coach, completed.coach);
+  assert.deepEqual(game().club, completed.club);
+  for (const key of ['fixtures', 'careerStats', 'round', 'date']) {
+    assert.deepEqual(game()[key], postMatchSave[key], `persisted post-match ${key}`);
+  }
+  // The reader links the report to the canonical, already played fixture.
+  assert.deepEqual(game().matchState, { ...postMatchSave.matchState, fixture: result });
 });
