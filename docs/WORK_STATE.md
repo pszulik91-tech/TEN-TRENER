@@ -20,6 +20,20 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 - Wynik: https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37658627109
 - Nie odświeżano ponownie. Ta aktualizacja dokumentacyjna tworzy kolejny commit; jego CI nie było sprawdzane.
 
+## NEXT-03 — smoke test: DONE (2026-10-07)
+
+- Produkcja: https://ten-trener.netlify.app/ ; test w Cloud Browser jako autoryzowany właściciel.
+- Ochrona Netlify przekierowała chwilowo do Team protection, po czym istniejąca sesja automatycznie dopuściła do gry. SSO/prywatność bez zmian; HUD wskazuje Private.
+- Strona otwiera się; menu TEN TRENER — Pre-Alpha v0.1.0 renderuje się bez białego ekranu, widocznego 404/500 ani komunikatu krytycznego.
+- NOWA KARIERA otwiera etap 1/4 kreatora. Wpisano testowy pseudonim Test Smoke; przycisk O doświadczeniu przechodzi do etapu 2/4. Wstecz wraca do etapu 1.
+- USTAWIENIA otwierają prawidłowo wyrenderowany panel; Zamknij ustawienia wraca do menu.
+- Odświeżenie w kreatorze na faktycznej trasie / ładuje ponownie menu bez 404. Sprawdzone ekrany nie zmieniają URL; nie wymyślano dodatkowych tras. Niedokończony kreator po reloadzie wraca do menu; trwałość szkicu nie była objęta testem.
+- Brak widocznego krytycznego błędu JavaScript lub ładowania zasobów. Odczyt konsoli error/warn (limit 200) nie wykazał wpisów aplikacji; wpisy Error sending browser metadata to extension pochodziły z chrome-extension://, nie z gry.
+- Renderowanie panelu ustawień zweryfikowano również wizualnie zrzutem ekranu.
+- Nie ukończono ani nie zapisano kariery, nie testowano meczu/sezonu i nie wykonywano pełnego testu gry.
+- Zmieniono tylko docs/WORK_STATE.md; commit dokumentacyjny [skip ci]. Bez poprawek kodu, deploya i zmian ustawień Netlify.
+- STOP: NEXT-03 zakończony.
+
 ## Netlify — DEPLOY-01: DONE (2026-10-07)
 
 - Podłączono istniejący projekt ten-trener (167eaa74-4806-4eb2-8747-996de31ea60d) do GitHub pszulik91-tech/TEN-TRENER w Cloud Browser.
@@ -71,11 +85,11 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 ## BROKEN/BLOCKED
 - Brak potwierdzonego blokera CI na zweryfikowanym HEAD.
 - Użytkownik przed sesją potwierdził SUCCESS najnowszego Verify Pre-Alpha dla ce761669cbcb732f1ed6e74426520b9672b97cd4; nie odczytywano CI ponownie (zakres tylko NEXT-02).
-- Dawny blocker Not linked usunięty w DEPLOY-01. Pierwszy production deploy zakończył się SUCCESS. Dostęp do gry nie testowany; ustawienia SSO/prywatności bez zmian.
+- Dawny blocker Not linked usunięty w DEPLOY-01. Pierwszy production deploy zakończył się SUCCESS. Smoke test NEXT-03 PASS jako właściciel; ustawienia SSO/prywatności bez zmian.
 
 ## NEXT
 - NEXT-01: Odczytać wynik Verify Pre-Alpha dla commita checkpointu, jeśli przy jednorazowym sprawdzeniu jeszcze trwał.
 - NEXT-02 [DONE]: Odczytano panel Netlify; brak połączenia Git i brak wdrożenia. Ewentualna naprawa wymaga osobnego polecenia.
-- NEXT-03: Sprawdzić dostęp do wdrożonej gry i wykonać krótki smoke test.
+- NEXT-03 [DONE]: Smoke test produkcji jako właściciel: menu, kreator etap 1→2→1, ustawienia, odświeżenie / i konsola — PASS.
 
-STOP: sesja NEXT-02 zakończona. Nie wykonywać NEXT-03, nowych funkcji ani zmian SSO/konfiguracji.
+STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
