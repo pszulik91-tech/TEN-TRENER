@@ -1,19 +1,19 @@
 {
-  "runAt": "2026-10-06T06:24:28.942Z",
+  "runAt": "2026-10-07T22:08:38.312Z",
   "harness": "production-actions",
   "build": "TEN TRENER — Pre-Alpha v0.1.0",
   "checks": {
-    "matches": 1480,
+    "matches": 1564,
     "seasons": 53,
-    "saves": 1480,
-    "moments": 4992,
-    "decisions": 1934,
-    "worldMatches": 3764649,
-    "promotions": 14,
+    "saves": 1566,
+    "moments": 5350,
+    "decisions": 2126,
+    "worldMatches": 3722916,
+    "promotions": 12,
     "relegations": 0,
-    "jobChanges": 4,
+    "jobChanges": 6,
     "licenseCompletions": 2,
-    "seasonSettlements": 52
+    "seasonSettlements": 53
   },
   "content": {
     "narrative": {
@@ -109,7 +109,7 @@
       "club": "Olimpia II Kowary",
       "tier": 8,
       "matches": 22,
-      "condition": 97,
+      "condition": 96,
       "burnout": 0,
       "goals": [
         {
@@ -155,8 +155,8 @@
       "club": "KS II Łomnica",
       "tier": 7,
       "matches": 26,
-      "condition": 95,
-      "burnout": 6,
+      "condition": 96,
+      "burnout": 5,
       "goals": [
         {
           "id": "tactics",
@@ -169,7 +169,7 @@
           "target": 6
         }
       ],
-      "saveKB": 1681,
+      "saveKB": 1677,
       "nextTier": 7
     },
     {
@@ -201,7 +201,7 @@
       "club": "Apis Jędrzychowice",
       "tier": 6,
       "matches": 30,
-      "condition": 89,
+      "condition": 84,
       "burnout": 8,
       "goals": [
         {
@@ -215,7 +215,7 @@
           "target": 6
         }
       ],
-      "saveKB": 1694,
+      "saveKB": 1693,
       "nextTier": 6
     },
     {
@@ -224,8 +224,8 @@
       "club": "Wisła Czarny Dunajec",
       "tier": 6,
       "matches": 30,
-      "condition": 94,
-      "burnout": 4,
+      "condition": 93,
+      "burnout": 0,
       "goals": [
         {
           "id": "tactics",
@@ -247,8 +247,8 @@
       "club": "Turbacz Mszana Dolna",
       "tier": 6,
       "matches": 30,
-      "condition": 77,
-      "burnout": 7,
+      "condition": 71,
+      "burnout": 6,
       "goals": [
         {
           "id": "tactics",
@@ -261,8 +261,8 @@
           "target": 6
         }
       ],
-      "saveKB": 1696,
-      "nextTier": 5
+      "saveKB": 1693,
+      "nextTier": 6
     },
     {
       "competition": "IV liga",
@@ -285,7 +285,7 @@
         }
       ],
       "saveKB": 1708,
-      "nextTier": 4
+      "nextTier": 6
     },
     {
       "competition": "IV liga",
@@ -293,8 +293,8 @@
       "club": "Piast Żmigród",
       "tier": 5,
       "matches": 34,
-      "condition": 78,
-      "burnout": 30,
+      "condition": 70,
+      "burnout": 1,
       "goals": [
         {
           "id": "tactics",
@@ -307,8 +307,8 @@
           "target": 6
         }
       ],
-      "saveKB": 1708,
-      "nextTier": 5
+      "saveKB": 1707,
+      "nextTier": 4
     },
     {
       "competition": "III liga",
@@ -339,8 +339,8 @@
       "club": "KTS Weszło",
       "tier": 4,
       "matches": 34,
-      "condition": 58,
-      "burnout": 1,
+      "condition": 51,
+      "burnout": 19,
       "goals": [
         {
           "id": "tactics",
@@ -353,8 +353,8 @@
           "target": 6
         }
       ],
-      "saveKB": 1706,
-      "nextTier": 3
+      "saveKB": 1709,
+      "nextTier": 5
     },
     {
       "competition": "II liga",
@@ -385,8 +385,8 @@
       "club": "Chojniczanka Chojnice",
       "tier": 3,
       "matches": 34,
-      "condition": 68,
-      "burnout": 51,
+      "condition": 74,
+      "burnout": 33,
       "goals": [
         {
           "id": "tactics",
@@ -400,7 +400,7 @@
         }
       ],
       "saveKB": 1710,
-      "nextTier": 8
+      "nextTier": 3
     },
     {
       "competition": "I liga",
@@ -431,8 +431,8 @@
       "club": "Chrobry Głogów",
       "tier": 2,
       "matches": 34,
-      "condition": 67,
-      "burnout": 14,
+      "condition": 63,
+      "burnout": 19,
       "goals": [
         {
           "id": "tactics",
@@ -445,7 +445,7 @@
           "target": 6
         }
       ],
-      "saveKB": 1706,
+      "saveKB": 1704,
       "nextTier": 1
     },
     {
@@ -454,31 +454,8 @@
       "club": "Lech Poznań",
       "tier": 1,
       "matches": 34,
-      "condition": 86,
-      "burnout": 8,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1703,
-      "nextTier": 1
-    },
-    {
-      "competition": "Ekstraklasa",
-      "variant": 1,
-      "club": "Legia Warszawa",
-      "tier": 1,
-      "matches": 34,
-      "condition": 70,
-      "burnout": 41,
+      "condition": 90,
+      "burnout": 6,
       "goals": [
         {
           "id": "tactics",
@@ -495,12 +472,13 @@
       "nextTier": 1
     },
     {
-      "competition": "odd-sized regional-lubuski-zpn-klasa-okregowa-zielona-gora",
-      "club": "Czarni Drągowina",
-      "tier": 6,
-      "matches": 28,
-      "condition": 95,
-      "burnout": 0,
+      "competition": "Ekstraklasa",
+      "variant": 1,
+      "club": "Legia Warszawa",
+      "tier": 1,
+      "matches": 34,
+      "condition": 64,
+      "burnout": 45,
       "goals": [
         {
           "id": "tactics",
@@ -513,7 +491,29 @@
           "target": 6
         }
       ],
-      "saveKB": 1690
+      "saveKB": 1711,
+      "nextTier": 9
+    },
+    {
+      "competition": "odd-sized regional-slaski-zpn-klasa-b-rybnik-i",
+      "club": "LKS Górki Śląskie",
+      "tier": 9,
+      "matches": 24,
+      "condition": 95,
+      "burnout": 17,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1677
     }
   ],
   "fullCareer": [
@@ -541,7 +541,7 @@
       "club": "Rudawy Janowice Wielkie",
       "tier": 8,
       "matches": 22,
-      "condition": 94,
+      "condition": 93,
       "burnout": 1,
       "goals": [
         {
@@ -562,7 +562,7 @@
       "tier": 8,
       "matches": 22,
       "condition": 92,
-      "burnout": 2,
+      "burnout": 8,
       "goals": [
         {
           "id": "tactics",
@@ -595,33 +595,33 @@
           "target": 6
         }
       ],
-      "saveKB": 1669
+      "saveKB": 1677
     },
     {
       "club": "Rudawy Janowice Wielkie",
       "tier": 8,
       "matches": 22,
-      "condition": 93,
-      "burnout": 0,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1675
-    },
-    {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 7,
-      "matches": 26,
       "condition": 95,
+      "burnout": 2,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1683
+    },
+    {
+      "club": "Rudawy Janowice Wielkie",
+      "tier": 8,
+      "matches": 22,
+      "condition": 96,
       "burnout": 0,
       "goals": [
         {
@@ -635,72 +635,12 @@
           "target": 6
         }
       ],
-      "saveKB": 1714
+      "saveKB": 1685
     },
     {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 7,
+      "club": "LKS Sadków",
+      "tier": 8,
       "matches": 26,
-      "condition": 89,
-      "burnout": 0,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1712
-    },
-    {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 6,
-      "matches": 30,
-      "condition": 94,
-      "burnout": 0,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1732
-    },
-    {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 6,
-      "matches": 30,
-      "condition": 94,
-      "burnout": 0,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1734
-    },
-    {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 6,
-      "matches": 30,
       "condition": 85,
       "burnout": 0,
       "goals": [
@@ -715,294 +655,14 @@
           "target": 6
         }
       ],
-      "saveKB": 1734
+      "saveKB": 1716
     },
     {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 6,
+      "club": "LKS Sadków",
+      "tier": 7,
       "matches": 30,
-      "condition": 81,
-      "burnout": 15,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1739
-    },
-    {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 6,
-      "matches": 30,
-      "condition": 94,
-      "burnout": 7,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1736
-    },
-    {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 6,
-      "matches": 30,
-      "condition": 95,
+      "condition": 87,
       "burnout": 0,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1736
-    },
-    {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 5,
-      "matches": 34,
-      "condition": 77,
-      "burnout": 22,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1754
-    },
-    {
-      "club": "Rudawy Janowice Wielkie",
-      "tier": 5,
-      "matches": 34,
-      "condition": 69,
-      "burnout": 18,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1753
-    },
-    {
-      "club": "Wektra II Zbuczyn",
-      "tier": 9,
-      "matches": 18,
-      "condition": 93,
-      "burnout": 18,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 7,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1697
-    },
-    {
-      "club": "Wektra II Zbuczyn",
-      "tier": 8,
-      "matches": 26,
-      "condition": 91,
-      "burnout": 11,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1729
-    },
-    {
-      "club": "Wektra II Zbuczyn",
-      "tier": 8,
-      "matches": 26,
-      "condition": 93,
-      "burnout": 7,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1718
-    },
-    {
-      "club": "Wektra II Zbuczyn",
-      "tier": 7,
-      "matches": 30,
-      "condition": 74,
-      "burnout": 17,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1750
-    },
-    {
-      "club": "SKP Słubice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 90,
-      "burnout": 10,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1733
-    },
-    {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 93,
-      "burnout": 0,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1722
-    },
-    {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 91,
-      "burnout": 0,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1724
-    },
-    {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 88,
-      "burnout": 11,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1732
-    },
-    {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 92,
-      "burnout": 8,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1737
-    },
-    {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 94,
-      "burnout": 4,
       "goals": [
         {
           "id": "tactics",
@@ -1018,10 +678,30 @@
       "saveKB": 1731
     },
     {
-      "club": "Piast Wołowice",
+      "club": "LKS Sadków",
       "tier": 7,
-      "matches": 26,
-      "condition": 90,
+      "matches": 30,
+      "condition": 93,
+      "burnout": 2,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1735
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 7,
+      "matches": 30,
+      "condition": 84,
       "burnout": 0,
       "goals": [
         {
@@ -1035,14 +715,54 @@
           "target": 6
         }
       ],
-      "saveKB": 1732
+      "saveKB": 1742
     },
     {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 84,
-      "burnout": 4,
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 83,
+      "burnout": 0,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1745
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 95,
+      "burnout": 1,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1745
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 93,
+      "burnout": 0,
       "goals": [
         {
           "id": "tactics",
@@ -1058,10 +778,70 @@
       "saveKB": 1740
     },
     {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 93,
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 87,
+      "burnout": 13,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1754
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 74,
+      "burnout": 18,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1746
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 94,
+      "burnout": 16,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1750
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 96,
       "burnout": 0,
       "goals": [
         {
@@ -1075,34 +855,14 @@
           "target": 6
         }
       ],
-      "saveKB": 1739
+      "saveKB": 1750
     },
     {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 93,
-      "burnout": 0,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1725
-    },
-    {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
       "condition": 89,
-      "burnout": 3,
+      "burnout": 26,
       "goals": [
         {
           "id": "tactics",
@@ -1115,13 +875,73 @@
           "target": 6
         }
       ],
-      "saveKB": 1734
+      "saveKB": 1749
     },
     {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 85,
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 76,
+      "burnout": 9,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1748
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 95,
+      "burnout": 10,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1753
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 94,
+      "burnout": 1,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1745
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 6,
+      "matches": 30,
+      "condition": 91,
       "burnout": 11,
       "goals": [
         {
@@ -1135,14 +955,14 @@
           "target": 6
         }
       ],
-      "saveKB": 1741
+      "saveKB": 1748
     },
     {
-      "club": "Piast Wołowice",
-      "tier": 7,
-      "matches": 26,
-      "condition": 93,
-      "burnout": 7,
+      "club": "LKS Sadków",
+      "tier": 5,
+      "matches": 34,
+      "condition": 70,
+      "burnout": 20,
       "goals": [
         {
           "id": "tactics",
@@ -1155,7 +975,187 @@
           "target": 6
         }
       ],
-      "saveKB": 1733
+      "saveKB": 1771
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 5,
+      "matches": 34,
+      "condition": 84,
+      "burnout": 26,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1773
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 4,
+      "matches": 34,
+      "condition": 84,
+      "burnout": 14,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1760
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 4,
+      "matches": 34,
+      "condition": 57,
+      "burnout": 43,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1768
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 4,
+      "matches": 34,
+      "condition": 60,
+      "burnout": 34,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1765
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 4,
+      "matches": 34,
+      "condition": 84,
+      "burnout": 26,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1765
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 4,
+      "matches": 34,
+      "condition": 83,
+      "burnout": 0,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1772
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 4,
+      "matches": 34,
+      "condition": 55,
+      "burnout": 28,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1767
+    },
+    {
+      "club": "LKS Sadków",
+      "tier": 4,
+      "matches": 34,
+      "condition": 62,
+      "burnout": 37,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1768
+    },
+    {
+      "club": "Strzelec Chroberz",
+      "tier": 7,
+      "matches": 22,
+      "condition": 93,
+      "burnout": 25,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1721
     }
   ],
   "limitations": [

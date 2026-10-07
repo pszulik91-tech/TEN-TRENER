@@ -1,3 +1,4 @@
+import type { BoardGoal } from "../lib/board-goal.mjs";
 import {
   buildMatchStrength, buildSchedule, burnoutMatchPenalty, capReadiness, coachingExperienceEligibility, conditionFromFatigue, defaultMicrocycle, diagnoseMatchOutcome, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, expectedOutcomeProbabilities, goalSatisfied, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS,
   highestEligibleCoachingExperience, highestEligibleStartingLicense, naturalRecoveryForGap, playerAvailable, positionPenalty, pressureDeltaForResult, readinessStrengthImpact, requiredLicenseForCompetition, requiredLicenseForTier, resolveProfileScores, rngNext, seasonRoundDates, selectBestLineup, selectLineupForPlan, shouldRetirePlayer, simulateMatchPlan, sortedTable, startingLicenseEligibility, tacticalPlanImpact, trainingTacticSynergy, TEAM_PLANS, teamLiveStrength, TRAINING_PRESETS, trainingPresetSessions, updateTeamResult, weeklyBurnoutDelta, winterBreakDays,
@@ -36,7 +37,7 @@ export type SeasonEvidence = { formationsWithPoints: string[]; youthStarters: st
 export type Coach = { name: string; age: number; region: string; playingExperience: string; coachingExperience: string; profile: CoachProfile; license: License; reputation: number; skills: Record<string, number> };
 export type Club = { id: string; name: string; association: string; district: string; competition: string; group: string; tier: number };
 export type Tactic = { formation: keyof typeof FORMATIONS; mentality: string; tempo: string; pressing: string; line: string; width: string; buildUp: string; passingRisk: string; assignments: Record<string, string> };
-export type SeasonRecord = { season: string; club: string; tier: number; place: number; matches: number; wins: number; draws: number; losses: number; outcome: "awans" | "utrzymanie" | "spadek"; goalsCompleted: number };
+export type SeasonRecord = { season: string; club: string; tier: number; place: number; matches: number; wins: number; draws: number; losses: number; outcome: "awans" | "utrzymanie" | "spadek"; goalsCompleted: number; boardGoal?: { maxPlace: number; fulfilled: boolean } };
 export type CareerStats = { seasons: number; matches: number; wins: number; draws: number; losses: number; promotions: number; relegations: number; goalsCompleted: number; highestTier: number; clubs: string[] };
 export type JobOffer = { id: string; packId: string; clubName: string; tier: number; competition: string; expectation: string; stage?: "obserwacja" | "oferta"; fit?: number };
 export type WorldActivity = { date: string; competitionsAdvanced: number; matchesPlayed: number; squadMoves: number; managerChanges: number; headlines: string[] };
@@ -52,7 +53,7 @@ export type GameState = {
   finances: { monthlySalary: number; personalFunds: number };
   licenseCourse?: { target: License; weeksRemaining: number; totalWeeks: number; funding: "self" | "club" };
   licenseMessage?: string;
-  developmentGoals: DevelopmentGoal[]; seasonEvidence: SeasonEvidence; history: string[]; inbox: CareerIssue[]; lastDecisionOutcome?: DecisionOutcome; matchState?: MatchState; newSeasonPending?: boolean;
+  boardGoal?: BoardGoal; developmentGoals: DevelopmentGoal[]; seasonEvidence: SeasonEvidence; history: string[]; inbox: CareerIssue[]; lastDecisionOutcome?: DecisionOutcome; matchState?: MatchState; newSeasonPending?: boolean;
   winterEvaluatedRound?: number; employmentStatus: "employed" | "unemployed" | "retired"; jobOffers: JobOffer[]; pendingSeason?: PendingSeason; careerEnded?: boolean;
   careerStats: CareerStats; seasonRecords: SeasonRecord[];
 };

@@ -1,3 +1,4 @@
+import { createBoardGoal } from "../lib/board-goal.mjs";
 import {
   BUILD, DEVELOPMENT_GOALS, FIRST_NAMES, FORMATIONS, GameState, LAST_NAMES,
   JobOffer, LeaguePack, LEAGUE_PACKS, LICENSE_CHALLENGES, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
@@ -54,7 +55,9 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
   const challengedCoach = { ...coach, reputation: Math.min(100, coach.reputation + careerChallenge.reputationBonus) };
   const assignments = selectBestLineup(generated.players, FORMATIONS["4-2-3-1"]);
   const generatedWorld = createWorldSnapshot(LEAGUE_PACKS, pack.id, 2026, seed, TIER_OVR); seed = generatedWorld.seed;
+  const ambition = 58 + Math.round(careerChallenge.pressureBonus * .4);
   return {
+    boardGoal: createBoardGoal(teams, clubTeam.id, "2026/27", ambition),
     build: BUILD, seed, coach: challengedCoach,
     club: { id: clubTeam.id, name: clubTeam.name, association: pack.association, district: pack.district, competition: pack.competition, group: pack.group, tier: pack.tier },
     season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures: buildSchedule(teams.map((team) => team.id), 2026, pack.tier), players: generated.players,
@@ -64,7 +67,7 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
     careerChallenge, environment, worldHumor, trainingMemory: { youth: 0, analysis: 0, overload: 0, weeks: 0 },
     world: generatedWorld.world,
     worldActivity: { date: "2026-07-13", competitionsAdvanced: 0, matchesPlayed: 0, squadMoves: 0, managerChanges: 0, headlines: [] },
-    president: { ambition: 58 + Math.round(careerChallenge.pressureBonus * .4), patience: Math.max(22, 54 - Math.round(careerChallenge.pressureBonus * .65)), ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
+    president: { ambition, patience: Math.max(22, 54 - Math.round(careerChallenge.pressureBonus * .65)), ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
     presidentName: `Prezes ${LAST_NAMES[(seed + 11) % LAST_NAMES.length]}`,
     finances: { monthlySalary: Math.max(1800, 14000 - pack.tier * 1200), personalFunds: 9000 },
     developmentGoals: DEVELOPMENT_GOALS.filter((goal) => goals.includes(goal.id)).map((goal) => ({ ...goal, progress: 0 })),
