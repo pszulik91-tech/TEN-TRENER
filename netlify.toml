@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "22.16.0"
+  # Node is pinned in the root .nvmrc, shared with local development and CI.
   NPM_FLAGS = "--no-audit --no-fund"
 
 # One build configuration for production, PR previews and branch previews.

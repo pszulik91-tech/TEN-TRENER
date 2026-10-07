@@ -9,15 +9,18 @@ To wydanie porządkuje dotychczasowy Build 2.5. Nowa numeracja dotyczy wydań we
 - Działający lokalnie prototyp statyczny React + TypeScript + Vite, bez wymaganego backendu i kont graczy.
 - Testy automatyczne i wielosezonowe: [raport](docs/reports/pre-alpha-0.1.0.md).
 - Projekt Netlify `ten-trener` utworzony, dostęp ograniczony do zalogowanego zespołu.
-- **Repozytorium GitHub, podłączenie Git i pierwszy deployment czekają na autoryzację. Nie ma jeszcze potwierdzonego działającego linku Netlify.**
+- Prywatne repozytorium: `pszulik91-tech/TEN-TRENER`, gałąź `main`; pełna historia projektu została zaimportowana.
+- Stan CI i wdrożenia: [dokumentacja wdrożenia](docs/deployment.md).
 - Projekt nie jest premierą publiczną ani kompletną symulacją przepisów PZPN.
 
 ## Uruchomienie
 
-Wymagany Node.js 22.16 lub nowszy (wersja sprawdzona w bieżącym środowisku: 24.19). Wersja dla Netlify/CI jest w `.nvmrc`.
+Node.js **24.21.0 LTS**, przypięty w `.nvmrc`. GitHub Actions i Netlify odczytują ten sam plik; `engines` ogranicza projekt do wspieranej linii 24. Nie ustawiaj osobnej wersji `NODE_VERSION` w panelu Netlify.
 
 ```sh
-npm install
+nvm install # jeżeli używasz nvm
+nvm use     # jeżeli używasz nvm
+npm ci
 npm run dev
 ```
 
