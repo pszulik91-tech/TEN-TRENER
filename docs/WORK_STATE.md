@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji CI.
+Aktualny zakres: DEV-02 — weryfikacja pełnego rozpoczęcia kariery i mały test regresji; bez zmian kodu gry, infrastruktury i konfiguracji CI/deployu.
 
 ## HEAD
+- HEAD kodu/testu po DEV-02: `ad7959f43b44517b695731cb2e711404158f72a2`.
 - HEAD przed sesją NEXT-02: ce761669cbcb732f1ed6e74426520b9672b97cd4 (wskazany przez użytkownika).
 - HEAD zweryfikowany przed checkpointem: `40164e8b361133eec1f8aa46cb987ad50b97e4b2`.
 - Commit checkpointu sprawdzony po zapisie: `729e13dfcec892713be445069a93023b1964ddac`.
@@ -93,3 +94,18 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 - NEXT-03 [DONE]: Smoke test produkcji jako właściciel: menu, kreator etap 1→2→1, ustawienia, odświeżenie / i konsola — PASS.
 
 STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
+
+## DEV-02 — pełne rozpoczęcie kariery: DONE (2026-10-07)
+
+- Commit testu na main: `ad7959f43b44517b695731cb2e711404158f72a2`. Zmiany opublikowane przez autoryzowane połączenie GitHub; terminal nie miał poświadczeń push. Drzewo commita odpowiada lokalnie przetestowanym plikom.
+- Zweryfikowano istniejącą implementację oraz w Cloud Browser: NOWA KARIERA → etap 1 (tożsamość) → etap 2 (doświadczenie/licencja) → etap 3 (osiem odpowiedzi) → etap 4 (wizytówka) → wybór LKS Górki Śląskie → dwa cele → „Pierwszy dzień w klubie / Witamy w LKS Górki Śląskie”. PASS.
+- Błąd gry: nie stwierdzono; kod aplikacji bez zmian. Nakładka narzędzi Netlify zasłaniała przycisk wyboru klubu; zwinięcie nakładki wystarczyło. Bez zmian SSO, prywatności lub konfiguracji Netlify.
+- Dodano jeden test integracyjny `tests/career-creation.test.mjs`, uruchamiany istniejącym `test:regression`. Przechodzi rzeczywiste komponenty App przez przyciski i wszystkie etapy, wybiera klub i cele, sprawdza blokadę startu przy 0/1 celu oraz ekran powitalny i dane utworzonej kariery (trener, licencja, klub, dwa cele, kolejka 1, brak rozegranych meczów). Nie podmienia logiki gry; zastępuje tylko usługi przeglądarki.
+- Pliki zmienione: `tests/career-creation.test.mjs`, `package.json`, `package-lock.json` (testowa zależność react-test-renderer 19.2.6), następnie `docs/WORK_STATE.md`.
+- Testy na Node 24.21.0: nowy scenariusz PASS; `npm test` PASS — typecheck, produkcyjny build Vite i 107/107 testów regresji. Ostrzeżenie o dużym bundlu oraz deprecjacji testowego renderera nie przerywa testów.
+- GitHub Actions Verify Pre-Alpha dla powyższego commita: IN_PROGRESS podczas jedynego sprawdzenia; https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37664569191. Nie czekano na zakończenie i nie odświeżano ponownie.
+- Netlify: ostatni potwierdzony produkcyjny deploy pozostaje opisany w DEPLOY-01; w DEV-02 nie sprawdzano nowego deploya ani nie zmieniano ustawień. Nie uruchamiano deploya ręcznie.
+- BROKEN/BLOCKED dla DEV-02: brak. Pełne rozpoczęcie kariery działa; poprawka aplikacji nie była potrzebna.
+- DEV-01 i DEV-03 nie wykonano. Następne zadanie wymaga osobnego polecenia użytkownika.
+- Aktualizacja dokumentacyjna: osobny commit `[skip ci]`; jego SHA można odczytać przez `git log -1 --format=%H -- docs/WORK_STATE.md`.
+- STOP: DEV-02 DONE.
