@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: DEV-05 — przejście do drugiego mikrocyklu/meczu i zachowanie obu wyników; rozszerzenie testu bez zmian aplikacji, infrastruktury i CI/deployu.
+Aktualny zakres: DEV-06 — zakończenie pierwszego sezonu; DONE. Rozszerzono istniejący audyt, bez zmian aplikacji, infrastruktury i CI/deployu.
 
 ## HEAD
+- HEAD testu po DEV-06: `8025a9b91a9220d64a83b9d2fe53ee58f7eb9887` (main).
 - HEAD testu po DEV-05: `0562365414de37881fa06930bd927597c4fe37a4` (main).
 - HEAD testu po DEV-04: `b17ad9764c7a1d9602634d23da260e2e61bc48bb` (main).
 - HEAD testu po DEV-03: `0074e44f136be15f8920ee2ca7350cde0cf88b8c` (main).
@@ -163,8 +164,28 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - Zmienione pliki: `tests/career-creation.test.mjs`, następnie `docs/WORK_STATE.md`.
 - Testy na Node 24.21.0: rozszerzony scenariusz PASS; `npm test` PASS — typecheck, build Vite i 107/107 testów regresji.
 - CI DEV-04: SUCCESS według aktualizacji użytkownika.
-- CI DEV-05: IN_PROGRESS podczas jedynego odczytu; https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37666659481. Nie czekano i nie odświeżano ponownie.
+- CI DEV-05: SUCCESS dla `0562365414de37881fa06930bd927597c4fe37a4` — aktualizacja użytkownika przed DEV-06. https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37666659481.
 - Netlify, SSO, infrastruktura, CI i konfiguracja deployu: bez zmian; nowego deploya nie sprawdzano ani nie uruchamiano ręcznie.
 - BROKEN/BLOCKED dla DEV-05: brak. DEV-01 niewykonane; nowy scenariusz kończy się po dwóch meczach, bez testu całego sezonu.
 - Dokumentacja: osobny commit `[skip ci]`; SHA: `git log -1 --format=%H -- docs/WORK_STATE.md`.
 - STOP: DEV-05 DONE. Następne zadanie wymaga osobnego polecenia użytkownika.
+
+## DEV-06 — zakończenie pierwszego sezonu: DONE (2026-10-07)
+
+- Commit testu na main: `8025a9b91a9220d64a83b9d2fe53ee58f7eb9887`; commit i push przez autoryzowane połączenie GitHub.
+- Najpierw sprawdzono istniejące pokrycie i uruchomiono niezmieniony audit:release: PASS, 53 sezony i 1480 meczów. audit:release, audit:playable i audit:tiers uruchamiają ten sam playable-career-audit z rzeczywistymi akcjami aplikacji (wszystkie 10 poziomów ligowych, grupa z pauzami, kariera 32-letnia). audit:careers jest odrębną uproszczoną symulacją; nie zastępuje weryfikacji tych akcji.
+- Nie stwierdzono błędu aplikacji. Wykorzystano istniejący audyt; nie dodano drugiego dużego scenariusza ani nowych mechanik.
+- Minimalne zabezpieczenia: po każdym meczu wcześniejsze wyniki pozostają niezmienione; liczba meczów kariery i każdej drużyny odpowiada terminarzowi; po ostatniej kolejce wszystkie spotkania są rozegrane, nie ma następnego własnego terminu, round wskazuje kolejkę po końcowej. Dotychczasowe kontrole tabeli i sum bramek pozostają aktywne.
+- Istniejącą próbkę grupy nieparzystej zastąpiono grupą startową DEV-02 (Klasa B, Śląski ZPN, Rybnik I, LKS Górki Śląskie): pełny pierwszy sezon 24 meczów, z obsługą pauz. Jest to odtwarzalna nowa kariera testowa, nie odczyt prywatnego zapisu z produkcji.
+- Przed ostatnim meczem (23 rozegrane) i po ostatnim (24) sprawdzono rzeczywisty skompresowany encodeSave → readCareer: zgodność trenera, klubu, terminarza/wyników, tabeli, statystyk, kolejki, daty i newSeasonPending. resumeScreen wskazuje dashboard; rozliczenie wykonano na stanie ponownie odczytanym po finale.
+- Dokładnie po ostatnim meczu: wynik trafia do terminarza/tabeli, careerStats.matches rośnie, pozostałe mecze AI są domykane, newSeasonPending=true, kolejka przesuwa się za ostatnią, a data pozostaje datą ostatniego własnego meczu. Pojawia się raport pomeczowy; po jego zamknięciu pulpit pokazuje KONIEC SEZONU i Rozlicz sezon. Następny sezon nie uruchamia się automatycznie.
+- Odczyt implementacji i test rzeczywistych akcji potwierdzają istniejącą ścieżkę: Rozlicz sezon → archiwizacja seasonRecords i wzrost careerStats.seasons → pendingSeason / ekran letnich ofert jobs. Jeśli trener pozostaje zatrudniony, może zostać w klubie; w przeciwnym razie wybiera ofertę. Następnie powstaje nowy terminarz bez rozegranych spotkań, sezon przesuwa się o rok, kolejka wraca do 1 i pojawia się ekran wyboru dwóch celów. Ich potwierdzenie odblokowuje dalszą grę. Sprawdzono również resumeScreen=jobs dla stanu oczekującego na wybór klubu oraz blokadę treningu przed celami.
+- Etykiety KONIEC SEZONU i Rozlicz sezon sprawdzono przez renderowanie rzeczywistego DashboardV15 w SSR. Audyt używa rzeczywistych akcji gry; nie jest pełnym testem kliknięć przeglądarki ani smoke testem produkcji.
+- Testy na Node 24.21.0: npm test PASS (typecheck, produkcyjny build Vite, 107/107 regresji); rozszerzony npm run audit:release PASS (53 sezony, 1476 meczów, 1478 odczytów zapisu, 53 rozliczenia sezonu). Różnica liczników względem bazowego audytu wynika z zastąpienia istniejącej próbki grupą Rybnik I oraz sprawdzenia jej rozliczenia.
+- Zmienione pliki: scripts/playable-career-audit.mjs i docs/WORK_STATE.md. Generowany raport audytu przywrócono; kod aplikacji i zależności bez zmian.
+- CI DEV-05: SUCCESS według aktualizacji użytkownika. CI DEV-06: IN_PROGRESS podczas jedynego sprawdzenia; https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37668783104. Nie czekano na wynik i nie odświeżano ponownie.
+- Netlify/SSO/prywatność/infrastruktura/konfiguracja CI i deployu: bez zmian; stanu nowych wdrożeń nie odczytywano i nie uruchamiano deploya ręcznie.
+- BROKEN/BLOCKED dla DEV-06: brak potwierdzonego błędu; oczekiwany wynik CI pozostaje niepotwierdzony do zakończenia powyższego runu.
+- Dokumentacja: osobny commit [skip ci]; dokładny SHA: git log -1 --format=%H -- docs/WORK_STATE.md.
+- NEXT: brak autoryzowanych kolejnych prac. DEV-01 niewykonane.
+- STOP: DEV-06 DONE.
