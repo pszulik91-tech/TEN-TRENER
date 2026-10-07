@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-01 — wiarygodny raport najbliższego rywala; DONE. Kod i testy opublikowane, bez zmian infrastruktury, CI/deployu, Netlify i SSO.
+Aktualny zakres: GAME-04 — Poznaj swoją drużynę; DONE. Kod i testy opublikowane. STOP po GAME-04.
 
 ## HEAD
+- HEAD kodu/testów po GAME-04: `d586fc668ef12c971681c67f80842b776ade2670` (main).
 - HEAD kodu/testów po GAME-03: `6e2b877cfec0c417d6c58073038f863e093d08d3` (main).
 - HEAD kodu/testów po GAME-02: `5c9484b80e35e23965da078e24ce0ad97961caa4` (main).
 - HEAD kodu/testów po GAME-01: `79297723f8a33a7d2662bf79621573dd79b0d484` (main).
@@ -295,3 +296,21 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - Pressing, raport rywala, silnik meczu, sezony, kreator, CI, Netlify i SSO bez zmian. Bez ręcznego deploya i testu produkcji.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP: GAME-03 DONE.
+
+
+## GAME-04 — Poznaj swoją drużynę: DONE (2026-10-07)
+
+- Commit kodu/testów na main: `d586fc668ef12c971681c67f80842b776ade2670`; commit i push przez autoryzowane połączenie GitHub, drzewo z lokalnie przetestowanych plików.
+- Przeczytano aktualny WORK_STATE. Verify Pre-Alpha GAME-03 dla 6e2b877cfec0c417d6c58073038f863e093d08d3: SUCCESS według aktualizacji użytkownika przed PRODUCT-02. CI GAME-04 nie sprawdzano.
+- Audyt: selectLineupForPlan wyklucza injuryWeeks/absenceRounds, zaczyna od slotów z najmniejszą liczbą naturalnych kandydatów; najpierw minimalizuje positionPenalty, dopiero potem porównuje lineupPlanScore. Wynik zależy też od wcześniej obsadzonych pozycji. lineupPlanScore opiera się na liveOVR i istniejących priorytetach planu: forma/morale, kondycja, wiek, grupy pozycji. effectiveOVR to dyspozycja pomniejszona o niedopasowanie pozycji. Te funkcje i algorytm bez zmian; nie znaleziono błędu wymagającego poprawki.
+- Zmieniono używany TeamPlanScreen (SquadV15 i TacticsV15). XI prezentuje dokładnie game.tactic.assignments w kolejności slotów formacji: pełne nazwisko, slot, naturalna pozycja, wiek, effectiveOVR, kondycja, forma i morale. Puste sloty są oznaczone. Lista poza XI obejmuje całą pozostałą kadrę, bez limitu lub nowego systemu ławki. Kontuzje i absencje pokazują rzeczywisty powód i czas; jednoczesne uraz/absencja nie ukrywają się wzajemnie.
+- Ponownie użyto istniejącego układu player-card/roster-cards, z jedną kolumną na telefonie. Zachowano wybór planu, Siłę XI, kondycję, morale, młodych oraz poradę pressingu. Bez kontrolek ręcznego składu.
+- Zmiana planu pokazuje wejścia/wyjścia i poprzednią/nową Siłę XI oraz kondycję (z różnicą). Porównanie jest wyłącznie useState ekranu, względem bezpośrednio poprzedniego planu; nie trafia do kariery ani zapisu. Przy braku zmian nazwisk komunikat wskazuje możliwe zmiany pozycji/instrukcji.
+- Mała czysta lineupSelectionReason obok selektora opisuje rzeczywiście stosowane kryteria dla pozycji, danych i planu. Nie przypisuje wyboru jednej arbitralnej przyczynie, nie wymyśla szybkości/techniki, nie pokazuje wag lub wyniku score; uczciwie informuje o łączeniu kryteriów i obsadzie innych pozycji. Wyjaśnienia pojawiają się przy zawodnikach wchodzących do XI.
+- npm test PASS: typecheck, produkcyjny build Vite, 130/130 regresji; git diff --check PASS. Lokalny Node 24.19.0, deklarowane >=24.21.0 <25. Istniejące ostrzeżenia bundla/renderera nie przerwały weryfikacji.
+- Pięć nowych testów obejmuje: dokładne assignments i wykluczenie niedostępnych; konkretne zmiany nazwisk oraz wejścia/wyjścia; Siłę i kondycję z rzeczywistych graczy; uczciwe kryteria; deterministyczność; niezmienione wyniki selektora dla wszystkich 10 planów i 3 poziomów zmęczenia względem utrwalonej próbki sprzed GAME-04; renderowanie używanego ekranu i kliknięcie Rotacji. Próbkę pozyskano z kodu main 4638c3a, nie z nowej implementacji. Test nie wymaga historii git w CI.
+- Przykład kontrolowanej kadry testowej: Najsilniejsza XI z Markiem Kowalskim i Piotrem Nowakiem na DP (kondycja obu 40%) → Rotacja: wchodzą Jan Wójcik i Adam Zieliński (DP, kondycja obu 100%); wypadają Kowalski i Nowak. Naturalne pozycje, bieżąca dyspozycja i dodatkowy priorytet kondycji decydują łącznie. Siła XI 59 → 59 (zaokrąglona), średnia kondycja 89% → 100% (+11 p.p.).
+- Pliki: app/gameplay-screens.tsx, app/globals.css, app/lineup-presentation.ts, lib/game-rules.mjs, lib/game-rules.d.mts, tests/lineup-presentation.test.mjs, tests/fixtures/lineup-before-game04.json; następnie docs/WORK_STATE.md w osobnym commicie [skip ci]. Bez nowych zależności, danych zawodników lub mechanik meczowych.
+- GAME-05 i GAME-06 niewykonane. Pressing, raport rywala, historie, transfery, sezony, kreator, silnik meczu, CI, Netlify i SSO bez zmian. Bez ręcznego deploya i testu produkcji; UI sprawdzono testem komponentu.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP: GAME-04 DONE.
