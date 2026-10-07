@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-07. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-04 — Poznaj swoją drużynę; DONE. Kod i testy opublikowane. STOP po GAME-04.
+Aktualny zakres: GAME-05 — jeden mierzalny cel sportowy zarządu; DONE. Kod i testy opublikowane. STOP po GAME-05.
 
 ## HEAD
+- HEAD kodu/testów po GAME-05: `178ff7b9a97caf243af63b028dcc602c920ce3de` (main).
 - HEAD kodu/testów po GAME-04: `d586fc668ef12c971681c67f80842b776ade2670` (main).
 - HEAD kodu/testów po GAME-03: `6e2b877cfec0c417d6c58073038f863e093d08d3` (main).
 - HEAD kodu/testów po GAME-02: `5c9484b80e35e23965da078e24ce0ad97961caa4` (main).
@@ -314,3 +315,21 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - GAME-05 i GAME-06 niewykonane. Pressing, raport rywala, historie, transfery, sezony, kreator, silnik meczu, CI, Netlify i SSO bez zmian. Bez ręcznego deploya i testu produkcji; UI sprawdzono testem komponentu.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP: GAME-04 DONE.
+
+
+## GAME-05 — jeden mierzalny cel sportowy zarządu: DONE (2026-10-08)
+
+- Commit kodu/testów na main: `178ff7b9a97caf243af63b028dcc602c920ce3de`. Publikacja przez autoryzowany konektor GitHub. Potwierdzono origin/main i identyczność pełnego drzewa z lokalnym d5ea057d6aff22f6a1f4c0ce586fb8afd21b1c5f: b23dba226c757aba61090e86c8513bb277a904bd; git diff --exit-code PASS. Te same 10 zmienionych plików i identyczna treść. Lokalny commit i zdalny różnią się metadanymi, nie zawartością.
+- Odzyskano częściową implementację poprzedniej sesji: cztery zmienione pliki aplikacji, nowy moduł/panel/testy i raport audytu. Nie istniał commit GAME-05 ani push; origin/main wskazywał f61ed44, WORK_STATE kończył się na GAME-04. Kontynuowano istniejące zmiany.
+- Verify Pre-Alpha GAME-04 d586fc668ef12c971681c67f80842b776ade2670: SUCCESS według aktualizacji użytkownika. CI GAME-05 nie sprawdzano.
+- Dokładnie jeden boardGoal na klub/sezon: maxPlace wyliczone z relatywnego OVR drużyn i istniejącej ambicji prezesa. Remisy OVR używają środkowej prognozy miejsca; bazowy cel najwyżej ceil(85% liczby klubów), ambicja powyżej 60 zaostrza wymaganie maksymalnie o dwa miejsca. Bez losowania, nowych danych i zależności od reputacji, punktów, morale czy formy. Cel pozostaje stały przez sezon.
+- Panel pokazuje dokładną granicę miejsca, aktualną pozycję z sortedTable i stan Realizowany/Zagrożony, na końcu Spełniony/Niewykonany. Widoczny na pierwszym dniu w klubie, Dashboard, Kariera i letnim rozliczeniu. Ekran powitalny nie pokazuje już ogólnego, potencjalnie sprzecznego oczekiwania.
+- beginNextSeason zachowuje dotychczasową ocenę wyników, presji, cierpliwości i nieprzewidywalności prezesa; wynik celu dodaje -6/+6 p.p. do dismissalProbability, z istniejącymi granicami 2–86%. Bez gwarancji zatrudnienia albo automatycznego zwolnienia. Wynik i granica celu trafiają osobno do rekordu sezonu i historii. developmentGoals, ich progres, nagrody i statystyka goalsCompleted bez zmian.
+- Start następnego sezonu (pozostanie/awans/spadek/nowy klub) ustala nowy cel z nowej ligi i prezesa. Migracja starego zapisu uzupełnia brakujący/nieprawidłowy cel raz z istniejących OVR; nie rekonstruuje nieznanej siły z początku sezonu. Poprawny zapisany cel jest zachowany. Dawne rozliczone sezony i rekordy nie są ponownie oceniane.
+- npm test PASS: typecheck, produkcyjny build, 137/137 regresji; git diff --check PASS. Siedem testów celu obejmuje deterministyczność, siłę/ambicję, prawdziwą tabelę, wpływ na rzeczywiste zatrudnienie, zapis/odczyt/migrację, następny sezon i zmianę klubu oraz używane ekrany DashboardV15/CareerV14/Jobs i pierwszy dzień. Lokalny Node 24.19.0, repo deklaruje >=24.21.0 <25; istniejące ostrzeżenia bundla/renderera/HMR nie przerwały testów.
+- npm run audit:release PASS: 1564 mecze, 53 sezony, 1566 kontroli zapisów, 5350 momentów, 2126 decyzji, 53 rozliczenia sezonów; długa kariera 32 sezony i dobrowolna emerytura po 65 r.ż. Raport docs/reports/playable-career-audit.json odświeżony.
+- Przykłady kontrolowanej ligi 16 klubów, OVR 80..65: słaby OVR65/ambicja20 → 14. miejsce lub wyżej; średni OVR73/ambicja50 → 8. lub wyżej; mocny OVR78/ambicja100 → 1. miejsce. To przykłady modelu, nie oficjalnych miejsc awansu/spadku.
+- Wpływ zatrudnienia: miejsce8/16, presja50, cierpliwość50, nieprzewidywalność26: bazowe ryzyko 28%, wykonanie 22%, niewykonanie 34%. Test przy tym samym losowaniu pomiędzy progami potwierdza pozostanie po wykonaniu i zwolnienie po niewykonaniu.
+- Pliki: app/club-arrival.tsx, app/game-actions.ts, app/game-data.ts, app/game-engine.ts, app/game-screens.tsx, app/board-goal-panel.tsx, lib/board-goal.mjs, lib/board-goal.d.mts, tests/board-goal.test.mjs, docs/reports/playable-career-audit.json; następnie ten checkpoint w osobnym commicie [skip ci].
+- GAME-06 niewykonane. Bez zmian innych mechanik, konfiguracji CI/Netlify/SSO i bez ręcznego deploya.
+- STOP po GAME-05.
