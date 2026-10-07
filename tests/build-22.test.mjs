@@ -28,5 +28,5 @@ test("bank meczu przekracza 100 wariantów, a raport jest zamykany w stanie save
 
 test("rynek odróżnia zimową obserwację od formalnej oferty", () => {
   const source = fs.readFileSync(new URL("../app/game-screens.tsx", import.meta.url), "utf8");
-  assert.match(source, /OBSERWACJA \/ WAKAT/); assert.match(source, /FORMALNA OFERTA/); assert.match(source, /Zostań w klubie/);
+  assert.match(source, /"OBSERWACJA"/); assert.doesNotMatch(source, /OBSERWACJA \/ WAKAT/); assert.match(source, /FORMALNA OFERTA/); assert.match(source, /Zostań w klubie/);
 });

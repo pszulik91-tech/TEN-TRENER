@@ -1,3 +1,4 @@
+import type { MarketOffer } from "../lib/job-market.mjs";
 import type { BoardGoal } from "../lib/board-goal.mjs";
 import {
   buildMatchStrength, buildSchedule, burnoutMatchPenalty, capReadiness, coachingExperienceEligibility, conditionFromFatigue, defaultMicrocycle, diagnoseMatchOutcome, dismissalProbability, effectiveOVR, environmentIncidentOccurs, evaluateMicrocycle, expectedOutcomeProbabilities, goalSatisfied, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, liveBreakdown, liveOVR, normalizeSlot, normalizeStartingLicense, offseasonBaseChange, offseasonBurnout, POLICY_EFFECTS,
@@ -39,7 +40,7 @@ export type Club = { id: string; name: string; association: string; district: st
 export type Tactic = { formation: keyof typeof FORMATIONS; mentality: string; tempo: string; pressing: string; line: string; width: string; buildUp: string; passingRisk: string; assignments: Record<string, string> };
 export type SeasonRecord = { season: string; club: string; tier: number; place: number; matches: number; wins: number; draws: number; losses: number; outcome: "awans" | "utrzymanie" | "spadek"; goalsCompleted: number; boardGoal?: { maxPlace: number; fulfilled: boolean } };
 export type CareerStats = { seasons: number; matches: number; wins: number; draws: number; losses: number; promotions: number; relegations: number; goalsCompleted: number; highestTier: number; clubs: string[] };
-export type JobOffer = { id: string; packId: string; clubName: string; tier: number; competition: string; expectation: string; stage?: "obserwacja" | "oferta"; fit?: number };
+export type JobOffer = MarketOffer;
 export type WorldActivity = { date: string; competitionsAdvanced: number; matchesPlayed: number; squadMoves: number; managerChanges: number; headlines: string[] };
 export type DecisionOutcome = { title: string; choice: string; feedback: string; changes: string[] };
 export type PendingSeason = { year: number; targetTier: number; place: number; outcome: "awans" | "utrzymanie" | "spadek" };

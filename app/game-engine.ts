@@ -1,8 +1,9 @@
+import { generateWorldJobOffers } from "../lib/job-market.mjs";
 import { createBoardGoal } from "../lib/board-goal.mjs";
 import {
   BUILD, DEVELOPMENT_GOALS, FIRST_NAMES, FORMATIONS, GameState, LAST_NAMES,
   JobOffer, LeaguePack, LEAGUE_PACKS, LICENSE_CHALLENGES, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
-  buildSchedule, defaultMicrocycle, licenseCoversCompetition, offseasonBaseChange, positionPenalty, randomInt, rngNext, selectBestLineup, shouldRetirePlayer,
+  buildSchedule, defaultMicrocycle, offseasonBaseChange, positionPenalty, randomInt, rngNext, selectBestLineup, shouldRetirePlayer,
   environmentForPack, environmentForTier, environmentIncidentOccurs,
 } from "./game-data";
 import type { Coach, CoachProfile } from "./game-data";
@@ -138,19 +139,7 @@ export function buildLeagueForSeason(game: GameState, tier: number, seasonYear: 
 }
 
 export function generateJobOffers(game: GameState, initialSeed: number): { seed: number; offers: JobOffer[] } {
-  let seed = initialSeed; const eligible = LEAGUE_PACKS.filter((pack) => {
-    if (!licenseCoversCompetition(game.coach.license, pack.competition)) return false;
-    const reputationFloor = 5 + (10 - pack.tier) * 5;
-    const localBonus = pack.association === game.club.association ? 6 : 0;
-    return game.coach.reputation + localBonus >= reputationFloor - 8;
-  }); const pool = [...eligible]; const offers: JobOffer[] = [];
-  while (pool.length && offers.length < 3) {
-    const pick = randomInt(seed, 0, pool.length - 1); seed = pick.seed; const pack = pool.splice(pick.value, 1)[0];
-    const candidates = (game.nextWorld?.competitions.find(c => c.id === pack.id)?.teams.map(t => t.name) ?? pack.teams).filter((name) => name !== game.club.name); const clubPick = randomInt(seed, 0, candidates.length - 1); seed = clubPick.seed; const clubName = candidates[clubPick.value];
-    const reputationFloor = 5 + (10 - pack.tier) * 5; const localBonus = pack.association === game.club.association ? 6 : 0; const fit = Math.max(1, Math.min(99, 55 + game.coach.reputation + localBonus - reputationFloor));
-    offers.push({ id: `job-${seasonYearFrom(game.season)}-${pack.id}-${clubPick.value}`, packId: pack.id, clubName, tier: pack.tier, competition: `${pack.competition} • ${pack.group}`, expectation: pack.tier <= 3 ? "wynik od pierwszej kolejki" : pack.tier <= 6 ? "walka o górną połowę" : "ustabilizowanie zespołu", fit });
-  }
-  return { seed, offers };
+  return generateWorldJobOffers(game, LEAGUE_PACKS, initialSeed);
 }
 
 export function makePresident(initialSeed: number, tier: number) {
@@ -160,8 +149,6 @@ export function makePresident(initialSeed: number, tier: number) {
   const [ambition, patience, ego, footballKnowledge, financialCaution, fanPressureSensitivity, mediaPressureSensitivity, riskTolerance, localBase, unpredictability] = values;
   return { seed, presidentName: `Prezes ${LAST_NAMES[surname.value]}`, president: { ambition: Math.min(92, ambition + Math.max(0, 6 - tier) * 3), patience, ego, footballKnowledge, financialCaution, fanPressureSensitivity, mediaPressureSensitivity, riskTolerance, localPatriotism: tier >= 7 ? Math.max(65, localBase) : localBase, unpredictability } };
 }
-
-function seasonYearFrom(season: string) { return Number(season.slice(0, 4)) + 1; }
 
 export function environmentIncident(game: GameState) {
   const roll = randomInt(game.seed, 0, 999); let seed = roll.seed;
