@@ -1,0 +1,26 @@
+.about-link { font-weight: 700; text-decoration: underline; text-underline-offset: .3em; padding: .8rem; min-height: 44px; }
+.about-project { color: var(--ink); background: var(--surface); border: 3px solid var(--ink); width: min(640px, calc(100vw - 24px)); max-height: 90dvh; padding: 0; margin: auto; }
+.about-project::backdrop { background: #000a; }
+.about-project header, .about-content { padding: 1.25rem; }
+.about-project header { border-bottom: 2px solid currentColor; }
+.about-project h2 { font-size: 2rem; font-weight: 900; }
+.about-project h3 { margin: 1.25rem 0 .5rem; font-weight: 800; }
+.about-project p, .about-project li { line-height: 1.6; }
+.about-project ul { list-style: disc; padding-left: 1.2rem; }
+.about-project footer { padding: 1rem; position: sticky; bottom: 0; background: var(--surface); border-top: 2px solid currentColor; }
+.about-project footer button { width: 100%; padding: .8rem; min-height: 48px; }
+.start-screen .release-label { display: inline-block; border: 2px solid currentColor; padding: .3rem .6rem; font-weight: 800; }
+.start-screen .start-actions { display: grid; gap: .75rem; }
+.start-screen .save-hint { font-size: .9rem; line-height: 1.5; }
+.new-career-warning { padding: 1rem; border: 2px solid currentColor; }
+.new-career-warning p { margin-bottom: .8rem; }
+.new-career-warning button { margin: .3rem; min-height: 44px; padding: .5rem; }
+.release-recovery { max-width: 650px; margin: 10vh auto; padding: 1.5rem; }
+.release-recovery h1 { font-size: 2rem; font-weight: 800; }
+.release-recovery p { margin: 1rem 0; }
+.release-recovery button { padding: 1rem; margin: .5rem; border: 2px solid currentColor; }
+
+.start-screen .brand-mark { width: 2.5rem; height: 2.5rem; margin-bottom: 1rem; font-size: 1rem; }
+.start-screen .start-panel { padding: 1rem; }
+.start-screen .start-copy { margin: 1rem 0; }
+.start-screen .build-row { flex-wrap: wrap; }

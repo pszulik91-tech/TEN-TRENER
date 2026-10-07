@@ -1,0 +1,126 @@
+/* Four complete palettes. Same game and controls in every edition. */
+:root, :root[data-theme="redakcja"] {
+  --paper:#f7f7f2; --surface:#fff; --surface-2:#edece7; --ink:#1b2328; --ink-soft:#565e63; --rule:#c6c9c8;
+  --brand:#c6352f; --brand-ink:#fff; --bar:#1b2328; --bar-ink:#fff; --signal:#c6352f; --good:#176847;
+  --title-font:Georgia,"Times New Roman",serif; --body-font:Arial,Helvetica,sans-serif; --edge:2px; --panel-shadow:0 2px 0 #d8d9d4;
+}
+:root[data-theme="manager"] {
+  --paper:#7d9396; --surface:#e2e5e2; --surface-2:#ced6d5; --ink:#14212b; --ink-soft:#40545c; --rule:#8a9c9d;
+  --brand:#173e78; --brand-ink:#fff; --bar:#173e78; --bar-ink:#fff; --signal:#933825; --good:#12613f;
+  --title-font:"Courier New",monospace; --body-font:Tahoma,Arial,sans-serif; --edge:0px; --panel-shadow:inset 2px 2px #fff,inset -2px -2px #7b8b8c,3px 3px 0 #526568;
+}
+:root[data-theme="teletext"] {
+  --paper:#050505; --surface:#0b0b0b; --surface-2:#181818; --ink:#fff; --ink-soft:#c3c3c3; --rule:#595959;
+  --brand:#f4dd2b; --brand-ink:#080808; --bar:#123da5; --bar-ink:#fff; --signal:#f4dd2b; --good:#54e38a;
+  --title-font:"Courier New",monospace; --body-font:"Courier New",monospace; --edge:0px; --panel-shadow:none;
+}
+:root[data-theme="stadion"] {
+  --paper:#151d25; --surface:#202c37; --surface-2:#2b3944; --ink:#eef4f3; --ink-soft:#b3c5c9; --rule:#465a63;
+  --brand:#b6e779; --brand-ink:#132717; --bar:#0e161d; --bar-ink:#edf6f0; --signal:#f4be70; --good:#b6e779;
+  --title-font:Impact,"Arial Black",sans-serif; --body-font:Arial,Helvetica,sans-serif; --edge:6px; --panel-shadow:0 3px 12px #0e141855;
+}
+:root {
+  --background:var(--paper);--foreground:var(--ink);--card:var(--surface);--card-foreground:var(--ink);--popover:var(--surface);--popover-foreground:var(--ink);
+  --primary:var(--brand);--primary-foreground:var(--brand-ink);--secondary:var(--surface-2);--secondary-foreground:var(--ink);--muted:var(--surface-2);--muted-foreground:var(--ink-soft);
+  --accent:var(--surface-2);--accent-foreground:var(--ink);--destructive:var(--signal);--border:var(--rule);--input:var(--rule);--ring:var(--brand);--sidebar:var(--bar);--sidebar-foreground:var(--bar-ink);
+}
+html,body,.game-shell,.game-main,.setup-screen,.start-screen { background:var(--paper)!important;color:var(--ink)!important; }
+body { font-family:var(--body-font)!important; }
+.game-content::before,.setup-screen::before,.stadium-grid,.start-screen::after { display:none!important; }
+button,input,select { font-family:inherit; }
+button,[role="button"] { border-radius:var(--edge)!important; }
+button:focus-visible,a:focus-visible,summary:focus-visible { outline:3px solid var(--brand);outline-offset:3px; }
+button:disabled { opacity:.48!important; }
+.topbar,.side-nav,.bottom-nav,.setup-header { background:var(--bar)!important;color:var(--bar-ink)!important;border-color:var(--rule)!important; }
+.topbar { height:4rem; }
+.topbar button,.side-nav button,.bottom-nav button,.mobile-brand span,.side-nav strong,.side-nav span { color:var(--bar-ink)!important; }
+.mobile-brand small,.side-brand small,.side-nav small,.side-footer small,.top-metrics { color:var(--bar-ink)!important;opacity:.74; }
+.side-nav nav button.active,.bottom-nav button.active { background:var(--brand)!important;color:var(--brand-ink)!important;border-color:var(--brand)!important;box-shadow:none!important; }
+.side-nav nav button.active span { color:var(--brand-ink)!important; }
+.panel,.hero-card,.match-week,.environment-preview,.license-choice,.goal-card,.club-card,.choice-card,.training-preset,.team-plan-card,.post-match-report,.archive-masthead,.archive-console section,.coach-moment,.selected-team-plan,.squad-metric,.policy-card,.session-card,.goal-progress-card,.player-card {
+  color:var(--ink)!important;background:var(--surface)!important;border:1px solid var(--rule)!important;border-radius:var(--edge)!important;box-shadow:var(--panel-shadow)!important;
+}
+.panel { padding:1rem; }
+.panel p,.panel span,.panel small,.hero-card p,.team-plan-card p,.training-preset span,.license-choice p,.goal-card p,.club-card small,.archive-page p,.archive-seasons span,.archive-seasons small,.world-headlines p,.setup-subtitle,.page-heading p,.start-copy,.field small,.field>span,.choice-card span,.setup-note,.build-row { color:var(--ink-soft)!important; }
+.panel h2,.panel h3,.panel strong,.hero-card strong,.team-plan-card strong,.training-preset strong,.license-choice strong,.goal-card strong,.club-card strong,.table-row strong,.archive-seasons strong,.dossier-grid b,.selected-team-plan strong { color:var(--ink)!important; }
+.page-heading h1,.setup-content>h1,.start-panel h1 {color:var(--ink)!important;font-family:var(--title-font)!important;text-shadow:none!important;letter-spacing:-.025em!important;text-transform:none!important; }
+.page-heading h1 { font-size:clamp(1.55rem,3.6vw,2.45rem)!important;line-height:1.08; }
+.setup-content>h1 { font-size:clamp(2rem,5vw,3.6rem)!important; }
+.start-panel h1 { font-size:clamp(4rem,12vw,8rem)!important;line-height:.9; }
+.start-panel h1 em,.eyebrow,.section-label,.panel-title svg,.dashboard-shortcuts svg { color:var(--brand)!important; }
+.panel-title { border-color:var(--rule)!important; }
+.primary-cta,.match-action-dock button,.report-close,.job-offer button,.stay-card button,.setup-footer button:last-child,.setup-footer .primary-cta {color:var(--brand-ink)!important;background:var(--brand)!important;border:1px solid var(--brand)!important;box-shadow:none!important;font-weight:800!important; }
+.secondary-cta,.theme-open { color:var(--ink)!important;background:var(--surface-2)!important;border:1px solid var(--rule)!important;min-height:2.75rem;padding:.55rem .9rem; }
+.topbar .theme-open { background:transparent!important;border-color:var(--bar-ink)!important;color:var(--bar-ink)!important;white-space:nowrap; }
+.field input,.field select,.age-stepper,.age-stepper button,.age-stepper output,.intensity-options button,.choice-card,.psych-option {color:var(--ink)!important;background:var(--surface)!important;border-color:var(--rule)!important; }
+.license-choice.selected,.club-card.selected,.goal-card.selected,.choice-card.selected,.training-preset.selected,.team-plan-card.active,.session-card.selected { outline:2px solid var(--brand);outline-offset:-2px;box-shadow:inset 5px 0 var(--brand)!important;background:var(--surface-2)!important; }
+.intensity-options button.active,.policy-tabs button.active,.formation-options button.active { color:var(--brand-ink)!important;background:var(--brand)!important; }
+.desk-tabs,.archive-tabs,.market-rules {background:var(--surface-2)!important;color:var(--ink)!important;border-color:var(--rule)!important; }
+.desk-tabs button,.archive-tabs button {background:transparent!important;color:var(--ink)!important;border-color:var(--rule)!important; }
+.desk-tabs button.active,.archive-tabs button.active {background:var(--brand)!important;color:var(--brand-ink)!important;box-shadow:none!important; }
+.desk-tabs button b {background:transparent!important;color:inherit!important; }
+.live-score,.match-scoreboard {background:var(--bar)!important;color:var(--bar-ink)!important;border:1px solid var(--rule)!important;outline:0!important;box-shadow:none!important; }
+.live-pill,.live-score .live-time { color:var(--bar-ink)!important; }
+.minute-bar {background:var(--rule)!important;}.minute-bar span {background:var(--brand)!important; }
+.match-control-room .events article {color:var(--ink)!important;background:var(--surface-2)!important;border-color:var(--rule)!important; }
+.match-control-room .events article.goal {border-left-color:var(--brand)!important; }
+.match-action-dock {background:var(--surface)!important;color:var(--ink)!important;border-color:var(--rule)!important; }
+.match-action-dock>span,.match-action-dock>span b {color:var(--ink)!important; }
+.coach-moment { border-top:4px solid var(--brand)!important; }
+.coach-moment p,.coach-moment button span { color:var(--ink-soft)!important; }
+.coach-moment>small,.coach-moment button small {color:var(--brand)!important; }
+.coach-moment button {background:var(--surface-2)!important;color:var(--ink)!important;border-color:var(--rule)!important;min-height:3.4rem; }
+.coach-moment h3 {font-family:var(--title-font)!important; }
+.post-match-window {background:var(--surface)!important;border:1px solid var(--rule)!important;outline:0!important;box-shadow:0 16px 80px #0006!important; }
+.post-match-report header,.analysis-result {background:var(--surface-2)!important;color:var(--ink)!important; }
+.probability-strip,.report-metrics,.strength-breakdown span,.report-columns>div,.decisive-factor {background:var(--surface)!important;color:var(--ink)!important;border-color:var(--rule)!important; }
+.decisive-factor p,.analysis-result p,.report-metrics strong,.probability-strip strong {color:var(--ink)!important; }
+.opponent-dossier::after {background:var(--brand)!important; }.compact-match-card,.opponent-dossier,.archive-masthead {box-shadow:var(--panel-shadow)!important; }
+.dossier-grid,.world-pulse-metrics,.league-table,.table-row {border-color:var(--rule)!important; }.market-rules b {color:var(--brand)!important; }.market-rules span {color:var(--ink-soft)!important; }
+.status-badge,.step-chip,.setup-note {color:var(--ink-soft)!important;background:var(--surface-2)!important;border-color:var(--rule)!important; }
+.page-stack { gap:1.1rem; }.game-content { max-width:80rem;padding:1.4rem; }.compact-heading {margin-bottom:0!important; }
+.start-screen {min-height:100dvh!important;align-items:center; }.start-panel { margin:auto; }.brand-mark,.mini-brand {background:var(--brand)!important;color:var(--brand-ink)!important;box-shadow:none!important; }
+.theme-studio {width:min(920px,calc(100% - 1.5rem));max-height:90dvh;padding:1.35rem;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:var(--edge);overflow:auto; }
+.theme-studio::backdrop {background:#000a;}.theme-studio header {display:flex;justify-content:space-between;align-items:start;gap:1rem;margin-bottom:1.2rem; }
+.theme-studio header h2 {font:700 clamp(1.7rem,4vw,2.6rem)/1 var(--title-font);margin:.5rem 0; }.theme-studio header small {letter-spacing:.12em;color:var(--ink-soft);font-size:.65rem; }
+.theme-studio header button {min-width:44px;min-height:44px;border:1px solid var(--rule);background:var(--surface-2);color:var(--ink); }
+.theme-options {display:grid;grid-template-columns:1fr 1fr;gap:1rem;}.theme-option {text-align:left;padding:1rem;border:2px solid transparent;color:var(--sample-ink);background:var(--sample-paper); }.theme-option.selected {outline:3px solid var(--brand);outline-offset:2px; }
+.theme-option>small {font:700 .65rem Arial,sans-serif;letter-spacing:.08em; }.theme-option h3 {font:700 1.1rem Arial,sans-serif;margin:1rem 0 .4rem; }.theme-option p {font:400 .82rem/1.5 Arial,sans-serif;margin:0; }
+.sample-redakcja {--sample-ink:#1b2328;--sample-paper:#f7f7f2;--sample-brand:#c6352f;font-family:Georgia,serif; }
+.sample-manager {--sample-ink:#172837;--sample-paper:#d8dfdc;--sample-brand:#173e78;font-family:"Courier New",monospace;box-shadow:inset 2px 2px white,inset -2px -2px #819593; }
+.sample-teletext {--sample-ink:#fff;--sample-paper:#050505;--sample-brand:#173fbd;font-family:"Courier New",monospace; }.sample-stadion {--sample-ink:#edf6f0;--sample-paper:#202c37;--sample-brand:#354b49;font-family:Arial,sans-serif; }
+.theme-sample {display:grid;gap:.85rem;padding:.8rem;margin:.7rem 0;border:1px solid currentColor;}.theme-sample>b {font-size:1.15rem; }.theme-sample>span {display:flex;align-items:center;justify-content:space-between;font-size:.65rem;gap:.5rem; }.theme-sample strong {font-size:1.9rem; }.theme-sample i {background:var(--sample-brand);color:white;font:700 .7rem Arial,sans-serif;padding:.5rem;font-style:normal; }
+.save-tools {margin-top:1.7rem;border-top:1px solid var(--rule);padding-top:.6rem; }.save-tools p,.beta-note {color:var(--ink-soft);font-size:.85rem;line-height:1.5; }.save-tools button {background:var(--surface-2);color:var(--ink);border:1px solid var(--rule);min-height:44px;padding:.65rem;margin:0 .5rem .5rem 0; }
+.theme-studio details {padding:1rem 0;border-block:1px solid var(--rule); }.theme-studio summary {cursor:pointer;font-weight:bold; }.theme-studio li {margin:.8rem 0;line-height:1.5; }.theme-studio footer {position:sticky;bottom:-1.4rem;background:var(--surface);padding:1rem 0 .2rem; }.theme-studio footer button {width:100%;min-height:48px; }
+.save-error {padding:1rem;background:#962929;color:#fff;border:2px solid white; }
+@media(min-width:960px){.game-content {padding:1.6rem 2rem;}.page-heading.compact-heading h1 {max-width:45rem;}.next-match.compact-match-card .versus {padding:.75rem;}}
+@media(max-width:639px){.theme-options {grid-template-columns:1fr;}.theme-open span {display:none;}.start-actions .theme-open span {display:inline;}.topbar {padding:0 .8rem;gap:.65rem;}.mobile-brand small {font-size:.48rem;}.game-content {padding:1rem .85rem 6rem;}.theme-studio {padding:1rem;}.match-scoreboard {top:4rem;padding:.65rem!important;}.match-control-room .timeline {height:calc(100dvh - 20rem);min-height:20rem;}.coach-moment {max-height:17rem;}.next-match .versus strong {font-size:.87rem;}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;}}
+
+.theme-studio { margin:auto; }
+
+/* Complete contrast in legacy controls and responsive dashboard sections. */
+.topbar button[data-slot="button"] {background:transparent!important;color:var(--bar-ink)!important;border:1px solid var(--bar-ink)!important;}
+.club-identity,.side-footer,.side-brand {background:transparent!important;border-color:var(--rule)!important;}
+.club-identity {align-items:center;gap:.6rem;padding:1rem .8rem;}
+.club-identity>div {min-width:0;}.club-identity strong {white-space:normal;overflow-wrap:anywhere;}
+.side-nav nav button:not(.active):hover {background:var(--surface-2)!important;color:var(--ink)!important;}
+.side-nav nav button:not(.active):hover span {color:var(--ink)!important;}
+.side-brand>span {background:var(--brand)!important;color:var(--brand-ink)!important;}
+.decision-actions button,.training-presets button,.training-session,.team-plan,.metric-card,.decision-feedback,.calendar-round,.squad-overview>div,.archive-search input,.archive-search select {color:var(--ink)!important;background:var(--surface)!important;border-color:var(--rule)!important;}
+.decision-actions button:hover {background:var(--surface-2)!important;}
+.decision-actions button span,.text-action {color:var(--brand)!important;}
+.decision-feedback>div>span {background:var(--surface-2)!important;color:var(--ink)!important;}
+.desk-tabs {grid-template-columns:repeat(4,minmax(0,1fr));}
+.desk-tabs button span {font-family:var(--body-font);}.desk-tabs button {justify-content:center;}
+[data-theme="teletext"] .page-heading h1 {text-transform:uppercase!important;letter-spacing:0!important;}
+[data-theme="manager"] .panel-title {background:var(--bar);padding:.4rem .6rem;margin:-.6rem -.6rem .8rem;}
+[data-theme="manager"] .panel-title span,[data-theme="manager"] .panel-title small,[data-theme="manager"] .panel-title svg {color:var(--bar-ink)!important;}
+@media(max-width:639px){.desk-tabs button b{display:none;}.desk-tabs button{min-height:44px;}.side-nav{width:min(85vw,19rem);}.dashboard-today{gap:1rem;}.compact-goals .goal-progress-list{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}.decision-feedback p{font-size:.9rem;}}
+
+.side-footer button {background:transparent!important;border:1px solid var(--rule)!important;color:var(--bar-ink)!important;}
+.analysis-hint,.readiness-badge,.preparation-breakdown,.match-preview .preview-details {background:var(--surface-2)!important;color:var(--ink)!important;border-color:var(--rule)!important;}
+@media(max-width:959px){.match-action-dock {position:fixed;z-index:45;bottom:calc(4.85rem + env(safe-area-inset-bottom));left:.85rem;right:.85rem;margin:0;padding:.65rem;box-shadow:0 -4px 12px #0002;}.match-action-dock button{min-height:48px;}.match-control-room{padding-bottom:5rem;}.match-control-room .timeline {height:calc(100dvh - 22rem);min-height:16rem;}.match-scoreboard {position:sticky;top:4rem;z-index:25;}}
+
+.story-episode{display:block;font:700 .8rem/1.4 var(--font-mono,monospace);padding:.5rem 0;color:var(--brand)}
+.tester-tools label{display:grid;gap:.4rem;margin:1rem 0;font-weight:700}.tester-tools select,.tester-tools textarea{width:100%;min-height:44px;padding:.7rem;background:var(--paper);color:var(--ink);border:1px solid currentColor;font:inherit}.tester-tools small{display:block;font-size:.875rem}.tester-tools button{min-height:48px;margin-top:.8rem;padding:.65rem 1rem;border:1px solid currentColor}.tester-tools summary{cursor:pointer;min-height:44px;padding:.5rem 0}.theme-studio a{color:var(--brand);text-decoration:underline}
