@@ -20,6 +20,28 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 - Wynik: https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37658627109
 - Nie odświeżano ponownie. Ta aktualizacja dokumentacyjna tworzy kolejny commit; jego CI nie było sprawdzane.
 
+## Netlify — DEPLOY-01: DONE (2026-10-07)
+
+- Podłączono istniejący projekt ten-trener (167eaa74-4806-4eb2-8747-996de31ea60d) do GitHub pszulik91-tech/TEN-TRENER w Cloud Browser.
+- Użytkownik autoryzował GitHub/Netlify i wybrał repozytorium.
+- Production branch: main; kreator i log potwierdzają refs/heads/main.
+- Pierwszy production deploy: 6ac684ec4255cb14504ff850.
+- Panel: https://app.netlify.com/projects/ten-trener/deploys/6ac684ec4255cb14504ff850
+- Wynik: SUCCESS / Published deploy / Your deploy completed successfully.
+- Build i deploy: 57 s; Initializing, Building, Deploying, Cleanup i Post-processing: Complete.
+- Wdrożony SHA: e0af8f2045f3d85623aee5d18b7a40846436840d (link commita w panelu).
+- Produkcyjny URL wskazany przez panel: https://ten-trener.netlify.app/
+- Permalink: https://6ac684ec4255cb14504ff850--ten-trener.netlify.app/
+- Node: v24.21.0 z .nvmrc, npm v11.19.0 — potwierdzone w logu.
+- Config file: /opt/build/repo/netlify.toml; context: production.
+- Build command from netlify.toml: npm run build && npm run test:regression; Vite build zakończony sukcesem, job Building: Complete.
+- Publish directory: dist; zgodny z kreatorem i Deploy file browser.
+- Nie dodawano ręcznych override’ów command/publish, zmiennych środowiskowych ani zmian kodu.
+- Netlify wykryło Next.js i Vite; log potwierdza Skipping Next.js plugin due to NETLIFY_NEXT_PLUGIN_SKIP environment variable. Nie wymagało to poprawki.
+- SSO i prywatność nie były zmieniane. Nie otwierano gry i nie wykonywano smoke testu/NEXT-03.
+- Ten zapis dokumentacyjny tworzy późniejszy commit niż wdrożony SHA; nie należy utożsamiać HEAD dokumentacji z SHA pierwszego deploya. Commit oznaczono [skip ci], aby aktualizacja checkpointu nie uruchamiała kolejnego builda.
+- STOP: DEPLOY-01 zakończony; nie uruchamiać kolejnego deploya ani NEXT-03.
+
 ## Netlify — NEXT-02: DONE (odczyt panelu, 2026-10-07)
 
 - Cloud Browser: po zalogowaniu użytkownika odczytano Project overview, Deploys i Developer settings.
@@ -49,7 +71,7 @@ Zakres sesji: wyłącznie ten plik; bez zmian kodu gry, workflow i konfiguracji 
 ## BROKEN/BLOCKED
 - Brak potwierdzonego blokera CI na zweryfikowanym HEAD.
 - Użytkownik przed sesją potwierdził SUCCESS najnowszego Verify Pre-Alpha dla ce761669cbcb732f1ed6e74426520b9672b97cd4; nie odczytywano CI ponownie (zakres tylko NEXT-02).
-- Wdrożenie Netlify BLOCKED: Current repository = Not linked; projekt nie został jeszcze wdrożony. NEXT-02 zakończony odczytem panelu.
+- Dawny blocker Not linked usunięty w DEPLOY-01. Pierwszy production deploy zakończył się SUCCESS. Dostęp do gry nie testowany; ustawienia SSO/prywatności bez zmian.
 
 ## NEXT
 - NEXT-01: Odczytać wynik Verify Pre-Alpha dla commita checkpointu, jeśli przy jednorazowym sprawdzeniu jeszcze trwał.
