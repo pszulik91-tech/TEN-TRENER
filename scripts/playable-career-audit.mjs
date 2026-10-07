@@ -9,6 +9,11 @@ import { EVENT_POOL } from '../lib/career-events.mjs';
 import { languageBankStats } from '../lib/game-language.mjs';
 import { narrativeStats } from '../lib/career-stories.mjs';
 import { matchMomentStats } from '../lib/match-moments.mjs';
+import { encodeSave } from '../lib/save-codec.mjs';
+import { readCareer, resumeScreen } from '../app/save-storage.ts';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { createServer } from 'vite';
 
 const checks={matches:0,seasons:0,saves:0,moments:0,decisions:0,worldMatches:0,promotions:0,relegations:0,jobChanges:0,licenseCompletions:0,seasonSettlements:0};
 function make(pack,variant=0){
@@ -40,11 +45,23 @@ function playOne(h,variant=0){
  // This navigation used to delete the only date used for recovery.
  h.game={...h.game,matchState:undefined};assertFinite(h.game);
 }
-function playSeason(h,variant=0){let matches=0;const first=h.game.careerStats.matches;while(!h.game.newSeasonPending){assert.ok(++matches<=50,'season never finishes');playOne(h,variant+matches%2);}
+function playSeason(h,variant=0,beforeFinal){let matches=0;const first=h.game.careerStats.matches;while(!h.game.newSeasonPending){
+ const remaining=h.game.fixtures.filter(f=>!f.played&&(f.home===h.game.club.id||f.away===h.game.club.id));
+ if(remaining.length===1)beforeFinal?.(h.game);
+ const earlier=h.game.fixtures.filter(f=>f.played);assert.ok(++matches<=50,'season never finishes');playOne(h,variant+matches%2);
+ for(const f of earlier)assert.deepEqual(h.game.fixtures.find(next=>next.round===f.round&&next.home===f.home&&next.away===f.away),f,'earlier result overwritten');
+}
  const g=h.game;assert.ok(g.fixtures.every(f=>f.played),'AI bye or final round left unplayed');assert.equal(g.teams.find(t=>t.id===g.club.id).played,(g.teams.length-1)*2);assert.equal(g.teams.reduce((n,t)=>n+t.gf,0),g.teams.reduce((n,t)=>n+t.ga,0));assert.ok(g.fixtures.at(-1).date.slice(5,7)>='05','season ended before spring');
+ assert.equal(g.careerStats.matches-first,matches);assert.equal(matches,(g.teams.length-1)*2);
+ for(const team of g.teams)assert.equal(team.played,g.fixtures.filter(f=>f.home===team.id||f.away===team.id).length,'table matches schedule');
+ assert.equal(currentFixture(g),undefined);assert.equal(g.round,Math.max(...g.fixtures.map(f=>f.round))+1);
  checks.seasons++;return{club:g.club.name,tier:g.club.tier,matches:g.careerStats.matches-first,condition:Math.round(g.players.reduce((n,p)=>n+100-p.fatigue,0)/g.players.length),burnout:g.burnout,goals:g.developmentGoals.map(d=>({id:d.id,progress:d.progress,target:d.target})),saveKB:Math.round(JSON.stringify(g).length/1024)};
 }
-function nextSeason(h){const previousClub=h.game.club.name;h.act('beginNextSeason');assert.ok(h.game.pendingSeason);checks.seasonSettlements++;if(h.game.pendingSeason.outcome==='awans')checks.promotions++;if(h.game.pendingSeason.outcome==='spadek')checks.relegations++;if(h.game.employmentStatus==='employed')h.act('stayAtClub');else{assert.ok(h.game.jobOffers.length,'unemployment deadlock');h.act('acceptJob',h.game.jobOffers[0].id);}if(h.game.club.name!==previousClub)checks.jobChanges++;assert.equal(h.screen,'goals');const before=JSON.stringify(h.game);h.act('applyTraining');assert.equal(JSON.stringify(h.game),before,'goals bypass');h.act('confirmNewSeasonGoals');assert.equal(h.game.developmentGoals.length,2);}
+function nextSeason(h){const previousClub=h.game.club.name;const previous=h.game;h.act('beginNextSeason');assert.ok(h.game.pendingSeason);
+ assert.equal(h.screen,'jobs');assert.equal(h.game.careerStats.seasons,previous.careerStats.seasons+1);assert.equal(h.game.seasonRecords.at(-1).matches,(previous.teams.length-1)*2);assert.equal(resumeScreen(h.game),'jobs');
+ checks.seasonSettlements++;if(h.game.pendingSeason.outcome==='awans')checks.promotions++;if(h.game.pendingSeason.outcome==='spadek')checks.relegations++;if(h.game.employmentStatus==='employed')h.act('stayAtClub');else{assert.ok(h.game.jobOffers.length,'unemployment deadlock');h.act('acceptJob',h.game.jobOffers[0].id);}if(h.game.club.name!==previousClub)checks.jobChanges++;assert.equal(h.screen,'goals');
+ assert.equal(Number(h.game.season.slice(0,4)),Number(previous.season.slice(0,4))+1);assert.equal(h.game.round,1);assert.ok(h.game.fixtures.every(f=>!f.played));
+ const before=JSON.stringify(h.game);h.act('applyTraining');assert.equal(JSON.stringify(h.game),before,'goals bypass');h.act('confirmNewSeasonGoals');assert.equal(h.game.developmentGoals.length,2);}
 
 const results=[];
 for(const competition of ['Klasa C','Klasa B','Klasa A','Klasa okręgowa','V liga','IV liga','III liga','II liga','I liga','Ekstraklasa']){
@@ -52,7 +69,27 @@ for(const competition of ['Klasa C','Klasa B','Klasa A','Klasa okręgowa','V lig
  for(let variant=0;variant<2;variant++){const h=harness(make(pack,variant));const result=playSeason(h,variant);nextSeason(h);playOne(h,variant);results.push({competition,variant,...result,nextTier:h.game.club.tier});console.log(JSON.stringify(results.at(-1)));}
 }
 // Specifically exercise real odd-sized groups and the initial/last-round bye.
-const odd=LEAGUE_PACKS.find(p=>p.teams.length%2===1);if(odd){const h=harness(make(odd));results.push({competition:'odd-sized '+odd.id,...playSeason(h)});}
+const odd=LEAGUE_PACKS.find(p=>p.competition==='Klasa B'&&p.association==='Śląski ZPN'&&p.group==='Rybnik I');
+assert.ok(odd&&odd.teams.length%2===1,'DEV-02 starting group also covers byes');
+{
+ const h=harness(createGame({name:'Test kariery',age:35,region:'Śląskie',playingExperience:'Amator',coachingExperience:'Debiutant',profile:'Mentor',license:'Grassroots C',...skillSet('Mentor','Amator','Debiutant')},odd,odd.teams[2],['tactics','analysis']));
+ let late;results.push({competition:'odd-sized '+odd.id,...playSeason(h,0,g=>{late=g;})});
+ for(const snapshot of [late,h.game]){
+  assert.ok(snapshot);const loaded=await readCareer(await encodeSave(snapshot));
+  for(const key of ['coach','club','fixtures','teams','careerStats','round','date','newSeasonPending'])assert.deepEqual(loaded[key],snapshot[key],'end-season save '+key);
+  assert.equal(resumeScreen(loaded),'dashboard');checks.saves++;
+  if(snapshot.newSeasonPending)h.game=loaded;
+ }
+ assert.equal(late.careerStats.matches,(odd.teams.length-1)*2-1);
+ const root=new URL('../',import.meta.url).pathname;const vite=await createServer({appType:'custom',configFile:false,root,resolve:{alias:{'@':root}},server:{middlewareMode:true,hmr:{port:0}}});
+ try{
+  const {DashboardV15}=await vite.ssrLoadModule('/app/gameplay-screens.tsx');
+  const html=renderToStaticMarkup(React.createElement(DashboardV15,{game:h.game,go(){},resolveDecision(){},prepareMatch(){},beginNextSeason(){},dismissMatchReport(){}}));
+  assert.match(html,/KONIEC SEZONU/);assert.match(html,/>Rozlicz sezon/);
+ }finally{await vite.close();}
+ nextSeason(h);
+ console.log('DEV-06: Rybnik I full season, late/final compressed saves, end screen and next-season transition PASS');
+}
 const longPack=LEAGUE_PACKS.find(p=>p.competition==='Klasa B');const h=harness(make(longPack,3));const long=[];
 for(let year=0;year<32;year++){long.push(playSeason(h,year%4));nextSeason(h);if(year%5===4)console.log(`Career checkpoint ${year+1} seasons, age ${h.game.coach.age}`);}
 assert.equal(h.game.coach.age,67);h.act('retireCareer');assert.equal(h.game.careerEnded,true,'voluntary retirement after 65');
