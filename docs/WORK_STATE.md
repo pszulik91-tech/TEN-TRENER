@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-07 — jedna sprawa konkretnego zawodnika; DONE. Kod i testy opublikowane. STOP po GAME-07.
+Aktualny zakres: GAME-08A — realistyczna kondycja, wydajność i regeneracja zawodnika; DONE. Kod i testy opublikowane. STOP po GAME-08A.
 
 ## HEAD
+- HEAD kodu/testów po GAME-08A: `1ecf03bf19bb012449b55214a7e46a094bfc7c26` (main).
 - HEAD kodu/testów po GAME-07: `944f5bf83155e10b974072d86c7f91ec02681a30` (main).
 - HEAD kodu/testów po GAME-06: `1c39f3fe43d0c5ab5ebe5c00b682845c6575d8a9` (main).
 - HEAD kodu/testów po GAME-05: `178ff7b9a97caf243af63b028dcc602c920ce3de` (main).
@@ -412,3 +413,43 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - GAME-08/09 niewykonane. Bez ręcznej XI, pełnego systemu rozmów, zmian silnika meczu, pressingu, mentalności, rynku pracy, celów zarządu, licencji, treningu, CI, Netlify i SSO.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP po GAME-07.
+
+
+## GAME-08A — realistyczna kondycja, wydajność i regeneracja: DONE (2026-10-08)
+
+- Commit kodu/testów na main: `1ecf03bf19bb012449b55214a7e46a094bfc7c26`. Publikacja przez autoryzowany konektor GitHub. Drzewo `36f9ff8097912b72666b6b6c212b25d27294e3eb` odpowiada lokalnie przetestowanemu commitowi `82c658a357ede98341eac7905617edd04b1bab82`; git diff --exit-code PASS. Różne metadane commita, identyczna zawartość.
+- Verify Pre-Alpha GAME-07 dla `944f5bf83155e10b974072d86c7f91ec02681a30`: SUCCESS według aktualizacji użytkownika przed GAME-08A. CI GAME-08A nie sprawdzano.
+
+### Stan przed zmianą i ustalona łagodność
+
+- conditionFromFatigue już przeliczał fatigue na kondycję 0–100. liveBreakdown miał liniową karę dopiero od fatigue15: przy kondycji60% neutralny zawodnik tracił około 4,5% OVR. Całkowita kara miała ograniczenie -20%; forma, morale i relacja mogły dodatkowo zamaskować zmęczenie. effectiveOVR doliczał dotychczasową karę pozycyjną.
+- injuryRiskFromFatigue utrzymywał prawie stałe ryzyko do fatigue55, czyli kondycji45%. Wzrost istotnego ryzyka zaczynał się zbyt późno. Intensywność treningu już miała dodatkowy wpływ.
+- Starter miał stałe bazowe +8 fatigue na każdym tierze, plus koszt polityki, czasu stosowania pressingu, tempa i decyzji z ławki. Rezerwowi odzyskiwali dwa punkty. Trening miał różne obciążenia zależne od akcentów/intensywności; naturalRecoveryForGap różnicował regenerację na 2/1,8/1,55 punktu za dzień odpoczynku.
+- selectLineupForPlan korzystał z liveOVR oraz własnych dotychczasowych preferencji planów. playerAvailable zależał wyłącznie od urazów i absencji. GAME-07 uruchamiał się od fatigue40/kondycji60%, a wiadomości eksponowały oba parametry.
+
+### Kalibracja ograniczona do kondycji
+
+- Wewnętrzne fatigue i save bez zmian schematu. Dla gracza: jedna kondycja i wspólna conditionStatus: 90–100 Świeży, 80–89 Gotowy, 70–79 Obciążony, 60–69 Zmęczony, 50–59 Bardzo zmęczony, poniżej50 Skrajnie zmęczony. Używane ekrany XI/poza XI pokazują status i ostrzeżenie o obniżeniu możliwości oraz ryzyku przy kondycji poniżej60%; starszy ekran kadry korzysta z tej samej funkcji. Bez nowych wzorów i procentowego ryzyka w UI.
+- Kara kondycji w liveBreakdown jest ciągłą krzywą z rosnącym kosztem w gorszych zakresach. Formę, morale, relację i kary pozycyjne zachowano. Ograniczenie całkowitego modyfikatora wynosi -60% do +14%. selectLineupForPlan i playerAvailable nie zmienione: świeższy zmiennik może wygrać przez istniejącą ocenę, lecz samotny zawodnik z kondycją55% nadal może zostać wybrany.
+- Ryzyko urazu rośnie płynnie od lekkiego obciążenia; normalna intensywność daje bardzo niskie ryzyko przy świeżości, lekko podwyższone przy80%, wyraźnie podwyższone przy60% i wysokie przy50%. Wysoka intensywność zwiększa ryzyko, niska ogranicza; brak gwarantowanego urazu, zachowany rozsądny limit. Dotychczasowy moment losowania i czas urazu bez zmian.
+- playingEnvironment wyznacza środowisko z istniejącego tier: 1–3 profesjonalne, 4–6 półprofesjonalne, 7–10 amatorskie. Bazowy koszt meczu: 10/12/14 punktów kondycji. Próg komunikatu komfortowej gotowości: 82/78/74%; jest ostrzeżeniem, nie zakazem selekcji. Naturalna regeneracja: 2,5/2/1,6 punktu za dzień odpoczynku; dotychczasowy limit dni i sposób naliczania zachowane.
+- Koszty GAME-02 nadal są dodatkami do bazowego obciążenia. Cały mecz wysokiego pressingu kosztuje dodatkowo4 punkty, bardzo wysokiego8. Tempo, polityka i decyzje z ławki nadal dokładają swój istniejący koszt. Regeneracja jako akcent treningu i pozostałe efekty mikrocyklu nie zmienione; podgląd treningu opisuje wpływ jako zmianę kondycji.
+- GAME-07 korzysta z widocznej kondycji <=59%, czyli kategorii Bardzo zmęczony lub Skrajnie zmęczony. Przy60/65/75% sprawa nie powstaje. Nowe wiadomości pokazują np. Kondycja58% • bardzo zmęczony, a odpoczynek opisany jest jako +8 p.p. kondycji. Indywidualne skutki, absencja, follow-up i limity spraw pozostają. Rezerwacja miejsca w inboxie uwzględnia nowy próg i bazowy koszt środowiska.
+
+### Weryfikacja
+
+- npm test PASS: typecheck, produkcyjny build Vite, 163/163 regresji; git diff --check PASS. Sześć nowych testów obejmuje statusy/granice, nieliniowe OVR, monotoniczne ryzyko/intensywność/limit, środowiska i pressing, wybór świeższego gracza bez zakazu występu, nowy próg GAME-07, osiem rzeczywistych tygodni każdego tier2/5/9 z save/load oraz faktyczne końcowe naliczenie różnych kosztów identycznego meczu. Istniejący test używanego ekranu sprawdza statusy i ostrzeżenie również poza XI.
+- Zaktualizowano stare oczekiwania testów odpowiadające zmienionemu balansowi. Historyczny snapshot selektora sprzed GAME-04 nadal sprawdzany dla świeżej kadry we wszystkich planach; zmęczeni mają celowo nowe oceny. Testy rotacji i zmian nazwisk używają stanu, w którym plan nadal może zmienić skład po mocniejszej karze kondycji.
+- Osiem tygodni produkcyjnych akcji: średnia kondycja kadry przed/po meczu dla tier2 wynosi96/92%; tier5 przed90–97%, po85–93%; tier9 przed87–98%, po79–92%. W każdym tygodniu część kadry ma mniej niż100%, część więcej niż50%; średnia po meczu jest między55 a98%. Save/readCareer zachowuje wszystkie serializowane dane zawodników, bez przeskalowania fatigue.
+- npm run audit:release PASS: 1264 mecze, 53 sezony, 1266 kontroli zapisów, 4274 momenty, 1826 decyzji, 3766661 meczów świata, 7 awansów, 4 spadki, 12 zmian klubu i 53 rozliczenia sezonów. Długa kariera32 sezony, dobrowolna emerytura po65 r.ż., wszystkie szczeble oraz odczyt końca sezonu i następny sezon PASS. Raport docs/reports/playable-career-audit.json odświeżony.
+- Lokalny Node24.19.0; repo wymaga >=24.21.0 <25. Istniejące ostrzeżenia bundla/HMR/testowego renderera nie przerwały testów. Bez testu produkcji i ręcznego deploya.
+
+### Przykłady kontrolowane
+
+- Base OVR60, naturalna pozycja N, forma/morale/relacja50, zdrowy i dostępny, normalna intensywność: kondycja95% → Świeży → efektywnyOVR60 → bardzo niskie ryzyko; 80% → Gotowy →59 → lekko podwyższone; 70% → Obciążony →56 → podwyższone; 60% → Zmęczony →52 → wyraźnie podwyższone; 50% → Bardzo zmęczony →45 → wysokie. To przykłady modelu gry, nie medyczne prognozy.
+- Standardowy mecz bez dodatkowych kosztów pressingu, tempa i decyzji; kondycja początkowa90%, odstęp7 dni, domyślny mikrocykl środowiska: tier2 (6 sesji) 90 →80 →91%; tier5 (4 sesje) 90 →78 →87%; tier9 (2 sesje) 90 →76 →84%. Ostatnia wartość uwzględnia naturalną regenerację i koszt treningu, bez bonusów innych wydarzeń.
+
+- Pliki: app/game-actions.ts, app/game-data.ts, app/game-screens.tsx, app/gameplay-screens.tsx, lib/game-rules.mjs, lib/game-rules.d.mts, lib/player-overload.mjs, lib/player-overload.d.mts, tests/condition-balance.test.mjs, tests/game-rules.test.mjs, tests/lineup-presentation.test.mjs, tests/player-overload.test.mjs, docs/reports/playable-career-audit.json; następnie osobny checkpoint docs/WORK_STATE.md [skip ci]. Bez nowych zależności lub atrybutów zawodnika.
+- GAME-08B niewykonane. Bez zmian celów rozwojowych, mentalności meczowej, transferów, rynku pracy, licencji, celów zarządu, CI, Netlify i SSO. Bez przebudowy silnika meczu.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP po GAME-08A.
