@@ -1066,3 +1066,11 @@ button, [role="button"] { border-radius: 0 !important; }
 .player-card header strong { overflow-wrap: anywhere; }
 
 .goal-progress-list .development-detail { display: block; margin-bottom: .45rem; font-size: .75rem; line-height: 1.5; overflow-wrap: anywhere; }
+
+.training-week-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin: 1rem 0; }
+.training-week-options article { padding: 1rem; border: 1px solid var(--border, #766e5f); min-width: 0; }
+.training-week-options dl > div { padding: .45rem 0; border-bottom: 1px dotted #766e5f; }
+.training-week-options dt { font-size: .8rem; }
+.training-week-options dd { margin: .2rem 0; font-weight: 600; overflow-wrap: anywhere; }
+.training-week-options button { margin-top: .75rem; }
+@media(max-width:700px) { .training-week-options { grid-template-columns: 1fr; } }

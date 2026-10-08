@@ -1,3 +1,4 @@
+import { projectTraining, diagnoseTrainingWeek, chosenTrainingLabel } from "./training-week";
 import { goalsForSeason, seasonMatchCount, emptySeasonEvidence, recordMatchEvidence, recordPeopleEvidence, refreshDevelopmentGoals, developmentGoalComplete, goalProgressText, migrateDevelopmentState } from "../lib/development-goals.mjs";
 import { resolveOverload, overloadFollowup, overloadIssue, OVERLOAD_CONDITION } from "../lib/player-overload.mjs";
 import { boardGoalFor, boardGoalProgress, boardGoalDismissalProbability, boardGoalResultText, createBoardGoal } from "../lib/board-goal.mjs";
@@ -20,21 +21,13 @@ import { generateMatchMoments, resolveMatchMoment as resolveMomentEffect, contex
 export function gameActions(game: GameState | null, setGame: (game: GameState) => void, go: (screen: Screen) => void, selectedGoals: string[] = [], setSelectedGoals: (goals: string[]) => void = () => {}) {
   const applyTraining = () => {
     if (!game || (game.matchState && !game.matchState.completed) || game.employmentStatus !== "employed" || game.careerEnded || game.developmentGoals.length !== 2 || game.training.completedRound === game.round) return;
-    const effect = evaluateMicrocycle(game.training.sessions);
-    const fixture = currentFixture(game);
-    const previousDate = [...game.fixtures].filter(f => f.played && (f.home === game.club.id || f.away === game.club.id)).sort((a,b) => b.date.localeCompare(a.date))[0]?.date ?? `${game.season.slice(0,4)}-07-13`;
-    const gapDays = fixture ? daysBetween(previousDate, fixture.date) : 7;
-    const naturalRecovery = naturalRecoveryForGap(gapDays, game.club.tier);
+    const projection = projectTraining(game);
+    const {players,synergy,recovery:naturalRecovery}=projection;
+    const planned={tactic:projection.tactic,policy:projection.policy};
     const summary = game.training.sessions.map((session) => `${session.day} ${session.focus} (${session.intensity.toLowerCase()})`).join(" • ");
-    const players = game.players.map((player) => {
-      const recovered = Math.max(0, player.fatigue - naturalRecovery - ((player.injuryWeeks ?? 0) > 0 ? 3 : 0));
-      if ((player.injuryWeeks ?? 0) > 0) return { ...player, fatigue: recovered };
-      return { ...player, fatigue: Math.max(0, Math.min(100, recovered + effect.fatigueDelta)), morale: Math.max(0, Math.min(100, player.morale + effect.moraleDelta)), form: Math.max(0, Math.min(100, player.form + effect.formDelta + (player.age <= 21 ? effect.youthFormDelta : 0))) };
-    });
-    const planned = plannedTactic(game, players);
-    const synergy = trainingTacticSynergy(game.training.sessions, planned.tactic, game.teamPlan);
+    const weekSummary={round:game.round,diagnosis:diagnoseTrainingWeek(game),chosen:chosenTrainingLabel(game),before:projection.before,after:projection.after};
     const memory = game.trainingMemory ?? { youth: 0, analysis: 0, overload: 0, weeks: 0 };
-    setGame({ ...game, training: { ...game.training, readiness: capReadiness(game.training.readiness, effect.readinessGain, game.environment.readinessCap), completedRound: game.round }, trainingMemory: { youth: memory.youth + synergy.youthLegacy, analysis: memory.analysis + synergy.analysisLegacy, overload: memory.overload + synergy.overloadLegacy, weeks: memory.weeks + 1 }, players, tactic: planned.tactic, squadPolicy: planned.policy, history: [`${game.date} — Mikrocykl kolejki ${game.round}: regeneracja naturalna −${naturalRecovery} zmęczenia, następnie ${game.training.sessions.length} sesji: ${summary}. Zgodność z planem ${synergy.shortTerm >= 0 ? "+" : ""}${synergy.shortTerm}.`, ...game.history].slice(0, 80) });
+    setGame({ ...game, training: { ...game.training, readiness: projection.after.readiness, completedRound: game.round, weekSummary }, trainingMemory: { youth: memory.youth + synergy.youthLegacy, analysis: memory.analysis + synergy.analysisLegacy, overload: memory.overload + synergy.overloadLegacy, weeks: memory.weeks + 1 }, players, tactic: planned.tactic, squadPolicy: planned.policy, history: [`${game.date} — Mikrocykl kolejki ${game.round}: regeneracja naturalna −${naturalRecovery} zmęczenia, następnie ${game.training.sessions.length} sesji: ${summary}. Zgodność z planem ${synergy.shortTerm >= 0 ? "+" : ""}${synergy.shortTerm}.`, ...game.history].slice(0, 80) });
     go("dashboard");
   };
 
@@ -319,7 +312,7 @@ export function migrateGame(value: unknown): GameState {
     inbox: (parsed.inbox ?? []).filter(item=>!item.playerCase || (item.playerCase.clubId===parsed.club.id && players.some(p=>p.id===item.targetPlayerId))).map((item) => legacyIssue(item)),
     squadPolicy: plan.policy,
     teamPlan,
-    training: { sessions: trainingSessions, readiness: Math.min(environment.readinessCap, parsed.training?.readiness ?? 60), completedRound: parsed.training?.completedRound ?? (trainedToday ? parsed.round : null), preset: parsed.training?.preset ?? "BALANCED" },
+    training: { sessions: trainingSessions, readiness: Math.min(environment.readinessCap, parsed.training?.readiness ?? 60), completedRound: parsed.training?.completedRound ?? (trainedToday ? parsed.round : null), preset: parsed.training?.preset ?? "BALANCED", ...(parsed.training?.weekSummary?.round === parsed.round && parsed.training?.completedRound === parsed.round ? {weekSummary:parsed.training.weekSummary} : {}) },
     finances: parsed.finances ?? { monthlySalary: Math.max(1800, 14000 - parsed.club.tier * 1200), personalFunds: 9000 },
     employmentStatus: parsed.employmentStatus ?? "employed",
     jobOffers: parsed.jobOffers ?? [],

@@ -48,7 +48,7 @@ export type GameState = {
   playerOverload?: import("../lib/player-overload.mjs").PlayerOverload;
   narrative?: import("../lib/career-stories.mjs").NarrativeMemory;
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
-  training: { sessions: TrainingSession[]; readiness: number; completedRound: number | null; preset?: string };
+  training: { sessions: TrainingSession[]; readiness: number; completedRound: number | null; preset?: string; weekSummary?: import("./training-week").TrainingWeekSummary };
   squadPolicy: string; teamPlan: string; pressures: Record<string, number>; burnout: number; lastBurnoutChange: number; president: Record<string, number>; presidentName: string;
   careerChallenge: CareerChallenge; environment: LevelEnvironment; worldHumor: number; promises?: { due:number;plan:string;source:string }[]; trainingMemory?: { youth: number; analysis: number; overload: number; weeks: number };
   world: WorldState; nextWorld?: WorldState; worldActivity: WorldActivity;
