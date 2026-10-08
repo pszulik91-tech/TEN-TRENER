@@ -53,7 +53,7 @@ export function offseasonBurnout(burnout: number): number;
 export function dismissalProbability(input: { place: number; teamCount: number; boardPressure: number; patience: number; unpredictability: number }): number;
 export function updateTeamResult(teams: LeagueTeam[], home: string, away: string, homeGoals: number, awayGoals: number): LeagueTeam[];
 export function sortedTable(teams: LeagueTeam[]): LeagueTeam[];
-export function simulateMatchPlan(seed: number, homeStrength: number, awayStrength: number, homeName?: string, awayName?: string): {
+export function simulateMatchPlan(seed: number, homeStrength: number, awayStrength: number, homeName?: string, awayName?: string, attack?: { homeAttack?: number; awayAttack?: number; afterMinute?: number }): {
   seed: number; events: Array<{ minute: number; text: string; kind: "goal" | "card" | "chance" | "info"; side: "home" | "away" | "neutral" }>;
   homeGoals: number; awayGoals: number; shotsHome: number; shotsAway: number; possessionHome: number; homeXg: number; awayXg: number; expected: { home: number; draw: number; away: number };
 };

@@ -102,7 +102,7 @@ test('porady pokazują kondycję i zachowany koszt bez współczynników',()=>{
  assert.deepEqual({...g.tactic,pressing:base.tactic.pressing},base.tactic);
  assert.deepEqual(g.matchState.plannedEvents.filter(e=>e.minute<=15),past);
  const next=act({...base,matchState:{...base.matchState,lastInstructionMinute:undefined}},'changeLiveInstruction','mentality','Ofensywna');
- assert.ok(Math.abs(next.matchState[side]-base.matchState[side]-.35)<1e-9);
+ assert.ok(Math.abs(next.matchState[side]-base.matchState[side])<1e-9);
  });
 
 test('aktywny ekran meczu i wyboru planu pokazują poradę pressingu',async()=>{
