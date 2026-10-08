@@ -1074,3 +1074,43 @@ button, [role="button"] { border-radius: 0 !important; }
 .training-week-options dd { margin: .2rem 0; font-weight: 600; overflow-wrap: anywhere; }
 .training-week-options button { margin-top: .75rem; }
 @media(max-width:700px) { .training-week-options { grid-template-columns: 1fr; } }
+
+/* UX-01: a compact, static introduction to the existing career loop. */
+.start-game-intro { align-items: center; padding: 1rem; color: #f4f2e8; background: radial-gradient(circle at 80% 10%, rgba(49,216,255,.12), transparent 30rem), #080b10; }
+.start-game-intro .start-panel { width: min(100%, 72rem); margin-inline: auto; padding: 0; display: grid; gap: 1rem; }
+.start-game-intro .brand-mark { width: 2.4rem; height: 2.4rem; margin: 0; font-size: 1rem; }
+.start-game-intro .start-panel h1 { font-size: clamp(3.1rem, 13vw, 6rem); line-height: .85; }
+.start-game-intro .start-copy { margin: .8rem 0 0; font-size: .9rem; line-height: 1.45; }
+.start-game-intro .eyebrow { font-size: .65rem; margin: .5rem 0; }
+.start-game-intro .start-actions { gap: .5rem; max-width: none; min-width: 0; }
+.start-game-intro .start-actions > button { min-width: 0; white-space: normal; }
+.start-game-intro .start-actions .save-hint { margin: 0; font-size: .75rem; }
+.start-game-intro .build-row { margin: 0; }
+.start-game-preview { min-width: 0; color: #f4f2e8; }
+.start-game-preview > h2 { margin: 0 0 .6rem; font-size: .85rem; letter-spacing: .12em; color: #31d8ff; }
+.start-example { border: 1px solid #3b5368; border-left: 4px solid #31d8ff; background: #111822; padding: .8rem; }
+.start-example-label { color: #a9b7c2; font-size: .65rem; letter-spacing: .08em; }
+.start-example-training { display: flex; align-items: center; gap: .4rem; font-size: .8rem; margin: .6rem 0; }
+.start-example-training svg { width: 1rem; height: 1rem; flex-shrink: 0; color: #31d8ff; }
+.start-example-match { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; }
+.start-example-match strong { font-size: 1.6rem; }
+.start-example-match strong span { color: #ff3b5c; }
+.start-example-match > span { font-size: .7rem; color: #ffb000; }
+.start-example p { margin: .4rem 0 0; font-size: .8rem; line-height: 1.4; color: #a9b7c2; }
+.start-week-loop { list-style: none; margin: .8rem 0 0; padding: 0; display: grid; gap: .6rem; }
+.start-week-loop li { min-width: 0; overflow-wrap: anywhere; }
+.start-week-loop li > div { display: flex; align-items: center; gap: .4rem; }
+.start-week-loop svg { width: 1rem; height: 1rem; color: #31d8ff; flex-shrink: 0; }
+.start-week-loop h3 { margin: 0; font-size: .85rem; text-transform: uppercase; }
+.start-week-loop .start-loop-arrow { margin-left: auto; color: #a9b7c2; }
+.start-week-loop p { margin: .2rem 0 0 1.4rem; font-size: .8rem; line-height: 1.4; color: #a9b7c2; }
+@media (max-width: 639px) {
+  .start-game-intro .start-actions { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .start-game-intro .primary-cta, .start-game-intro .start-actions > p, .start-game-intro .start-actions > .new-career-warning { grid-column: 1 / -1; }
+}
+@media (min-width: 960px) {
+  .start-game-intro .start-panel { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1.5rem 3rem; }
+  .start-game-intro .brand-mark, .start-game-intro .start-panel > div:not(.start-game-preview) { grid-column: 1; }
+  .start-game-intro .start-game-preview { grid-column: 2; grid-row: 2 / 5; align-self: center; }
+  .start-week-loop { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+}

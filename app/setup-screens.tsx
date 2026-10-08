@@ -5,7 +5,7 @@ import { VERSION, RELEASE_STAGE } from "./build-info";
 import { AboutButton } from "./about-project";
 import { ThemeButton } from "./theme-studio";
 
-import { BadgeCheck, ChevronRight, Play, Save, Target } from "lucide-react";
+import { BadgeCheck, ChevronRight, Play, Save, Target, Users, Activity, ClipboardList, BriefcaseBusiness, MessageSquare } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
@@ -23,7 +23,28 @@ type ClubPickerProps = {
 
 export function StartScreen({ hasSave, onNew, onLoad, hasDraft = false, onResumeDraft }: { hasDraft?: boolean; onResumeDraft?: () => void; hasSave: boolean; onNew: () => void; onLoad: () => void }) {
   const [confirmNew, setConfirmNew] = useState(false);
-  return <main className="start-screen min-h-dvh"><div className="stadium-grid" /><section className="start-panel"><div className="brand-mark"><span>TT</span></div><div><span className="release-label">{RELEASE_STAGE} · v{VERSION}</span><p className="eyebrow">TWOJA KARIERA W POLSKIEJ PIŁCE</p><h1>TEN<br /><em>TRENER</em></h1><p className="start-copy">Pierwsza szatnia. Pierwsza decyzja. Nazwisko, na które pracujesz przez całą karierę.</p></div><div className="start-actions">{hasDraft && <><Button size="lg" onClick={onResumeDraft}>WZNÓW KREATOR</Button><Button variant="outline" onClick={() => hasSave ? setConfirmNew(true) : onNew()}>Odrzuć szkic i zacznij od nowa</Button></>}<Button className="primary-cta" size="lg" onClick={() => hasSave ? setConfirmNew(true) : onNew()}><Play /> NOWA KARIERA</Button><Button className="secondary-cta" variant="outline" size="lg" disabled={!hasSave} onClick={onLoad}><Save /> KONTYNUUJ</Button><Button variant="outline" size="lg" onClick={() => window.dispatchEvent(new Event("open-theme-studio"))}>USTAWIENIA</Button><AboutButton />{!hasSave && <p className="save-hint">Nie ma jeszcze kariery na tym urządzeniu. Zacznij nową lub wczytaj plik w ustawieniach.</p>}{confirmNew && <div className="new-career-warning" role="alert"><p>Masz już zapis. Nowa kariera zastąpi go po zakończeniu kreatora. Możesz najpierw pobrać kopię w ustawieniach.</p><button onClick={onNew}>Rozpocznij nową karierę</button><button onClick={() => setConfirmNew(false)}>Zachowaj obecną</button></div>}</div><div className="build-row"><span className="live-dot" /> {BUILD} <span>•</span> wersja testowa</div></section></main>;
+  return <main className="start-screen start-game-intro min-h-dvh"><div className="stadium-grid" /><section className="start-panel"><div className="brand-mark"><span>TT</span></div><div><span className="release-label">{RELEASE_STAGE} · v{VERSION}</span><p className="eyebrow">TWOJA KARIERA W POLSKIEJ PIŁCE</p><h1>TEN<br /><em>TRENER</em></h1><p className="start-copy">Zaczynasz na polskich boiskach. Prowadzisz ludzi, przygotowujesz mecze, zdobywasz licencje i budujesz nazwisko sezon po sezonie.</p></div><div className="start-actions">{hasDraft && <><Button size="lg" onClick={onResumeDraft}>WZNÓW KREATOR</Button><Button variant="outline" onClick={() => hasSave ? setConfirmNew(true) : onNew()}>Odrzuć szkic i zacznij od nowa</Button></>}<Button className="primary-cta" size="lg" onClick={() => hasSave ? setConfirmNew(true) : onNew()}><Play /> NOWA KARIERA</Button><Button className="secondary-cta" variant="outline" size="lg" disabled={!hasSave} onClick={onLoad}><Save /> KONTYNUUJ</Button><Button variant="outline" size="lg" onClick={() => window.dispatchEvent(new Event("open-theme-studio"))}>USTAWIENIA</Button><AboutButton />{!hasSave && <p className="save-hint">Nie ma jeszcze kariery na tym urządzeniu. Zacznij nową lub wczytaj plik w ustawieniach.</p>}{confirmNew && <div className="new-career-warning" role="alert"><p>Masz już zapis. Nowa kariera zastąpi go po zakończeniu kreatora. Możesz najpierw pobrać kopię w ustawieniach.</p><button onClick={onNew}>Rozpocznij nową karierę</button><button onClick={() => setConfirmNew(false)}>Zachowaj obecną</button></div>}</div><StartGamePreview /><div className="build-row"><span className="live-dot" /> {BUILD} <span>•</span> wersja testowa</div></section></main>;
+}
+
+// Presentation only: no game state, callbacks or simulated actions.
+function StartGamePreview() {
+  const week = [
+    { label: "Drużyna", text: "Poznajesz ludzi, kondycję i automatyczną XI.", Icon: Users },
+    { label: "Trening", text: "Reagujesz na problem tygodnia i przygotowujesz zespół.", Icon: Activity },
+    { label: "Mecz", text: "Zmieniasz pressing i mentalność oraz reagujesz z ławki.", Icon: ClipboardList },
+    { label: "Decyzje", text: "Zarządzasz ludźmi, presją i wydarzeniami klubu.", Icon: MessageSquare },
+    { label: "Kariera", text: "Realizujesz cele, zdobywasz licencje i zmieniasz kluby.", Icon: BriefcaseBusiness },
+  ];
+  return <section className="start-game-preview" aria-labelledby="trainer-week-title">
+    <h2 id="trainer-week-title">TYDZIEŃ TRENERA</h2>
+    <div className="start-example" aria-label="Przykładowy fragment gry — podgląd">
+      <span className="start-example-label">FRAGMENT GRY • PRZYKŁAD</span>
+      <div className="start-example-training"><Activity aria-hidden="true" /><span>Problem tygodnia: <b>kondycja XI</b></span></div>
+      <div className="start-example-match"><strong>72′ <span>•</span> 0:1</strong><span>MENTALNOŚĆ: OFENSYWNA</span></div>
+      <p>Więcej zagrożenia pod bramką rywala, ale także więcej okazji dla niego.</p>
+    </div>
+    <ol className="start-week-loop">{week.map(({label, text, Icon}, index) => <li key={label}><div><Icon aria-hidden="true" /><h3>{label}</h3>{index < week.length - 1 && <ChevronRight aria-hidden="true" className="start-loop-arrow" />}</div><p>{text}</p></li>)}</ol>
+  </section>;
 }
 
 export { Creator } from "./coach-interview";
