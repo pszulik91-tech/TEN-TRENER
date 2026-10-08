@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-06 — oferta pracy z konkretnym powodem; DONE. Kod i testy opublikowane. STOP po GAME-06.
+Aktualny zakres: GAME-07 — jedna sprawa konkretnego zawodnika; DONE. Kod i testy opublikowane. STOP po GAME-07.
 
 ## HEAD
+- HEAD kodu/testów po GAME-07: `944f5bf83155e10b974072d86c7f91ec02681a30` (main).
 - HEAD kodu/testów po GAME-06: `1c39f3fe43d0c5ab5ebe5c00b682845c6575d8a9` (main).
 - HEAD kodu/testów po GAME-05: `178ff7b9a97caf243af63b028dcc602c920ce3de` (main).
 - HEAD kodu/testów po GAME-04: `d586fc668ef12c971681c67f80842b776ade2670` (main).
@@ -373,3 +374,41 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - GAME-05, system licencji, pensje, negocjacje, transfery, silnik meczu, pressing, XI, cele zarządu i rolloverCareerWorld bez zmian. Bez systemu stanowisk trenerów i bez zmian CI/Netlify/SSO.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP po GAME-06.
+
+
+## GAME-07 — jedna sprawa konkretnego zawodnika: DONE (2026-10-08)
+
+- Commit kodu/testów na main: `944f5bf83155e10b974072d86c7f91ec02681a30`. Publikacja przez autoryzowany konektor GitHub. Zdalne drzewo `5300b6cb5e5868cf5cedb0ba20219bd099d5098e` odpowiada lokalnie przetestowanemu commitowi `292f8ff36dee7adff2602a6e791a1a39a8e1d830`; git diff --exit-code PASS. Commity różnią się metadanymi, nie zawartością.
+- Verify Pre-Alpha GAME-06 dla `1c39f3fe43d0c5ab5ebe5c00b682845c6575d8a9`: SUCCESS według aktualizacji użytkownika przed PRODUCT-03. CI GAME-07 nie sprawdzano.
+
+### Stan przed zmianą
+
+- Player zawiera fatigue 0–100, formę, morale, relację, injuryWeeks, absenceRounds i absenceReason. playerAvailable wyklucza urazy i absencje; selectLineupForPlan automatycznie dobiera zastępstwo. Koniec meczu odlicza absencję i stosuje istniejące ryzyko urazu u zawodników z XI.
+- generateCareerIssues tworzy do dwóch wydarzeń w budżecie trzech nierozwiązanych spraw. Ogólny resolveDecision stosuje relation do trzech losowych graczy i efekty zespołowe do kadry. Ta ścieżka pozostaje dla dotychczasowych wydarzeń.
+- Save serializuje GameState, readCareer korzysta z migrateGame; nowy sezon regeneruje kadrę i czyści większość inboxu. Brak indywidualnej sprawy wskazującej zawodnika i rozliczającej jego najbliższy występ.
+
+### Zmiana ograniczona do jednej sprawy przeciążenia
+
+- Nowy moduł player-overload tworzy jeden typ zdarzenia, tylko dla rzeczywistego dostępnego gracza z fatigue >=40 (kondycja <=60%). Preferuje XI, następnie wyższe fatigue, Base OVR i stabilne playerId. Pokazuje nazwisko, pozycję i rzeczywisty stan po meczu; ocena ryzyka nie jest diagnozą medyczną.
+- Dokładnie dwa wybory: odpoczynek daje wyłącznie wskazanemu graczowi fatigue -8, relation +2, absenceRounds=1 i powód Regeneracja po przeciążeniu; dyspozycja daje mu tylko relation -2, nie gwarantuje XI ani urazu. Decyzja nie używa losowej grupy relacji, nie zmienia innych zawodników i nie zużywa seed. Automatyczna selekcja korzysta z dotychczasowego playerAvailable i selectLineupForPlan bez ich zmian.
+- Nowe opcjonalne targetPlayerId/playerCase w CareerIssue i playerOverload w GameState przechowują klub, osobę, wybór i termin rozliczenia według liczby meczów kariery. Po następnym meczu jedna wiadomość podaje faktyczne uczestnictwo w XI, kondycję, uraz i dostępność po odliczeniu absencji. Potwierdzenie wiadomości nie nakłada ponownie skutków.
+- Generowanie odbywa się na aktualnej kadrze po meczu, po istniejących aktualizacjach zawodników. Zachowane maksimum dwóch nowych spraw oraz dostępny budżet trzech nierozwiązanych. Jedno miejsce może być zarezerwowane dla indywidualnej sprawy; sama rezerwacja nie generuje zdarzenia poniżej progu 40. Nie ma duplikatu przy otwartej sprawie lub oczekującym follow-upie; cooldown wynosi cztery mecze i korzysta z istniejącej pamięci narracji.
+- Przy pełnym inboxie wynik najbliższego meczu zostaje zapisany i czeka na miejsce; późniejsza wiadomość nie zastępuje go stanem z następnego spotkania. Nowy indywidualny wpis nie przekracza limitu. Nie zmieniono dotychczasowych obietnic planu.
+- Stan przetrwa save/readCareer/KONTYNUUJ. Stary zapis nie wymaga nowych pól. Migracja usuwa odniesienia do innego klubu lub brakującej osoby. Start nowego sezonu i zmiana klubu czyszczą indywidualną sprawę; absencje resetuje istniejąca logika kadry. Zgłoszenie, które przed decyzją utraci aktualność przez inną niedostępność gracza, można zamknąć bez dodatkowych skutków.
+
+### Weryfikacja
+
+- npm test PASS: typecheck, build Vite, 157/157 regresji; git diff --check PASS. Jedenaście nowych testów obejmuje deterministyczny wybór i wykluczenia, dwa warianty decyzji, izolację skutków, zastępstwo i powód w GAME-04, jedną absencję, prawdziwy follow-up także bez występu i z urazem, limit inboxu/duplikaty, odroczony wynik przy pełnym inboxie, save/load, stary save, zmianę klubu i nowy sezon oraz nieaktualne zgłoszenie. Test rzeczywistego App klika KONTYNUUJ z zapisem decyzji i sprawdza sprawę, osobę i powód absencji w renderowanym ekranie XI.
+- npm run audit:release PASS: 1372 mecze, 53 sezony, 1374 kontrole zapisów, 4703 momenty, 1864 decyzje, 3765864 mecze świata, 13 awansów, 2 spadki, 16 zmian klubu i 53 rozliczenia sezonów. Długa kariera 32 sezony, dobrowolna emerytura po 65 r.ż., wszystkie szczeble i odczyt zapisów pod koniec sezonu PASS. Raport docs/reports/playable-career-audit.json odświeżony.
+- Lokalny Node 24.19.0; repo deklaruje >=24.21.0 <25. Istniejące ostrzeżenia testowego renderera/HMR/bundla nie przerwały testów. Nie wykonano testu produkcji ani ręcznego deploya.
+
+### Pełny przykład obu decyzji z identycznego kontrolowanego stanu testowego
+
+- Piast Bolków, Jakub Bednarek (BR, playerId p-0-12-2), fatigue55/kondycja45%, relacja55, zdrowy i dostępny. W teście ustawiono wysokie OVR bramkarza, aby jednoznacznie pokazać zastępstwo; to kontrolowany świat gry, nie dane realnego zawodnika.
+- A: odpoczynek → fatigue47/kondycja53%, relacja57, absencja1 → automat wybiera Wiktora Gajdę, również przy przygotowaniu meczu → Bednarek nie gra; po treningu i meczu fatigue27/kondycja73%, uraz0, absencja0. Follow-up: Jakub Bednarek (BR): Opuścił spotkanie zgodnie z decyzją o odpoczynku. Po tym meczu kondycja 73%, zmęczenie 27/100. Jest ponownie dostępny.
+- B z tego samego stanu: dyspozycja → fatigue55/kondycja45%, relacja53, absencja0 → automat wybiera Bednarka; po treningu i meczu fatigue47/kondycja53%, uraz0. Follow-up: Jakub Bednarek (BR): Pozostał do dyspozycji i znalazł się w XI. Po tym meczu kondycja 53%, zmęczenie 47/100. Jest ponownie dostępny. Brak urazu dotyczy tej próby, nie jest gwarancją decyzji B.
+
+- Pliki kodu/testów: app/game-actions.ts, app/game-data.ts, lib/career-events.d.mts, lib/player-overload.mjs, lib/player-overload.d.mts, tests/player-overload.test.mjs, docs/reports/playable-career-audit.json. Następnie docs/WORK_STATE.md w osobnym commicie [skip ci]. Bez nowych zależności.
+- GAME-08/09 niewykonane. Bez ręcznej XI, pełnego systemu rozmów, zmian silnika meczu, pressingu, mentalności, rynku pracy, celów zarządu, licencji, treningu, CI, Netlify i SSO.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP po GAME-07.
