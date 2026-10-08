@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-09 — mentalność meczowa z rzeczywistym kompromisem; DONE. Kod, testy i raporty opublikowane. STOP po GAME-09.
+Aktualny zakres: UX-01 — pokaż właściwą grę przed rozpoczęciem kariery; DONE. Kod i testy opublikowane. STOP po UX-01.
 
 ## HEAD
+- HEAD kodu/testów po UX-01: `2a7ef0871e859ce6405fd5e7a2bbac17a85301ce` (main).
 - HEAD kodu/testów po GAME-09: `38df322b067888038704c67232b082d87e220861` (main).
 - HEAD kodu/testów po GAME-08C: `4992d3feb6cae858e90ed3c0c4badbdb1269dd19` (main).
 - HEAD kodu/testów po GAME-08B: `968a9337a38e69498f356e6ec87680bfab5f7b09` (main).
@@ -583,3 +584,24 @@ Tier5 (półprofesjonalne),4 sesje, przerwa7 dni i naturalna regeneracja12 p.p.;
 - git diff --check PASS. Node lokalny24.19.0 vs wymagany >=24.21.0 <25; ostrzeżenia istniejącego bundla/HMR/testowego renderera nie przerwały weryfikacji. Bez deploya ręcznego lub zmian CI/Netlify/SSO.
 - Bez zmian kondycji GAME-08A, celów GAME-08B, treningu GAME-08C, pressingu GAME-02, rynku pracy, licencji, celu zarządu, transferów. Nadal dokładnie3 mentalności; bez suwaków, zmian formacji/zawodników w meczu lub przebudowy silnika.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac. STOP po GAME-09.
+
+## UX-01 — pokaż właściwą grę przed rozpoczęciem kariery: DONE (2026-10-08)
+
+- Aktualizacja użytkownika: Verify Pre-Alpha dla GAME-09, commit `38df322b067888038704c67232b082d87e220861`, SUCCESS. CI UX-01 nie sprawdzano w tej sesji.
+- Przed zmianą przejrzano StartScreen, coach-interview oraz istniejące ekrany Dashboard / Drużyna / Trening / Mecz / Kariera / rynek pracy. Potwierdzono cztery etapy kreatora, jedno pytanie psychologiczne naraz, stepper wieku i brak tekstu o otwieraniu klawiatury telefonu w kodzie aplikacji.
+- Przed: „Pierwsza szatnia. Pierwsza decyzja. Nazwisko, na które pracujesz przez całą karierę.” Start przedstawiał klimat, bez pokazania codziennej rozgrywki.
+- Po: „Zaczynasz na polskich boiskach. Prowadzisz ludzi, przygotowujesz mecze, zdobywasz licencje i budujesz nazwisko sezon po sezonie.” Obietnica przed CTA.
+- Nowy krótki TYDZIEŃ TRENERA pokazuje dokładnie pięć elementów:
+  1. Drużyna — poznajesz ludzi, kondycję i automatyczną XI.
+  2. Trening — reagujesz na problem tygodnia i przygotowujesz zespół.
+  3. Mecz — zmieniasz pressing i mentalność oraz reagujesz z ławki.
+  4. Decyzje — zarządzasz ludźmi, presją i wydarzeniami klubu.
+  5. Kariera — realizujesz cele, zdobywasz licencje i zmieniasz kluby.
+- Statyczna karta „FRAGMENT GRY • PRZYKŁAD”: Problem tygodnia: kondycja XI; 72′ • 0:1; MENTALNOŚĆ: OFENSYWNA; więcej zagrożenia pod bramką rywala, ale także więcej okazji dla niego. Bez kontrolek, callbacków, dostępu do GameState lub symulacji.
+- Zachowane logo, klimat polskich boisk, NOWA KARIERA, KONTYNUUJ, WZNÓW KREATOR, ustawienia, O PROJEKCIE oraz dotychczasowe potwierdzenie zastąpienia zapisu. Kreator, szkic i zapisy nie zmienione. Żadnych obietnic ręcznej XI, transferów gracza, meczu 2D lub negocjacji.
+- Scoped style .start-game-intro: kompaktowy nagłówek i CTA, ciemna paleta aktualnych ekranów gry, na telefonie dwie kolumny pomocniczych przycisków i jedna kolumna podglądu; na desktopie podgląd obok hero. Min-width:0, zawijanie tekstu i minmax(0,1fr) ograniczają szerokość bez nowej biblioteki lub assetów.
+- npm test PASS: typecheck, build Vite, 201/201 regresji. Pięć nowych grup testów: obietnica i pięć etapów / brak fikcyjnych funkcji; prezentacyjny podgląd; rzeczywiste callbacki menu i potwierdzenie zapisu; niezmieniony kreator i pytania; render HTML oraz responsywne reguły CSS. git diff --check PASS.
+- Ograniczenie weryfikacji mobilnej: nie potwierdzono pikselowego renderu lub scrollWidth w prawdziwej przeglądarce. Chromium nie był dostępny; próba pobrania headless shell zakończyła się błędem archiwum. Testy mobilne obejmują HTML/CSS, nie pomiar overflow w silniku przeglądarki. To pozostaje do ręcznego sprawdzenia na telefonie.
+- Kod opublikowany: `2a7ef0871e859ce6405fd5e7a2bbac17a85301ce`; zdalne drzewo `fb8a5c4869797f536611b4e8ba142446f77f7271` identyczne z lokalną, przetestowaną wersją. Następnie osobny checkpoint tego pliku [skip ci].
+- Pliki kodu: app/setup-screens.tsx, app/globals.css, tests/start-game-intro.test.mjs. Bez zmian GAME-01–09, mechanik, treningu, zawodników, celów, licencji, rynku pracy, silnika i zapisów; CI / Netlify / SSO bez zmian. Node lokalny 24.19.0; istniejące ostrzeżenia nie przerwały testów. audit:release nie wymagany ani uruchamiany w onboardingowym UX-01.
+- NEXT: brak autoryzowanych kolejnych prac. STOP po UX-01.
