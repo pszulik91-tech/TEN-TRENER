@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-08C — trening odpowiada na problem tygodnia; DONE. Kod i testy opublikowane. STOP po GAME-08C.
+Aktualny zakres: GAME-09 — mentalność meczowa z rzeczywistym kompromisem; DONE. Kod, testy i raporty opublikowane. STOP po GAME-09.
 
 ## HEAD
+- HEAD kodu/testów po GAME-09: `38df322b067888038704c67232b082d87e220861` (main).
 - HEAD kodu/testów po GAME-08C: `4992d3feb6cae858e90ed3c0c4badbdb1269dd19` (main).
 - HEAD kodu/testów po GAME-08B: `968a9337a38e69498f356e6ec87680bfab5f7b09` (main).
 - HEAD kodu/testów po GAME-08A: `1ecf03bf19bb012449b55214a7e46a094bfc7c26` (main).
@@ -551,3 +552,34 @@ Tier5 (półprofesjonalne),4 sesje, przerwa7 dni i naturalna regeneracja12 p.p.;
 - Bez zmian GAME-09, silnika meczu, pressingu/mentalności, kondycji GAME-08A, celów GAME-08B, rynku pracy, licencji, celów zarządu, transferów, CI, Netlify i SSO. Bez nowych presetów, parametrów zawodników ani systemu analizy rywala.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP po GAME-08C.
+
+## GAME-09 — mentalność meczowa z rzeczywistym kompromisem: DONE (2026-10-08)
+
+- Aktualizacja użytkownika: Verify Pre-Alpha GAME-08C, commit4992d3feb6cae858e90ed3c0c4badbdb1269dd19, SUCCESS. CI nowego GAME-09 nie sprawdzano w tej sesji.
+- Kod/testy/raporty opublikowane na main:38df322b067888038704c67232b082d87e220861. Zdalne drzewo c61b9e7d99575de2a72ae722ec99b791e1b2cfc5 jest identyczne z lokalnym przetestowanym commitem7b10e17; różnica SHA wynika z metadanych publikacji przez konektor. Następnie osobny checkpoint tego pliku [skip ci].
+
+### Stan przed zmianą
+
+- changeLiveInstruction naliczało różnicę instructionImpact: Ofensywna+0,35, Defensywna−0,15 strength. simulateMatchPlan wyliczało xG obu stron z jednej różnicy homeStrength−awayStrength: wyższa siła naszej drużyny zwiększała własne xG, ale zmniejszała xG rywala. Ten model nie mógł równocześnie zwiększyć szans obu drużyn na gola; Defensywna mogła paradoksalnie pogorszyć obronę.
+- Przygotowanie/taktyka/trening/synergia/plan/kondycja/warsztat/wypalenie/zdarzenia tworzyły bazową siłę meczu. Pressing miał istniejący wpływ siły zależny od kondycji i oddzielny licznik minut/koszt fizyczny GAME-02. Coach moments dodawały swoje istniejące efekty i ponownie przeliczały przyszłość. Każda korekta scalała pastEvents do aktualnej minuty z przyszłością z tego samego simulationSeed.
+
+### Minimalna zmiana
+
+- simulateMatchPlan ma opcjonalny szósty parametr: niezależne mnożniki ataku obu stron i afterMinute. Nie zmienia losowania strzałów, kartek, posiadania ani przebiegu RNG; zmienia prawdopodobieństwo wykorzystania istniejących sytuacji po wskazanej minucie. Domyślne wartości1/1 zachowują wcześniejsze wyniki. Limity mnożników0,45–1,65; brak gwarancji gola.
+- Wspólny lib/match-mentality.mjs liczy profil z obecnej mentalności, minuty oraz wyniku wyłącznie z rozegranych goli. Nie czyta liczników homeGoals/awayGoals obejmujących zaplanowaną przyszłość. Poprawnie mapuje nasz klub jako gospodarza lub gościa.
+- Ofensywna podnosi oba zagrożenia; przy późnym przegrywaniu większy wzrost własnej ofensywy, przy późnym prowadzeniu większe otwarcie na rywala. Defensywna obniża oba zagrożenia; przy późnym prowadzeniu większa ochrona wyniku. Neutralna1/1. Skala rośnie liniowo z minutą, bez skoku po75'. Szczegółowa kalibracja i wyniki: docs/reports/mentality-simulation.md oraz .json.
+- Profil obowiązuje od decyzji do następnej korekty lub coachMoment; wtedy wyliczany ponownie z faktycznego stanu. Stosowany także od rozpoczęcia meczu dla mentalności istniejącego teamPlan. Nie dodaje ani nie kumuluje strength. Powrót do neutralnej usuwa aktywną korektę zagrożenia na przyszłość. Bez dodatkowych pól GameState lub migracji.
+- PastEvents do bieżącej minuty pozostają nietknięte. Istniejące blokady kilku zmian w tej samej minucie/aktywnej sytuacji pozostają. Pressing uwzględnia aktualną mentalność, mentalność aktualny pressing; exposure i koszt fizyczny nie zmienione. Coach moments zachowują treść/balans i stosują bieżący profil przy przeliczaniu przyszłości; aktualizowane również metadane xG/posiadania zgodnie z tą symulacją.
+- Zachowany istniejący wzrost presji osobistej+2 przy wejściu w Ofensywną. Brak nowego kosztu fatigue. Pod selektorem mentalności informacja z rzeczywistą minutą/wynikiem i kompromisem; bez wzorów, surowych mnożników, rekomendowania najlepszej mentalności lub blokowania wyboru zależnie od wyniku.
+
+### Symulacja i weryfikacja
+
+-54 000 przebiegów:6000 wspólnych seedów dla każdej z3 mentalności w każdej z3 sytuacji. Równe siły52/52; nasz klub jako gospodarz z zachowaną przewagą gospodarza; stały wynik30'0:0,70'0:1,80'1:0; wyłącznie gole w pozostałym czasie. Reprodukcja: node scripts/mentality-simulation.mjs.
+-30'0:0, średnie gole nasze/rywala: Defensywna0,742/0,655; neutralna0,927/0,762; Ofensywna1,115/0,924.
+-70'0:1:0,236/0,196;0,328/0,253;0,473/0,351. Uniknięcie porażki16,58%/20,58%/27,52%; dokładny końcowy0:2:12,33%/13,80%/15,62%.
+-80'1:0:0,128/0,085;0,185/0,143;0,261/0,218. Wygrana93,02%/88,77%/84,28%. Pełne W/R/P i zakresy zagrożenia w raporcie. Wyniki potwierdzają obustronny kompromis, nie przesunięcie jednej siły.
+- npm test PASS: typecheck, produkcyjny build,196/196 regresji.10 nowych grup: profil obu ataków/czas/wynik/wyjazd; identyczność1000 wywołań z zapisanym hashem sprzed GAME-09; przeszłość w silniku; brak wiedzy o przyszłym wyniku; integracja live/brak kumulacji/powrót do neutralnej/blokada tej samej minuty/presja; pressing; coach moments; save/load;54 000 symulacji i ryzyko dokładnego0:2; aktywny UI. Dotychczasowy test pressingu zmieniony wyłącznie w oczekiwaniu, że sama mentalność nie dodaje już0,35 strength.
+- audit:release PASS:1432 mecze,53 sezony,1434 zapisy,5050 momentów,2114 decyzji,3 752 678 meczów świata,14 zmian klubu,53 rozliczenia sezonu. Przejścia wszystkich szczebli, odd-sized Rybnik I i pełna32-sezonowa kariera do emerytury. Raport docs/reports/playable-career-audit.json odświeżony.
+- git diff --check PASS. Node lokalny24.19.0 vs wymagany >=24.21.0 <25; ostrzeżenia istniejącego bundla/HMR/testowego renderera nie przerwały weryfikacji. Bez deploya ręcznego lub zmian CI/Netlify/SSO.
+- Bez zmian kondycji GAME-08A, celów GAME-08B, treningu GAME-08C, pressingu GAME-02, rynku pracy, licencji, celu zarządu, transferów. Nadal dokładnie3 mentalności; bez suwaków, zmian formacji/zawodników w meczu lub przebudowy silnika.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac. STOP po GAME-09.
