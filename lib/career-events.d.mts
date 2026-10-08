@@ -1,7 +1,7 @@
 export type IssueEffects = { teamPlan?: string; pressures?: Record<string, number>; burnout?: number; teamMorale?: number; teamFatigue?: number; relation?: number; readiness?: number; reputation?: number; unavailable?: { min: number; max: number; rounds: number; reason: string } };
 export type ResolvedIssueEffects = Omit<IssueEffects, "unavailable"> & { unavailable?: { count: number; rounds: number; reason: string } };
 export type IssueChoice = { id: string; label: string; feedback: string; effects: IssueEffects };
-export type CareerIssue = { id: string; templateId?:string; story?:{arcId:string;step:number;clubId:string}; category: string; title: string; body: string; choices: IssueChoice[]; resolved: boolean };
+export type CareerIssue = { id: string; templateId?:string; targetPlayerId?: string; playerCase?: { clubId: string; kind: "overload" | "overload-followup" }; story?:{arcId:string;step:number;clubId:string}; category: string; title: string; body: string; choices: IssueChoice[]; resolved: boolean };
 export const EVENT_POOL: Array<{ id: string; title: string; category: string; from: number; to: number; weight?: number; minRound?: number; maxRound?: number; results?: Array<"win" | "draw" | "loss">; choices: IssueChoice[] }>;
 export function generateRoundIssues(input: { seed: number; round: number; tier: number; result: "win" | "draw" | "loss"; worldHumor: number; recentTitles?: string[]; recentCategories?: string[]; maxEvents?: number }): { seed: number; events: CareerIssue[] };
 export function welcomeIssue(clubName: string, coachFirstName: string, expectation: string, environmentStatus: string, environmentWork: string): CareerIssue;

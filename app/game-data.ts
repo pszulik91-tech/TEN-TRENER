@@ -45,6 +45,7 @@ export type WorldActivity = { date: string; competitionsAdvanced: number; matche
 export type DecisionOutcome = { title: string; choice: string; feedback: string; changes: string[] };
 export type PendingSeason = { year: number; targetTier: number; place: number; outcome: "awans" | "utrzymanie" | "spadek" };
 export type GameState = {
+  playerOverload?: import("../lib/player-overload.mjs").PlayerOverload;
   narrative?: import("../lib/career-stories.mjs").NarrativeMemory;
   build: string; seed: number; coach: Coach; club: Club; season: string; date: string; round: number; teams: Team[]; fixtures: Fixture[]; players: Player[]; tactic: Tactic;
   training: { sessions: TrainingSession[]; readiness: number; completedRound: number | null; preset?: string };

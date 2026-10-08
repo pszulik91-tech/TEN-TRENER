@@ -1,18 +1,18 @@
 {
-  "runAt": "2026-10-07T22:33:00.771Z",
+  "runAt": "2026-10-08T03:47:25.526Z",
   "harness": "production-actions",
   "build": "TEN TRENER — Pre-Alpha v0.1.0",
   "checks": {
-    "matches": 1288,
+    "matches": 1372,
     "seasons": 53,
-    "saves": 1290,
-    "moments": 4377,
-    "decisions": 1710,
-    "worldMatches": 3769060,
+    "saves": 1374,
+    "moments": 4703,
+    "decisions": 1864,
+    "worldMatches": 3765864,
     "promotions": 13,
-    "relegations": 1,
-    "jobChanges": 13,
-    "licenseCompletions": 1,
+    "relegations": 2,
+    "jobChanges": 16,
+    "licenseCompletions": 2,
     "seasonSettlements": 53
   },
   "content": {
@@ -247,8 +247,8 @@
       "club": "Turbacz Mszana Dolna",
       "tier": 6,
       "matches": 30,
-      "condition": 70,
-      "burnout": 5,
+      "condition": 71,
+      "burnout": 1,
       "goals": [
         {
           "id": "tactics",
@@ -261,7 +261,7 @@
           "target": 6
         }
       ],
-      "saveKB": 1695,
+      "saveKB": 1696,
       "nextTier": 5
     },
     {
@@ -293,54 +293,8 @@
       "club": "Piast Żmigród",
       "tier": 5,
       "matches": 34,
-      "condition": 64,
-      "burnout": 8,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1706,
-      "nextTier": 5
-    },
-    {
-      "competition": "III liga",
-      "variant": 0,
-      "club": "Jagiellonia II Białystok",
-      "tier": 4,
-      "matches": 34,
-      "condition": 81,
-      "burnout": 13,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1709,
-      "nextTier": 4
-    },
-    {
-      "competition": "III liga",
-      "variant": 1,
-      "club": "KTS Weszło",
-      "tier": 4,
-      "matches": 34,
-      "condition": 54,
-      "burnout": 17,
+      "condition": 70,
+      "burnout": 25,
       "goals": [
         {
           "id": "tactics",
@@ -354,6 +308,52 @@
         }
       ],
       "saveKB": 1708,
+      "nextTier": 5
+    },
+    {
+      "competition": "III liga",
+      "variant": 0,
+      "club": "Jagiellonia II Białystok",
+      "tier": 4,
+      "matches": 34,
+      "condition": 83,
+      "burnout": 19,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1707,
+      "nextTier": 4
+    },
+    {
+      "competition": "III liga",
+      "variant": 1,
+      "club": "KTS Weszło",
+      "tier": 4,
+      "matches": 34,
+      "condition": 52,
+      "burnout": 3,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1713,
       "nextTier": 4
     },
     {
@@ -385,8 +385,8 @@
       "club": "Chojniczanka Chojnice",
       "tier": 3,
       "matches": 34,
-      "condition": 69,
-      "burnout": 41,
+      "condition": 71,
+      "burnout": 21,
       "goals": [
         {
           "id": "tactics",
@@ -399,8 +399,8 @@
           "target": 6
         }
       ],
-      "saveKB": 1712,
-      "nextTier": 10
+      "saveKB": 1710,
+      "nextTier": 3
     },
     {
       "competition": "I liga",
@@ -431,8 +431,8 @@
       "club": "Chrobry Głogów",
       "tier": 2,
       "matches": 34,
-      "condition": 61,
-      "burnout": 28,
+      "condition": 58,
+      "burnout": 35,
       "goals": [
         {
           "id": "tactics",
@@ -445,8 +445,8 @@
           "target": 6
         }
       ],
-      "saveKB": 1707,
-      "nextTier": 1
+      "saveKB": 1709,
+      "nextTier": 10
     },
     {
       "competition": "Ekstraklasa",
@@ -454,7 +454,7 @@
       "club": "Lech Poznań",
       "tier": 1,
       "matches": 34,
-      "condition": 82,
+      "condition": 85,
       "burnout": 0,
       "goals": [
         {
@@ -468,7 +468,7 @@
           "target": 6
         }
       ],
-      "saveKB": 1704,
+      "saveKB": 1705,
       "nextTier": 1
     },
     {
@@ -492,7 +492,7 @@
         }
       ],
       "saveKB": 1713,
-      "nextTier": 10
+      "nextTier": 1
     },
     {
       "competition": "odd-sized regional-slaski-zpn-klasa-b-rybnik-i",
@@ -641,8 +641,8 @@
       "club": "Rudawy Janowice Wielkie",
       "tier": 6,
       "matches": 30,
-      "condition": 76,
-      "burnout": 20,
+      "condition": 77,
+      "burnout": 19,
       "goals": [
         {
           "id": "tactics",
@@ -655,14 +655,14 @@
           "target": 6
         }
       ],
-      "saveKB": 1731
+      "saveKB": 1736
     },
     {
       "club": "Rudawy Janowice Wielkie",
       "tier": 6,
       "matches": 30,
       "condition": 93,
-      "burnout": 24,
+      "burnout": 5,
       "goals": [
         {
           "id": "tactics",
@@ -675,333 +675,13 @@
           "target": 6
         }
       ],
-      "saveKB": 1739
+      "saveKB": 1733
     },
     {
-      "club": "Start II Pietrowice Wielkie",
-      "tier": 10,
-      "matches": 14,
-      "condition": 94,
-      "burnout": 6,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 6,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1679
-    },
-    {
-      "club": "Start II Pietrowice Wielkie",
-      "tier": 10,
-      "matches": 14,
-      "condition": 97,
-      "burnout": 6,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 2,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1687
-    },
-    {
-      "club": "Start II Pietrowice Wielkie",
-      "tier": 10,
-      "matches": 14,
-      "condition": 94,
-      "burnout": 16,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 3,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1686
-    },
-    {
-      "club": "Start II Pietrowice Wielkie",
-      "tier": 10,
-      "matches": 14,
-      "condition": 93,
-      "burnout": 16,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 7,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1687
-    },
-    {
-      "club": "LKS Ruda Kozielska",
-      "tier": 10,
-      "matches": 14,
-      "condition": 94,
-      "burnout": 2,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1681
-    },
-    {
-      "club": "LKS Ruda Kozielska",
-      "tier": 9,
+      "club": "Rudawy Janowice Wielkie",
+      "tier": 6,
       "matches": 30,
-      "condition": 90,
-      "burnout": 8,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1735
-    },
-    {
-      "club": "LKS Ruda Kozielska",
-      "tier": 8,
-      "matches": 30,
-      "condition": 77,
-      "burnout": 16,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1748
-    },
-    {
-      "club": "LKS II Gamów",
-      "tier": 10,
-      "matches": 14,
-      "condition": 93,
-      "burnout": 11,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 4,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1688
-    },
-    {
-      "club": "KS 1905 II Krzanowice",
-      "tier": 10,
-      "matches": 14,
-      "condition": 93,
-      "burnout": 14,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 6,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1686
-    },
-    {
-      "club": "KS 1905 II Krzanowice",
-      "tier": 10,
-      "matches": 14,
-      "condition": 97,
-      "burnout": 6,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1682
-    },
-    {
-      "club": "LKS Brzezie",
-      "tier": 10,
-      "matches": 14,
-      "condition": 93,
-      "burnout": 4,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 6,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1685
-    },
-    {
-      "club": "Czarni Nowa Wieś",
-      "tier": 10,
-      "matches": 14,
-      "condition": 93,
-      "burnout": 10,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 7,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1687
-    },
-    {
-      "club": "Czarni Nowa Wieś",
-      "tier": 10,
-      "matches": 14,
-      "condition": 93,
-      "burnout": 7,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 2,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1689
-    },
-    {
-      "club": "Czarni Nowa Wieś",
-      "tier": 10,
-      "matches": 14,
-      "condition": 97,
-      "burnout": 1,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1691
-    },
-    {
-      "club": "LKS Pawłów",
-      "tier": 10,
-      "matches": 14,
-      "condition": 93,
-      "burnout": 3,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1689
-    },
-    {
-      "club": "LKS Pawłów",
-      "tier": 10,
-      "matches": 14,
-      "condition": 94,
-      "burnout": 4,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 0,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1692
-    },
-    {
-      "club": "LKS Pawłów",
-      "tier": 9,
-      "matches": 30,
-      "condition": 93,
+      "condition": 95,
       "burnout": 0,
       "goals": [
         {
@@ -1015,14 +695,14 @@
           "target": 6
         }
       ],
-      "saveKB": 1739
+      "saveKB": 1742
     },
     {
-      "club": "LKS Pawłów",
-      "tier": 8,
-      "matches": 30,
-      "condition": 90,
-      "burnout": 10,
+      "club": "Rudawy Janowice Wielkie",
+      "tier": 5,
+      "matches": 34,
+      "condition": 73,
+      "burnout": 33,
       "goals": [
         {
           "id": "tactics",
@@ -1035,13 +715,153 @@
           "target": 6
         }
       ],
-      "saveKB": 1750
+      "saveKB": 1764
     },
     {
-      "club": "LKS Pawłów",
-      "tier": 8,
+      "club": "LKS II Gamów",
+      "tier": 10,
+      "matches": 14,
+      "condition": 94,
+      "burnout": 21,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 6,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1684
+    },
+    {
+      "club": "LKS Pstrążna",
+      "tier": 10,
+      "matches": 14,
+      "condition": 93,
+      "burnout": 7,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 6,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1680
+    },
+    {
+      "club": "LKS II Gamów",
+      "tier": 10,
+      "matches": 14,
+      "condition": 93,
+      "burnout": 4,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1686
+    },
+    {
+      "club": "LKS Bojanów",
+      "tier": 10,
+      "matches": 14,
+      "condition": 98,
+      "burnout": 8,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 7,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1688
+    },
+    {
+      "club": "LKS Bojanów",
+      "tier": 10,
+      "matches": 14,
+      "condition": 93,
+      "burnout": 5,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1683
+    },
+    {
+      "club": "ŁTS II Łabędy",
+      "tier": 10,
       "matches": 30,
-      "condition": 68,
+      "condition": 84,
+      "burnout": 18,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1734
+    },
+    {
+      "club": "ŁTS II Łabędy",
+      "tier": 10,
+      "matches": 30,
+      "condition": 90,
+      "burnout": 4,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1744
+    },
+    {
+      "club": "ŁTS II Łabędy",
+      "tier": 9,
+      "matches": 30,
+      "condition": 93,
       "burnout": 19,
       "goals": [
         {
@@ -1058,10 +878,230 @@
       "saveKB": 1746
     },
     {
-      "club": "LKS Pawłów",
+      "club": "ŁTS II Łabędy",
+      "tier": 9,
+      "matches": 30,
+      "condition": 71,
+      "burnout": 26,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1740
+    },
+    {
+      "club": "ŁTS II Łabędy",
+      "tier": 9,
+      "matches": 30,
+      "condition": 88,
+      "burnout": 24,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1747
+    },
+    {
+      "club": "ŁTS II Łabędy",
+      "tier": 9,
+      "matches": 30,
+      "condition": 91,
+      "burnout": 22,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1745
+    },
+    {
+      "club": "LKS Grzegorzowice",
+      "tier": 10,
+      "matches": 14,
+      "condition": 99,
+      "burnout": 11,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 3,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1686
+    },
+    {
+      "club": "LKS Bojanów",
+      "tier": 10,
+      "matches": 14,
+      "condition": 93,
+      "burnout": 5,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 5,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1683
+    },
+    {
+      "club": "Start II Pietrowice Wielkie",
+      "tier": 10,
+      "matches": 14,
+      "condition": 93,
+      "burnout": 15,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 7,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1690
+    },
+    {
+      "club": "LKS Pstrążna",
+      "tier": 10,
+      "matches": 14,
+      "condition": 95,
+      "burnout": 11,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1690
+    },
+    {
+      "club": "Rozwój II Bełsznica",
+      "tier": 10,
+      "matches": 14,
+      "condition": 97,
+      "burnout": 4,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 0,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1693
+    },
+    {
+      "club": "LKS II Gamów",
+      "tier": 10,
+      "matches": 14,
+      "condition": 93,
+      "burnout": 2,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 0,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1693
+    },
+    {
+      "club": "LKS II Gamów",
+      "tier": 9,
+      "matches": 30,
+      "condition": 92,
+      "burnout": 12,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1745
+    },
+    {
+      "club": "LKS II Gamów",
+      "tier": 9,
+      "matches": 30,
+      "condition": 93,
+      "burnout": 6,
+      "goals": [
+        {
+          "id": "tactics",
+          "progress": 8,
+          "target": 8
+        },
+        {
+          "id": "analysis",
+          "progress": 6,
+          "target": 6
+        }
+      ],
+      "saveKB": 1743
+    },
+    {
+      "club": "LKS II Gamów",
       "tier": 8,
       "matches": 30,
-      "condition": 86,
+      "condition": 87,
       "burnout": 14,
       "goals": [
         {
@@ -1075,14 +1115,14 @@
           "target": 6
         }
       ],
-      "saveKB": 1729
+      "saveKB": 1751
     },
     {
-      "club": "LKS Pawłów",
+      "club": "LKS II Gamów",
       "tier": 8,
       "matches": 30,
-      "condition": 94,
-      "burnout": 18,
+      "condition": 73,
+      "burnout": 20,
       "goals": [
         {
           "id": "tactics",
@@ -1095,38 +1135,18 @@
           "target": 6
         }
       ],
-      "saveKB": 1755
+      "saveKB": 1753
     },
     {
-      "club": "KS Kornowac",
-      "tier": 10,
-      "matches": 14,
-      "condition": 99,
-      "burnout": 9,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1689
-    },
-    {
-      "club": "KS Kornowac",
+      "club": "LKS Pstrążna",
       "tier": 10,
       "matches": 14,
       "condition": 93,
-      "burnout": 6,
+      "burnout": 13,
       "goals": [
         {
           "id": "tactics",
-          "progress": 4,
+          "progress": 7,
           "target": 8
         },
         {
@@ -1135,27 +1155,7 @@
           "target": 6
         }
       ],
-      "saveKB": 1692
-    },
-    {
-      "club": "LKS Grzegorzowice",
-      "tier": 10,
-      "matches": 14,
-      "condition": 93,
-      "burnout": 7,
-      "goals": [
-        {
-          "id": "tactics",
-          "progress": 8,
-          "target": 8
-        },
-        {
-          "id": "analysis",
-          "progress": 6,
-          "target": 6
-        }
-      ],
-      "saveKB": 1692
+      "saveKB": 1684
     }
   ],
   "limitations": [
