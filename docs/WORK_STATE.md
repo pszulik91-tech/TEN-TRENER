@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-08B — cele rozwojowe naprawdę sezonowe; DONE. Kod i testy opublikowane. STOP po GAME-08B.
+Aktualny zakres: GAME-08C — trening odpowiada na problem tygodnia; DONE. Kod i testy opublikowane. STOP po GAME-08C.
 
 ## HEAD
+- HEAD kodu/testów po GAME-08C: `4992d3feb6cae858e90ed3c0c4badbdb1269dd19` (main).
 - HEAD kodu/testów po GAME-08B: `968a9337a38e69498f356e6ec87680bfab5f7b09` (main).
 - HEAD kodu/testów po GAME-08A: `1ecf03bf19bb012449b55214a7e46a094bfc7c26` (main).
 - HEAD kodu/testów po GAME-07: `944f5bf83155e10b974072d86c7f91ec02681a30` (main).
@@ -505,3 +506,48 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - Bez zmian GAME-08A/kondycji/urazów, celu sportowego zarządu, rynku pracy, licencji, silnika meczu, pressingu, mentalności, transferów, CI, Netlify i SSO. Bez nowych wydarzeń, atrybutów zawodnika ani przebudowy systemu rozwoju.
 - Dawne GAME-08 „trening problemu tygodnia” i GAME-09 niewykonane. BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP po GAME-08B.
+
+
+## GAME-08C — trening odpowiada na problem tygodnia: DONE (2026-10-08)
+
+- Commit kodu/testów na main: `4992d3feb6cae858e90ed3c0c4badbdb1269dd19`. Publikacja przez autoryzowany konektor GitHub. Zdalne drzewo `ccc5c4018a002ba11fa3649f6b3d4aecb92265ab` identyczne z lokalnie przetestowanym commitem `1e5c4e3e7d0ee6cbacb1a7294656fb376cd70ce7`; git diff --exit-code HEAD origin/main PASS. Różne metadane commita, ta sama zawartość.
+- Verify Pre-Alpha GAME-08B dla `968a9337a38e69498f356e6ec87680bfab5f7b09`: SUCCESS według aktualizacji użytkownika przed GAME-08C. CI GAME-08C nie sprawdzano.
+
+### Stan i bezpieczne dane ustalone przed implementacją
+
+- Pięć istniejących TRAINING_PRESETS: BALANCED, RECOVERY, OPPONENT, INTENSE, YOUTH. trainingPresetSessions rozpisuje2–6 sesji istniejących akcentów/intensywności. evaluateMicrocycle liczy gotowość, obciążenie, morale, formę i formę U21 oraz opis ryzyka mikrocyklu. trainingTacticSynergy liczy rzeczywisty wpływ akcentów na aktualne instrukcje/teamPlan; nie jest oceną sztabu.
+- Ekran wcześniej zaczynał od pięciu presetów i zbiorczych wskaźników, bez jednej diagnozy i krótkiego wyniku decyzji. Ręczna edycja pozostawiała oznaczenie ostatniego presetu.
+- Dostępne prawdziwe dane: zawodnicy automatycznej XI, effectiveOVR, kondycja/statusy i progi środowiska82/78/74 z GAME-08A, gotowość i jej limit, bieżący teamPlan/instrukcje, aktualny termin i OVR rzeczywistego zespołu rywala. GAME-01 ma fakty o jakości, tabeli/wynikach/zmęczeniu rywala, ale nie modeluje jego stylu, słabych sektorów ani pressingu. Diagnoza nie dopisuje tych cech.
+
+### Wykonany zakres
+
+- Dokładnie jedna deterministyczna diagnoza w kolejności: Kondycja → Gotowość → Silniejszy rywal → Plan wymagający przygotowania → Brak pilnego problemu. Pokazuje konkretne dane źródłowe i status kondycji.
+- Kondycja uwzględnia obecną i prognozowaną po samej naturalnej regeneracji XI, próg komfortu środowiska i liczbę wyraźnie obciążonych starterów. Gotowość korzysta z istniejącego progu przygotowania72%. Silniejszy rywal to zapisany zespół z różnicą OVR co najmniej4 względem rzeczywistej oceny naszej XI. Plan wskazywany tylko przy rzeczywistych różnicach dodatniej synergii istniejących mikrocykli, nie na podstawie fikcyjnych cech przeciwnika.
+- Dwa warianty sztabu korzystają wyłącznie z istniejących presetów: dla Kondycji RECOVERY/BALANCED; dla Gotowości i Silniejszego rywala OPPONENT/RECOVERY; dla Planu wariant z faktyczną synergią i lżejszy/rozwojowy kompromis; dla braku pilnego problemu BALANCED/YOUTH. Wybór planowego wariantu jest deterministyczny, z tie-breakiem po identyfikatorze. Brak oznaczenia NAJLEPSZY i oderwanej oceny sztabu.
+- Każdy wariant pokazuje prognozę kondycji i status, gotowość, rzeczywiste średnie morale/formy XI, ryzyko obciążenia mikrocyklu z evaluateMicrocycle i rzeczywisty bonus/karę synergii, gdy występuje. Ryzyko mikrocyklu nie jest przedstawiane jako procent urazu. Prognoza uwzględnia regenerację, ograniczenia wartości i ponowny automatyczny dobór XI. Wszystkie pięć presetów i ręczna edycja sesji pozostają dostępne.
+- app/training-week.ts współdzieli dotychczasowe obliczenie applyTraining z podglądem. Przeniesiono istniejący wzór aktualizacji zawodników i dotychczasową reselekcję, bez zmiany efektów, regeneracji lub selektora. Kondycja, krzywa OVR, ryzyko urazu i mechanika treningu pozostają.
+- Po wykonaniu krótki wynik na pulpicie i ekranie treningu: Problem tygodnia, Wybrano, rzeczywisty efekt kondycji/gotowości/morale/formy. Bez oceny dobra/zła decyzja. Ręczna edycja oznacza CUSTOM/Własny mikrocykl; starszy zapis z mylącą nazwą presetu też jest rozpoznawany po faktycznych sesjach.
+- Jedno opcjonalne training.weekSummary przechowuje dane tego wykonania. readCareer zachowuje je dla bieżącego wykonanego tygodnia; starszy save bez pola działa. Istniejący reset treningu po meczu i rozpoczęciu sezonu usuwa podsumowanie, bez tworzenia długiej historii.
+- GAME-08B bez zmian. Sam wybór wariantu i wykonanie treningu nie naliczają celu Analiza; dopiero faktycznie przygotowana analiza i późniejsza rzeczywista reakcja przy ławce dają krok według istniejących zasad.
+
+### Trzy kontrolowane przykłady
+
+Tier5 (półprofesjonalne),4 sesje, przerwa7 dni i naturalna regeneracja12 p.p.; wszyscy zawodnicy na początku mają tę samą kondycję, morale/formę/relację50 i Base OVR52. Rzeczywisty wynik obliczony przez projectTraining:
+
+| Stan → diagnoza | Wariant A: kondycja; gotowość | Wariant B: kondycja; gotowość |
+|---|---|---|
+| XI64%, gotowość60% → Kondycja | Regeneracyjny:64→82%;60→62% | Zrównoważony:64→73%;60→63% |
+| XI85%, gotowość50% → Gotowość | Pod rywala:85→98%;50→54% | Regeneracyjny:85→100%;50→52% |
+| XI51 OVR, rzeczywisty rywal Prochowiczanka Prochowice58 OVR; XI85%, gotowość80% → Silniejszy rywal | Pod rywala:85→98%;80→84% | Regeneracyjny:85→100%;80→82% |
+
+- W pierwszym przykładzie regeneracja daje dodatkowo morale XI50→51, a zrównoważony formę50→51. W drugim i trzecim regeneracja daje morale50→51; Pod rywala nie zmienia morale/formy przy czterech sesjach. Są to przykłady konkretnego stanu, nie obietnica identycznych wyników przy dowolnej kadrze lub limicie.
+
+### Weryfikacja
+
+- npm test PASS: typecheck, produkcyjny build Vite,186/186 regresji. Osiem nowych grup testów: pojedyncza diagnoza/prioritety/prawdziwy rywal/deterministyczność/brak fikcyjnych taktyk; środowiska i plan; dwa istniejące presety/efekty/synergia/kompromisy na tier2/5/9; zgodność z wcześniejszą mechaniką także dla urazów i limitów; rzeczywiste wykonanie/własny cykl/podsumowanie/zapis/odczyt; uczciwa etykieta starych edycji; faktyczna Analiza po meczu i wygaśnięcie podsumowania; rzeczywiste kliknięcia UI wszystkich pięciu presetów, edycja i wynik na pulpicie. Dotychczasowe testy GAME-08A i GAME-08B nadal PASS. git diff --check PASS.
+- audit:release nie uruchamiano w GAME-08C — bieżące polecenie wymagało kod → testy → commit → push. Ostatni pełny audit pozostaje PASS w GAME-08B. Nie zmieniono balansu lub naliczania celów.
+- Lokalny Node24.19.0; repo wymaga >=24.21.0 <25. Istniejące ostrzeżenia bundla/testowego renderera/HMR nie przerwały testów. Bez testu produkcji i ręcznego deploya.
+- Pliki: app/game-actions.ts, app/game-data.ts, app/game-screens.tsx, app/globals.css, nowe app/training-week.ts i app/training-week-panel.tsx, tests/training-week.test.mjs; następnie osobny checkpoint docs/WORK_STATE.md [skip ci].
+- Bez zmian GAME-09, silnika meczu, pressingu/mentalności, kondycji GAME-08A, celów GAME-08B, rynku pracy, licencji, celów zarządu, transferów, CI, Netlify i SSO. Bez nowych presetów, parametrów zawodników ani systemu analizy rywala.
+- BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP po GAME-08C.
