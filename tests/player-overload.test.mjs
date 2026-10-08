@@ -37,7 +37,7 @@ test('wybiera zdrowego rzeczywistego zawodnika o wysokim fatigue, preferuje XI i
  const g=start();const input={players:g.players,assignments:g.tactic.assignments,clubId:g.club.id,match:1};
  const e=overloadIssue(input);const p=g.players.find(p=>p.id===e.targetPlayerId);
  assert.ok(p.fatigue>=40);assert.ok(playerAvailable(p));assert.equal(e.choices.length,2);
- assert.match(e.body,new RegExp(p.name));assert.match(e.body,/kondycja 45%/);
+ assert.match(e.body,new RegExp(p.name));assert.match(e.body,/Kondycja 45%/);
  assert.deepEqual(overloadIssue({...input,players:[...g.players].reverse()}),e);
  const candidates=g.players.slice(0,3).map(p=>({...p,fatigue:60,baseOVR:40}));
  const expected=[...candidates].sort((a,b)=>a.id<b.id?-1:1)[0];
@@ -99,7 +99,7 @@ test('follow-up z urazem opisuje rzeczywisty stan; pełny inbox opóźnia wiadom
 test('generowanie po meczu używa aktualnej kadry; nie dubluje nierozwiązanej sprawy ani nie omija limitu inboxu',()=>{
  let g=start();g.players=g.players.map(p=>({...p,fatigue:70}));
  const done=play(g);const e=issue(done);assert.ok(e);assert.ok(done.inbox.filter(e=>!e.resolved).length<=2);const p=done.players.find(p=>p.id===e.targetPlayerId);
- assert.ok(playerAvailable(p));assert.match(e.body,new RegExp(`zmęczenie ${p.fatigue}/100`));
+ assert.ok(playerAvailable(p));assert.match(e.body,new RegExp(`Kondycja ${100-p.fatigue}%`));
  const twice=play(done);assert.equal(twice.inbox.filter(e=>!e.resolved&&e.playerCase?.kind==='overload').length,1);
  assert.ok(twice.inbox.filter(e=>!e.resolved).length<=3);
  const full={...g,inbox:Array.from({length:3},(_,i)=>({id:`existing-${i}`,title:'Inna sprawa',body:'',resolved:false,category:'Test',choices:[{id:'ack',label:'OK',feedback:'',effects:{}}]}))};

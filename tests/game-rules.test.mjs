@@ -13,7 +13,7 @@ test("Live OVR opisuje dyspozycję, a kara pozycyjna jest osobnym efektem XI", (
   assert.ok(liveOVR(restedWinner) >= restedWinner.baseOVR);
   assert.equal(liveOVR(restedWinner), liveOVR({ ...restedWinner, primary: "BR" }));
   assert.ok(effectiveOVR(restedWinner, "N") < liveOVR(restedWinner));
-  assert.ok(liveBreakdown({ ...restedWinner, fatigue: 100 }).total >= -0.2);
+  assert.ok(liveBreakdown({ ...restedWinner, fatigue: 100 }).total >= -0.6);
   assert.ok(liveBreakdown({ ...restedWinner, form: 100, morale: 100, relation: 100, fatigue: 0 }).total <= 0.14);
 });
 
@@ -70,7 +70,7 @@ test("automatyczne plany omijają kontuzje i absencje oraz zachowują pozycje", 
 test("plany Młodzi i Świeże nogi rzeczywiście zmieniają automatyczną XI", () => {
   const slots = ["BR", "PO", "ŚO-L", "ŚO-P", "LO", "PP", "ŚP-P", "ŚP-L", "LP", "N-L", "N-P"];
   const primaries = ["BR", "PO", "ŚO", "ŚO", "LO", "PP", "ŚP", "ŚP", "LP", "N", "N"];
-  const veterans = primaries.map((primary, index) => ({ ...player(`v-${index}`, primary, 56), age: 31, fatigue: index < 5 ? 78 : 38 }));
+  const veterans = primaries.map((primary, index) => ({ ...player(`v-${index}`, primary, 56), age: 31, fatigue: index < 5 ? 78 : 28 }));
   const youth = primaries.map((primary, index) => ({ ...player(`u-${index}`, primary, 52), age: 19, fatigue: 8 }));
   const strongest = Object.values(selectLineupForPlan([...veterans, ...youth], slots, "STRONGEST"));
   const young = Object.values(selectLineupForPlan([...veterans, ...youth], slots, "YOUTH"));
@@ -80,7 +80,7 @@ test("plany Młodzi i Świeże nogi rzeczywiście zmieniają automatyczną XI", 
 });
 
 test("Rotacja odstawia zmęczonego lidera, gdy świeży zmiennik jest wystarczająco dobry", () => {
-  const tiredLeader = { ...player("leader", "N", 60), age: 29, fatigue: 50 };
+  const tiredLeader = { ...player("leader", "N", 60), age: 29, fatigue: 30 };
   const freshReserve = { ...player("reserve", "N", 55), age: 24, fatigue: 0 };
   assert.equal(selectLineupForPlan([tiredLeader, freshReserve], ["N"], "STRONGEST").N, "leader");
   assert.equal(selectLineupForPlan([tiredLeader, freshReserve], ["N"], "ROTATION").N, "reserve");
@@ -131,7 +131,7 @@ test("kondycja jest jawna, a granie jedną XI przez całą rundę ma koszt", () 
 test("Monte Carlo urazów rozróżnia świeżego i przeciążonego zawodnika", () => {
   let seed = 812733; let fresh = 0; let exhausted = 0;
   for (let sample = 0; sample < 20_000; sample += 1) {
-    let roll = rngNext(seed); seed = roll.seed; if (roll.value < injuryRiskFromFatigue(25, "Normalna")) fresh += 1;
+    let roll = rngNext(seed); seed = roll.seed; if (roll.value < injuryRiskFromFatigue(5, "Normalna")) fresh += 1;
     roll = rngNext(seed); seed = roll.seed; if (roll.value < injuryRiskFromFatigue(82, "Wysoka")) exhausted += 1;
   }
   assert.ok(fresh / 20_000 < 0.015);

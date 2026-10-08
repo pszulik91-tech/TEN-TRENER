@@ -1,4 +1,4 @@
-import { resolveOverload, overloadFollowup, overloadIssue } from "../lib/player-overload.mjs";
+import { resolveOverload, overloadFollowup, overloadIssue, OVERLOAD_CONDITION } from "../lib/player-overload.mjs";
 import { boardGoalFor, boardGoalProgress, boardGoalDismissalProbability, boardGoalResultText, createBoardGoal } from "../lib/board-goal.mjs";
 import { accruePressing, lineupCondition, pressingFatigueCost } from "../lib/pressing.mjs";
 import { tacticalPlanImpact } from "../lib/game-rules.mjs";
@@ -6,7 +6,7 @@ import { generateCareerIssues, recordStoryDecision, normalizeNarrative } from ".
 import {
   BUILD, DEVELOPMENT_GOALS, effectiveOVR, FORMATIONS, GameState, LEAGUE_PACKS,
   License, CoachProfile, POLICY_EFFECTS, SAVE_KEY, Screen, Team, Fixture, LICENSE_CHALLENGES, TIER_OVR,
-  playerAvailable, buildMatchStrength, buildSchedule, capReadiness, defaultMicrocycle, diagnoseMatchOutcome, environmentForPack, evaluateMicrocycle, goalSatisfied, highestEligibleCoachingExperience, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, naturalRecoveryForGap, normalizeStartingLicense, offseasonBurnout, positionPenalty, pressureDeltaForResult, requiredLicenseForCompetition, requiredLicenseForTier, rngNext, selectLineupForPlan, simulateMatchPlan, sortedTable, startingLicenseEligibility, trainingTacticSynergy, TEAM_PLANS, teamLiveStrength, updateTeamResult, weeklyBurnoutDelta,
+  playingEnvironment, playerAvailable, buildMatchStrength, buildSchedule, capReadiness, defaultMicrocycle, diagnoseMatchOutcome, environmentForPack, evaluateMicrocycle, goalSatisfied, highestEligibleCoachingExperience, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, naturalRecoveryForGap, normalizeStartingLicense, offseasonBurnout, positionPenalty, pressureDeltaForResult, requiredLicenseForCompetition, requiredLicenseForTier, rngNext, selectLineupForPlan, simulateMatchPlan, sortedTable, startingLicenseEligibility, trainingTacticSynergy, TEAM_PLANS, teamLiveStrength, updateTeamResult, weeklyBurnoutDelta,
 } from "./game-data";
 import type { Coach, LeaguePack } from "./game-data";
 import { rolloverCareerWorld, buildLeagueForSeason, createGame, currentFixture, environmentIncident, evolveSquad, generateJobOffers, makePlayers, makePresident, skillSet, teamForId } from "./game-engine";
@@ -121,7 +121,7 @@ export function gameActions(game: GameState | null, setGame: (game: GameState) =
     const hasIndividualCase = Boolean(game.playerOverload || game.inbox.some(e=>!e.resolved && e.playerCase));
     // Leave one of the existing two event slots for a follow-up or a possible
     // post-match overload case. The actual threshold is checked on updatedPlayers.
-    const reserveIndividual = Boolean(game.playerOverload || (!hasIndividualCase && game.careerStats.matches+1-(game.narrative?.seen["player-overload"]?.last ?? -100)>=4 && game.players.some(p=>playerAvailable(p) && p.fatigue >= 30)));
+    const reserveIndividual = Boolean(game.playerOverload || (!hasIndividualCase && game.careerStats.matches+1-(game.narrative?.seen["player-overload"]?.last ?? -100)>=4 && game.players.some(p=>playerAvailable(p) && p.fatigue >= 100 - OVERLOAD_CONDITION - playingEnvironment(game.club.tier).matchFatigue)));
     const issueBatch = generateCareerIssues({ memory:game.narrative,clubId:game.club.id,match:game.careerStats.matches+1,context:{fatigue:game.players.reduce((n,p)=>n+p.fatigue,0)/game.players.length,burnout:game.burnout},seed, round: game.round, tier: game.club.tier, result, worldHumor: game.worldHumor, recentTitles: game.inbox.map((item) => item.title), recentCategories: game.inbox.map((item) => item.category), maxEvents: Math.max(0, Math.min(2 - Number(reserveIndividual), 3 - unresolvedIssues - (game.playerOverload ? 1 : 0))) }); seed = issueBatch.seed;
     const starterPlayers = game.players.filter((player) => starters.has(player.id)); const averageMorale = starterPlayers.length ? starterPlayers.reduce((sum, player) => sum + player.morale, 0) / starterPlayers.length : 0;
     const evidence = { formationsWithPoints: [...game.seasonEvidence.formationsWithPoints], youthStarters: [...game.seasonEvidence.youthStarters], analysisRounds: [...game.seasonEvidence.analysisRounds], tacticalRounds: [...game.seasonEvidence.tacticalRounds], pressureRounds: [...game.seasonEvidence.pressureRounds], positiveDecisions: [...game.seasonEvidence.positiveDecisions] };
@@ -144,7 +144,7 @@ export function gameActions(game: GameState | null, setGame: (game: GameState) =
       const absenceRounds = Math.max(0, (player.absenceRounds ?? 0) - 1);
       const absenceReason = absenceRounds > 0 ? player.absenceReason : undefined;
       if ((player.injuryWeeks ?? 0) > 0) return { ...player, injuryWeeks: Math.max(0, (player.injuryWeeks ?? 0) - 1), fatigue: Math.max(0, player.fatigue - 6), absenceRounds, absenceReason };
-      const starter = starters.has(player.id); const fatigue = Math.max(0, Math.min(100, player.fatigue + (starter ? 8 + policy.fatigue + tacticLoad + (match.coachFatigue ?? 0) : -2))); let injuryWeeks = 0;
+      const starter = starters.has(player.id); const fatigue = Math.max(0, Math.min(100, player.fatigue + (starter ? playingEnvironment(game.club.tier).matchFatigue + policy.fatigue + tacticLoad + (match.coachFatigue ?? 0) : -2))); let injuryWeeks = 0;
       if (starter) { const injuryRoll = rngNext(seed); seed = injuryRoll.seed; if (injuryRoll.value < injuryRiskFromFatigue(fatigue, microcycleEffect.averageIntensity)) { const durationRoll = rngNext(seed); seed = durationRoll.seed; injuryWeeks = 1 + Math.floor(durationRoll.value * 3); injuryHistory.push(`${game.date} — ${player.name}: uraz przeciążeniowy, przerwa ${injuryWeeks} tyg.`); } }
       return {
         ...player,

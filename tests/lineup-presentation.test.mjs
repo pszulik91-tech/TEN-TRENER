@@ -6,11 +6,11 @@ import { effectiveOVR, selectLineupForPlan, normalizeSlot, lineupSelectionReason
 
 function fixture(plan='STRONGEST') {
  const players=FORMATIONS['4-2-3-1'].map((slot,i)=>({id:`p${i}`,name:`Zawodnik ${i}`,age:30,primary:normalizeSlot(slot),secondary:[],baseOVR:60,form:50,morale:50,fatigue:0,relation:50,potential:65,personality:'',status:''}));
- players[5]={...players[5],name:'Marek Kowalski',fatigue:60};
- players[6]={...players[6],name:'Piotr Nowak',fatigue:60};
- players.push({...players[5],id:'fresh1',name:'Jan Wójcik',baseOVR:53,fatigue:0,age:20},{...players[6],id:'fresh2',name:'Adam Zieliński',baseOVR:53,fatigue:0,age:20}, {...players[0],id:'injured',name:'Kontuzjowany',baseOVR:99,injuryWeeks:2}, {...players[0],id:'absent',name:'Nieobecny',baseOVR:99,absenceRounds:1,absenceReason:'Zmiana w pracy'});
+ players[5]={...players[5],name:'Marek Kowalski',fatigue:33};
+ players[6]={...players[6],name:'Piotr Nowak',fatigue:33};
+ players.push({...players[5],id:'fresh1',name:'Jan Wójcik',baseOVR:53,fatigue:0,age:20},{...players[6],id:'fresh2',name:'Adam Zieliński',baseOVR:53,fatigue:0,age:20}, {...players[0],id:'injured',name:'Kontuzjowany',baseOVR:99,injuryWeeks:2,fatigue:45}, {...players[0],id:'absent',name:'Nieobecny',baseOVR:99,absenceRounds:1,absenceReason:'Zmiana w pracy'});
  const formation=TEAM_PLANS[plan].formation;
- return {players,teamPlan:plan,tactic:{...TEAM_PLANS[plan].tactic,formation,assignments:selectLineupForPlan(players,FORMATIONS[formation],plan)}};
+ return {club:{tier:9},players,teamPlan:plan,tactic:{...TEAM_PLANS[plan].tactic,formation,assignments:selectLineupForPlan(players,FORMATIONS[formation],plan)}};
 }
 function switchPlan(g,plan) {const formation=TEAM_PLANS[plan].formation;return {...g,teamPlan:plan,tactic:{...g.tactic,...TEAM_PLANS[plan].tactic,formation,assignments:selectLineupForPlan(g.players,FORMATIONS[formation],plan)}};}
 
@@ -32,7 +32,7 @@ test('zmiana nazwisk, wejścia/wyjścia i parametry wynikają z rzeczywistych za
   assert.equal(diff[`quality${key}`],Math.round(selected.reduce((sum,p,i)=>sum+effectiveOVR(p,slots[i]),0)/11));
   assert.equal(diff[`condition${key}`],Math.round(selected.reduce((sum,p)=>sum+100-p.fatigue,0)/11));
  }
- assert.deepEqual([diff.qualityBefore,diff.qualityAfter,diff.conditionBefore,diff.conditionAfter],[59,59,89,100]);
+ assert.deepEqual([diff.qualityBefore,diff.qualityAfter,diff.conditionBefore,diff.conditionAfter],[59,59,94,100]);
  assert.deepEqual(lineupChange(a,b),diff);
 });
 
@@ -46,11 +46,12 @@ test('powód wymienia zastosowane reguły, nie wymyśla premii wieku ani zdolno�
  assert.doesNotMatch(lineupSelectionReason(young,'N','EXPERIENCE'),/premia za doświadczenie/);
 });
 
-test('selektor zachowuje wyniki sprzed GAME-04 dla wszystkich planów i kondycji',async()=>{
+test('selektor zachowuje wyniki sprzed GAME-04 dla wszystkich planów przy świeżej kadrze',async()=>{
  const {readFile}=await import('node:fs/promises');
- // Captured from main 4638c3a before GAME-04, not from the modified implementation.
+ // GAME-08A intentionally changes tired-player ratings. The old snapshot remains
+ // valid for fresh players, for which the selector and ratings are unchanged.
  const golden=JSON.parse(await readFile(new URL('./fixtures/lineup-before-game04.json',import.meta.url),'utf8'));
- for(const plan of Object.keys(TEAM_PLANS)) for(const fatigue of [0,40,90]) {
+ for(const plan of Object.keys(TEAM_PLANS)) for(const fatigue of [0]) {
   const players=fixture().players.map(p=>({...p,fatigue:p.id.startsWith('fresh')?0:fatigue}));
   assert.deepEqual(selectLineupForPlan(players,FORMATIONS[TEAM_PLANS[plan].formation],plan),golden[`${plan}:${fatigue}`]);
  }
@@ -72,6 +73,6 @@ test('używany ekran renderuje nazwiska i porównanie po rzeczywistym kliknięci
   assert.equal(game.teamPlan,'ROTATION');
   assert.deepEqual(Object.fromEntries(cards().map(n=>[n.props['data-slot'],n.props['data-player-id']])),game.tactic.assignments);
   const json=JSON.stringify(renderer.toJSON());assert.match(json,/Marek Kowalski/);assert.match(json,/Jan Wójcik/);assert.match(json,/Wchodzą/);assert.match(json,/Wypadają/);assert.match(json,/priorytet kondycji/);assert.match(json,/Zmiana w pracy/);
-  assert.equal(game.lineupChange,undefined);
+  assert.match(json,/BARDZO ZMĘCZONY/);assert.match(json,/spadek możliwości i zwiększone ryzyko urazu/);assert.match(json,/ŚWIEŻY/);assert.equal(game.lineupChange,undefined);
  } finally {if(renderer)await act(async()=>renderer.unmount());await vite.close();delete globalThis.IS_REACT_ACT_ENVIRONMENT;}
 });
