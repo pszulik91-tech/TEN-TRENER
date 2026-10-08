@@ -1,5 +1,5 @@
 {
-  "runAt": "2026-10-08T04:12:54.696Z",
+  "runAt": "2026-10-08T04:39:09.861Z",
   "harness": "production-actions",
   "build": "TEN TRENER — Pre-Alpha v0.1.0",
   "checks": {
@@ -46,12 +46,12 @@
         {
           "id": "tactics",
           "progress": 7,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1655,
@@ -69,12 +69,12 @@
         {
           "id": "tactics",
           "progress": 6,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1655,
@@ -91,16 +91,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 10,
+          "target": 10
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 8,
+          "target": 8
         }
       ],
-      "saveKB": 1676,
+      "saveKB": 1677,
       "nextTier": 8
     },
     {
@@ -114,16 +114,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 10,
+          "target": 10
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 8,
+          "target": 8
         }
       ],
-      "saveKB": 1675,
+      "saveKB": 1676,
       "nextTier": 8
     },
     {
@@ -137,13 +137,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 12,
+          "target": 12
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 10,
+          "target": 10
         }
       ],
       "saveKB": 1681,
@@ -160,13 +160,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 12,
+          "target": 12
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 10,
+          "target": 10
         }
       ],
       "saveKB": 1684,
@@ -183,16 +183,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1692,
+      "saveKB": 1693,
       "nextTier": 10
     },
     {
@@ -206,16 +206,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1695,
+      "saveKB": 1696,
       "nextTier": 6
     },
     {
@@ -229,16 +229,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1692,
+      "saveKB": 1693,
       "nextTier": 5
     },
     {
@@ -252,16 +252,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1700,
+      "saveKB": 1701,
       "nextTier": 6
     },
     {
@@ -275,16 +275,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
-      "saveKB": 1714,
+      "saveKB": 1715,
       "nextTier": 5
     },
     {
@@ -298,13 +298,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
       "saveKB": 1711,
@@ -321,13 +321,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
       "saveKB": 1709,
@@ -344,16 +344,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
-      "saveKB": 1708,
+      "saveKB": 1709,
       "nextTier": 4
     },
     {
@@ -367,13 +367,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
       "saveKB": 1710,
@@ -390,16 +390,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
-      "saveKB": 1709,
+      "saveKB": 1710,
       "nextTier": 10
     },
     {
@@ -413,16 +413,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
-      "saveKB": 1708,
+      "saveKB": 1709,
       "nextTier": 1
     },
     {
@@ -436,13 +436,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
       "saveKB": 1709,
@@ -459,16 +459,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
-      "saveKB": 1704,
+      "saveKB": 1705,
       "nextTier": 1
     },
     {
@@ -482,16 +482,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 16,
+          "target": 16
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 12,
+          "target": 12
         }
       ],
-      "saveKB": 1713,
+      "saveKB": 1714,
       "nextTier": 1
     },
     {
@@ -504,16 +504,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 11,
+          "target": 11
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 9,
+          "target": 9
         }
       ],
-      "saveKB": 1682
+      "saveKB": 1683
     }
   ],
   "fullCareer": [
@@ -526,16 +526,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 10,
+          "target": 10
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 8,
+          "target": 8
         }
       ],
-      "saveKB": 1674
+      "saveKB": 1675
     },
     {
       "club": "Rudawy Janowice Wielkie",
@@ -546,13 +546,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 10,
+          "target": 10
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 8,
+          "target": 8
         }
       ],
       "saveKB": 1681
@@ -566,16 +566,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 12,
+          "target": 12
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 10,
+          "target": 10
         }
       ],
-      "saveKB": 1713
+      "saveKB": 1714
     },
     {
       "club": "Rudawy Janowice Wielkie",
@@ -586,16 +586,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 11,
+          "target": 12
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 10,
+          "target": 10
         }
       ],
-      "saveKB": 1707
+      "saveKB": 1708
     },
     {
       "club": "Rudawy Janowice Wielkie",
@@ -606,16 +606,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 12,
+          "target": 12
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 10,
+          "target": 10
         }
       ],
-      "saveKB": 1712
+      "saveKB": 1713
     },
     {
       "club": "Rudawy Janowice Wielkie",
@@ -626,16 +626,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 12,
+          "target": 12
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 10,
+          "target": 10
         }
       ],
-      "saveKB": 1713
+      "saveKB": 1714
     },
     {
       "club": "Rudawy Janowice Wielkie",
@@ -646,16 +646,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 12,
+          "target": 12
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 10,
+          "target": 10
         }
       ],
-      "saveKB": 1721
+      "saveKB": 1722
     },
     {
       "club": "Start II Pietrowice Wielkie",
@@ -667,15 +667,15 @@
         {
           "id": "tactics",
           "progress": 4,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
-      "saveKB": 1673
+      "saveKB": 1674
     },
     {
       "club": "Start II Pietrowice Wielkie",
@@ -687,12 +687,12 @@
         {
           "id": "tactics",
           "progress": 4,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1674
@@ -706,16 +706,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 7,
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
-      "saveKB": 1683
+      "saveKB": 1684
     },
     {
       "club": "Start II Pietrowice Wielkie",
@@ -727,12 +727,12 @@
         {
           "id": "tactics",
           "progress": 6,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1684
@@ -746,16 +746,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 7,
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
-      "saveKB": 1681
+      "saveKB": 1682
     },
     {
       "club": "Start II Pietrowice Wielkie",
@@ -767,15 +767,15 @@
         {
           "id": "tactics",
           "progress": 2,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
-      "saveKB": 1684
+      "saveKB": 1685
     },
     {
       "club": "Start II Pietrowice Wielkie",
@@ -786,13 +786,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 7,
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1683
@@ -806,16 +806,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 7,
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
-      "saveKB": 1683
+      "saveKB": 1684
     },
     {
       "club": "Start II Pietrowice Wielkie",
@@ -827,12 +827,12 @@
         {
           "id": "tactics",
           "progress": 5,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1683
@@ -846,16 +846,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1750
+      "saveKB": 1751
     },
     {
       "club": "Zameczek II Czernica",
@@ -866,16 +866,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 7,
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
-      "saveKB": 1686
+      "saveKB": 1687
     },
     {
       "club": "Zameczek II Czernica",
@@ -886,13 +886,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
       "saveKB": 1748
@@ -907,12 +907,12 @@
         {
           "id": "tactics",
           "progress": 5,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1683
@@ -927,12 +927,12 @@
         {
           "id": "tactics",
           "progress": 5,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1688
@@ -947,12 +947,12 @@
         {
           "id": "tactics",
           "progress": 7,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1692
@@ -966,16 +966,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1750
+      "saveKB": 1751
     },
     {
       "club": "Unia II Racibórz",
@@ -986,16 +986,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1750
+      "saveKB": 1751
     },
     {
       "club": "Unia II Racibórz",
@@ -1006,16 +1006,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1748
+      "saveKB": 1749
     },
     {
       "club": "Unia II Racibórz",
@@ -1026,13 +1026,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
       "saveKB": 1752
@@ -1046,16 +1046,16 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 14,
+          "target": 14
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 11,
+          "target": 11
         }
       ],
-      "saveKB": 1747
+      "saveKB": 1748
     },
     {
       "club": "Zgoda Zawada Książęca",
@@ -1067,15 +1067,15 @@
         {
           "id": "tactics",
           "progress": 1,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
-      "saveKB": 1686
+      "saveKB": 1687
     },
     {
       "club": "Zgoda Zawada Książęca",
@@ -1087,12 +1087,12 @@
         {
           "id": "tactics",
           "progress": 0,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1694
@@ -1107,15 +1107,15 @@
         {
           "id": "tactics",
           "progress": 0,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
-      "saveKB": 1689
+      "saveKB": 1690
     },
     {
       "club": "Rozwój II Bełsznica",
@@ -1127,12 +1127,12 @@
         {
           "id": "tactics",
           "progress": 6,
-          "target": 8
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1691
@@ -1146,13 +1146,13 @@
       "goals": [
         {
           "id": "tactics",
-          "progress": 8,
-          "target": 8
+          "progress": 7,
+          "target": 7
         },
         {
           "id": "analysis",
-          "progress": 6,
-          "target": 6
+          "progress": 5,
+          "target": 5
         }
       ],
       "saveKB": 1689

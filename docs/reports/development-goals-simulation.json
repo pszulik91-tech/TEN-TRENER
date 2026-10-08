@@ -1,0 +1,729 @@
+{
+  "seasons": [
+    {
+      "matches": 10,
+      "tier": 9,
+      "issueWeeks": 8,
+      "positiveWeeks": 8,
+      "behaviour": "20% porażek; pominięte przygotowanie/analiza/U21 w co czwartej kolejce; morale poniżej progu w co trzeciej",
+      "goals": [
+        {
+          "id": "tactics",
+          "label": "Taktyka",
+          "target": 5,
+          "requirement": "Rozpocznij 5 meczów z gotowością taktyczną minimum 72%.",
+          "earliest": 5,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 6,
+          "completed": true
+        },
+        {
+          "id": "motivation",
+          "label": "Motywacja",
+          "target": 5,
+          "requirement": "Rozpocznij 5 meczów ze średnim morale wyjściowej XI minimum 68.",
+          "earliest": 5,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 7,
+          "completed": true
+        },
+        {
+          "id": "people",
+          "label": "Zarządzanie ludźmi",
+          "target": 6,
+          "requirement": "Podejmij pozytywną decyzję dotyczącą ludzi w 6 różnych kolejkach, bez wzrostu presji w szatni. Kilka spraw w jednej kolejce daje jeden krok; odciążenie przeciążonego zawodnika także się liczy.",
+          "earliest": 5,
+          "earliestNote": "Dolna granica z jedną sprawą przeniesioną sprzed pierwszego meczu; bez niej potrzeba jeszcze jednego spotkania.",
+          "completedAt": 7,
+          "completed": true
+        },
+        {
+          "id": "analysis",
+          "label": "Analiza",
+          "target": 5,
+          "requirement": "W 5 meczach wykonaj trening „Analiza rywala” i podejmij decyzję przy ławce po 30. minucie. Wynik nie warunkuje zaliczenia.",
+          "earliest": 5,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 6,
+          "completed": true
+        },
+        {
+          "id": "pressure",
+          "label": "Odporność na presję",
+          "target": 5,
+          "requirement": "Nie przegraj 5 meczów rozpoczynanych przy presji minimum 45%.",
+          "earliest": 5,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 6,
+          "completed": true
+        },
+        {
+          "id": "adaptability",
+          "label": "Adaptacyjność",
+          "target": 6,
+          "requirement": "Zdobądź punkty co najmniej 2 razy każdą z 3 różnych formacji (6 punktowanych meczów łącznie).",
+          "earliest": 6,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 7,
+          "completed": true
+        },
+        {
+          "id": "youth",
+          "label": "Rozwój młodych",
+          "target": 5,
+          "requirement": "Wystaw U21 w wyjściowej XI w 5 różnych kolejkach i wykorzystaj co najmniej 3 różnych zawodników U21.",
+          "earliest": 5,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 6,
+          "completed": true
+        },
+        {
+          "id": "reputation",
+          "label": "Reputacja / networking",
+          "target": 5,
+          "requirement": "Wygraj 5 meczów ligowych — każdy wynik buduje widoczność trenera.",
+          "earliest": 5,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 7,
+          "completed": true
+        }
+      ],
+      "snapshots": {
+        "4": [
+          {
+            "id": "tactics",
+            "progress": "3/5 meczów",
+            "completed": false
+          },
+          {
+            "id": "motivation",
+            "progress": "3/5 meczów",
+            "completed": false
+          },
+          {
+            "id": "people",
+            "progress": "3/6 różnych kolejek",
+            "completed": false
+          },
+          {
+            "id": "analysis",
+            "progress": "3/5 meczów",
+            "completed": false
+          },
+          {
+            "id": "pressure",
+            "progress": "3/5 meczów",
+            "completed": false
+          },
+          {
+            "id": "adaptability",
+            "progress": "0/3 formacje z 2 punktowanymi meczami • 3/6 powtórzeń • 3-5-2: 1/2, 4-2-3-1: 1/2, 4-4-2: 1/2",
+            "completed": false
+          },
+          {
+            "id": "youth",
+            "progress": "3/5 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": false
+          },
+          {
+            "id": "reputation",
+            "progress": "2/5 meczów",
+            "completed": false
+          }
+        ],
+        "5": [
+          {
+            "id": "tactics",
+            "progress": "4/5 meczów",
+            "completed": false
+          },
+          {
+            "id": "motivation",
+            "progress": "4/5 meczów",
+            "completed": false
+          },
+          {
+            "id": "people",
+            "progress": "4/6 różnych kolejek",
+            "completed": false
+          },
+          {
+            "id": "analysis",
+            "progress": "4/5 meczów",
+            "completed": false
+          },
+          {
+            "id": "pressure",
+            "progress": "4/5 meczów",
+            "completed": false
+          },
+          {
+            "id": "adaptability",
+            "progress": "1/3 formacje z 2 punktowanymi meczami • 4/6 powtórzeń • 4-4-2: 2/2, 3-5-2: 1/2, 4-2-3-1: 1/2",
+            "completed": false
+          },
+          {
+            "id": "youth",
+            "progress": "4/5 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": false
+          },
+          {
+            "id": "reputation",
+            "progress": "3/5 meczów",
+            "completed": false
+          }
+        ],
+        "10": [
+          {
+            "id": "tactics",
+            "progress": "5/5 meczów",
+            "completed": true
+          },
+          {
+            "id": "motivation",
+            "progress": "5/5 meczów",
+            "completed": true
+          },
+          {
+            "id": "people",
+            "progress": "6/6 różnych kolejek",
+            "completed": true
+          },
+          {
+            "id": "analysis",
+            "progress": "5/5 meczów",
+            "completed": true
+          },
+          {
+            "id": "pressure",
+            "progress": "5/5 meczów",
+            "completed": true
+          },
+          {
+            "id": "adaptability",
+            "progress": "3/3 formacje z 2 punktowanymi meczami • 6/6 powtórzeń • 4-2-3-1: 2/2, 4-4-2: 2/2, 3-5-2: 2/2",
+            "completed": true
+          },
+          {
+            "id": "youth",
+            "progress": "5/5 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": true
+          },
+          {
+            "id": "reputation",
+            "progress": "5/5 meczów",
+            "completed": true
+          }
+        ]
+      }
+    },
+    {
+      "matches": 22,
+      "tier": 9,
+      "issueWeeks": 18,
+      "positiveWeeks": 18,
+      "behaviour": "20% porażek; pominięte przygotowanie/analiza/U21 w co czwartej kolejce; morale poniżej progu w co trzeciej",
+      "goals": [
+        {
+          "id": "tactics",
+          "label": "Taktyka",
+          "target": 10,
+          "requirement": "Rozpocznij 10 meczów z gotowością taktyczną minimum 72%.",
+          "earliest": 10,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 13,
+          "completed": true
+        },
+        {
+          "id": "motivation",
+          "label": "Motywacja",
+          "target": 11,
+          "requirement": "Rozpocznij 11 meczów ze średnim morale wyjściowej XI minimum 68.",
+          "earliest": 11,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 16,
+          "completed": true
+        },
+        {
+          "id": "people",
+          "label": "Zarządzanie ludźmi",
+          "target": 7,
+          "requirement": "Podejmij pozytywną decyzję dotyczącą ludzi w 7 różnych kolejkach, bez wzrostu presji w szatni. Kilka spraw w jednej kolejce daje jeden krok; odciążenie przeciążonego zawodnika także się liczy.",
+          "earliest": 6,
+          "earliestNote": "Dolna granica z jedną sprawą przeniesioną sprzed pierwszego meczu; bez niej potrzeba jeszcze jednego spotkania.",
+          "completedAt": 8,
+          "completed": true
+        },
+        {
+          "id": "analysis",
+          "label": "Analiza",
+          "target": 8,
+          "requirement": "W 8 meczach wykonaj trening „Analiza rywala” i podejmij decyzję przy ławce po 30. minucie. Wynik nie warunkuje zaliczenia.",
+          "earliest": 8,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 10,
+          "completed": true
+        },
+        {
+          "id": "pressure",
+          "label": "Odporność na presję",
+          "target": 6,
+          "requirement": "Nie przegraj 6 meczów rozpoczynanych przy presji minimum 45%.",
+          "earliest": 6,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 7,
+          "completed": true
+        },
+        {
+          "id": "adaptability",
+          "label": "Adaptacyjność",
+          "target": 6,
+          "requirement": "Zdobądź punkty co najmniej 2 razy każdą z 3 różnych formacji (6 punktowanych meczów łącznie).",
+          "earliest": 6,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 7,
+          "completed": true
+        },
+        {
+          "id": "youth",
+          "label": "Rozwój młodych",
+          "target": 9,
+          "requirement": "Wystaw U21 w wyjściowej XI w 9 różnych kolejkach i wykorzystaj co najmniej 3 różnych zawodników U21.",
+          "earliest": 9,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 11,
+          "completed": true
+        },
+        {
+          "id": "reputation",
+          "label": "Reputacja / networking",
+          "target": 7,
+          "requirement": "Wygraj 7 meczów ligowych — każdy wynik buduje widoczność trenera.",
+          "earliest": 7,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 11,
+          "completed": true
+        }
+      ],
+      "snapshots": {
+        "4": [
+          {
+            "id": "tactics",
+            "progress": "3/10 meczów",
+            "completed": false
+          },
+          {
+            "id": "motivation",
+            "progress": "3/11 meczów",
+            "completed": false
+          },
+          {
+            "id": "people",
+            "progress": "3/7 różnych kolejek",
+            "completed": false
+          },
+          {
+            "id": "analysis",
+            "progress": "3/8 meczów",
+            "completed": false
+          },
+          {
+            "id": "pressure",
+            "progress": "3/6 meczów",
+            "completed": false
+          },
+          {
+            "id": "adaptability",
+            "progress": "0/3 formacje z 2 punktowanymi meczami • 3/6 powtórzeń • 3-5-2: 1/2, 4-2-3-1: 1/2, 4-4-2: 1/2",
+            "completed": false
+          },
+          {
+            "id": "youth",
+            "progress": "3/9 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": false
+          },
+          {
+            "id": "reputation",
+            "progress": "2/7 meczów",
+            "completed": false
+          }
+        ],
+        "11": [
+          {
+            "id": "tactics",
+            "progress": "9/10 meczów",
+            "completed": false
+          },
+          {
+            "id": "motivation",
+            "progress": "8/11 meczów",
+            "completed": false
+          },
+          {
+            "id": "people",
+            "progress": "7/7 różnych kolejek",
+            "completed": true
+          },
+          {
+            "id": "analysis",
+            "progress": "8/8 meczów",
+            "completed": true
+          },
+          {
+            "id": "pressure",
+            "progress": "6/6 meczów",
+            "completed": true
+          },
+          {
+            "id": "adaptability",
+            "progress": "3/3 formacje z 2 punktowanymi meczami • 6/6 powtórzeń • 4-4-2: 2/2, 4-2-3-1: 2/2, 3-5-2: 2/2",
+            "completed": true
+          },
+          {
+            "id": "youth",
+            "progress": "9/9 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": true
+          },
+          {
+            "id": "reputation",
+            "progress": "7/7 meczów",
+            "completed": true
+          }
+        ],
+        "22": [
+          {
+            "id": "tactics",
+            "progress": "10/10 meczów",
+            "completed": true
+          },
+          {
+            "id": "motivation",
+            "progress": "11/11 meczów",
+            "completed": true
+          },
+          {
+            "id": "people",
+            "progress": "7/7 różnych kolejek",
+            "completed": true
+          },
+          {
+            "id": "analysis",
+            "progress": "8/8 meczów",
+            "completed": true
+          },
+          {
+            "id": "pressure",
+            "progress": "6/6 meczów",
+            "completed": true
+          },
+          {
+            "id": "adaptability",
+            "progress": "3/3 formacje z 2 punktowanymi meczami • 6/6 powtórzeń • 3-5-2: 2/2, 4-2-3-1: 2/2, 4-4-2: 2/2",
+            "completed": true
+          },
+          {
+            "id": "youth",
+            "progress": "9/9 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": true
+          },
+          {
+            "id": "reputation",
+            "progress": "7/7 meczów",
+            "completed": true
+          }
+        ]
+      }
+    },
+    {
+      "matches": 34,
+      "tier": 9,
+      "issueWeeks": 29,
+      "positiveWeeks": 29,
+      "behaviour": "20% porażek; pominięte przygotowanie/analiza/U21 w co czwartej kolejce; morale poniżej progu w co trzeciej",
+      "goals": [
+        {
+          "id": "tactics",
+          "label": "Taktyka",
+          "target": 16,
+          "requirement": "Rozpocznij 16 meczów z gotowością taktyczną minimum 72%.",
+          "earliest": 16,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 21,
+          "completed": true
+        },
+        {
+          "id": "motivation",
+          "label": "Motywacja",
+          "target": 17,
+          "requirement": "Rozpocznij 17 meczów ze średnim morale wyjściowej XI minimum 68.",
+          "earliest": 17,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 25,
+          "completed": true
+        },
+        {
+          "id": "people",
+          "label": "Zarządzanie ludźmi",
+          "target": 10,
+          "requirement": "Podejmij pozytywną decyzję dotyczącą ludzi w 10 różnych kolejkach, bez wzrostu presji w szatni. Kilka spraw w jednej kolejce daje jeden krok; odciążenie przeciążonego zawodnika także się liczy.",
+          "earliest": 9,
+          "earliestNote": "Dolna granica z jedną sprawą przeniesioną sprzed pierwszego meczu; bez niej potrzeba jeszcze jednego spotkania.",
+          "completedAt": 12,
+          "completed": true
+        },
+        {
+          "id": "analysis",
+          "label": "Analiza",
+          "target": 12,
+          "requirement": "W 12 meczach wykonaj trening „Analiza rywala” i podejmij decyzję przy ławce po 30. minucie. Wynik nie warunkuje zaliczenia.",
+          "earliest": 12,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 15,
+          "completed": true
+        },
+        {
+          "id": "pressure",
+          "label": "Odporność na presję",
+          "target": 9,
+          "requirement": "Nie przegraj 9 meczów rozpoczynanych przy presji minimum 45%.",
+          "earliest": 9,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 13,
+          "completed": true
+        },
+        {
+          "id": "adaptability",
+          "label": "Adaptacyjność",
+          "target": 12,
+          "requirement": "Zdobądź punkty co najmniej 4 razy każdą z 3 różnych formacji (12 punktowanych meczów łącznie).",
+          "earliest": 12,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 15,
+          "completed": true
+        },
+        {
+          "id": "youth",
+          "label": "Rozwój młodych",
+          "target": 14,
+          "requirement": "Wystaw U21 w wyjściowej XI w 14 różnych kolejkach i wykorzystaj co najmniej 3 różnych zawodników U21.",
+          "earliest": 14,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 18,
+          "completed": true
+        },
+        {
+          "id": "reputation",
+          "label": "Reputacja / networking",
+          "target": 11,
+          "requirement": "Wygraj 11 meczów ligowych — każdy wynik buduje widoczność trenera.",
+          "earliest": 11,
+          "earliestNote": "Liczba rozegranych spotkań klubu; pauzy mogą opóźnić numer kolejki ligowej.",
+          "completedAt": 17,
+          "completed": true
+        }
+      ],
+      "snapshots": {
+        "4": [
+          {
+            "id": "tactics",
+            "progress": "3/16 meczów",
+            "completed": false
+          },
+          {
+            "id": "motivation",
+            "progress": "3/17 meczów",
+            "completed": false
+          },
+          {
+            "id": "people",
+            "progress": "3/10 różnych kolejek",
+            "completed": false
+          },
+          {
+            "id": "analysis",
+            "progress": "3/12 meczów",
+            "completed": false
+          },
+          {
+            "id": "pressure",
+            "progress": "3/9 meczów",
+            "completed": false
+          },
+          {
+            "id": "adaptability",
+            "progress": "0/3 formacje z 4 punktowanymi meczami • 3/12 powtórzeń • 3-5-2: 1/4, 4-2-3-1: 1/4, 4-4-2: 1/4",
+            "completed": false
+          },
+          {
+            "id": "youth",
+            "progress": "3/14 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": false
+          },
+          {
+            "id": "reputation",
+            "progress": "2/11 meczów",
+            "completed": false
+          }
+        ],
+        "17": [
+          {
+            "id": "tactics",
+            "progress": "13/16 meczów",
+            "completed": false
+          },
+          {
+            "id": "motivation",
+            "progress": "12/17 meczów",
+            "completed": false
+          },
+          {
+            "id": "people",
+            "progress": "10/10 różnych kolejek",
+            "completed": true
+          },
+          {
+            "id": "analysis",
+            "progress": "12/12 meczów",
+            "completed": true
+          },
+          {
+            "id": "pressure",
+            "progress": "9/9 meczów",
+            "completed": true
+          },
+          {
+            "id": "adaptability",
+            "progress": "3/3 formacje z 4 punktowanymi meczami • 12/12 powtórzeń • 4-2-3-1: 4/4, 4-4-2: 4/4, 3-5-2: 4/4",
+            "completed": true
+          },
+          {
+            "id": "youth",
+            "progress": "13/14 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": false
+          },
+          {
+            "id": "reputation",
+            "progress": "11/11 meczów",
+            "completed": true
+          }
+        ],
+        "34": [
+          {
+            "id": "tactics",
+            "progress": "16/16 meczów",
+            "completed": true
+          },
+          {
+            "id": "motivation",
+            "progress": "17/17 meczów",
+            "completed": true
+          },
+          {
+            "id": "people",
+            "progress": "10/10 różnych kolejek",
+            "completed": true
+          },
+          {
+            "id": "analysis",
+            "progress": "12/12 meczów",
+            "completed": true
+          },
+          {
+            "id": "pressure",
+            "progress": "9/9 meczów",
+            "completed": true
+          },
+          {
+            "id": "adaptability",
+            "progress": "3/3 formacje z 4 punktowanymi meczami • 12/12 powtórzeń • 3-5-2: 4/4, 4-2-3-1: 4/4, 4-4-2: 4/4",
+            "completed": true
+          },
+          {
+            "id": "youth",
+            "progress": "14/14 kolejek z U21 • 3/3 różnych zawodników",
+            "completed": true
+          },
+          {
+            "id": "reputation",
+            "progress": "11/11 meczów",
+            "completed": true
+          }
+        ]
+      }
+    }
+  ],
+  "cadence": [
+    {
+      "10": {
+        "min": 4,
+        "mean": 7.33,
+        "max": 9,
+        "peopleTarget": 6,
+        "completedSeasons": 95
+      },
+      "22": {
+        "min": 13,
+        "mean": 17.69,
+        "max": 20,
+        "peopleTarget": 7,
+        "completedSeasons": 100
+      },
+      "34": {
+        "min": 23,
+        "mean": 28.26,
+        "max": 32,
+        "peopleTarget": 10,
+        "completedSeasons": 100
+      },
+      "tier": 1
+    },
+    {
+      "10": {
+        "min": 5,
+        "mean": 7.56,
+        "max": 9,
+        "peopleTarget": 6,
+        "completedSeasons": 96
+      },
+      "22": {
+        "min": 14,
+        "mean": 17.91,
+        "max": 20,
+        "peopleTarget": 7,
+        "completedSeasons": 100
+      },
+      "34": {
+        "min": 24,
+        "mean": 28.53,
+        "max": 32,
+        "peopleTarget": 10,
+        "completedSeasons": 100
+      },
+      "tier": 5
+    },
+    {
+      "10": {
+        "min": 6,
+        "mean": 8.05,
+        "max": 9,
+        "peopleTarget": 6,
+        "completedSeasons": 100
+      },
+      "22": {
+        "min": 15,
+        "mean": 18.77,
+        "max": 21,
+        "peopleTarget": 7,
+        "completedSeasons": 100
+      },
+      "34": {
+        "min": 26,
+        "mean": 29.72,
+        "max": 33,
+        "peopleTarget": 10,
+        "completedSeasons": 100
+      },
+      "tier": 9
+    }
+  ]
+}

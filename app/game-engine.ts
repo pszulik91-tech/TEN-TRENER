@@ -1,7 +1,8 @@
+import { goalsForSeason, seasonMatchCount, emptySeasonEvidence } from "../lib/development-goals.mjs";
 import { generateWorldJobOffers } from "../lib/job-market.mjs";
 import { createBoardGoal } from "../lib/board-goal.mjs";
 import {
-  BUILD, DEVELOPMENT_GOALS, FIRST_NAMES, FORMATIONS, GameState, LAST_NAMES,
+  BUILD, FIRST_NAMES, FORMATIONS, GameState, LAST_NAMES,
   JobOffer, LeaguePack, LEAGUE_PACKS, LICENSE_CHALLENGES, PERSONALITIES, Player, POSITIONS, Position, Team, TIER_OVR,
   buildSchedule, defaultMicrocycle, offseasonBaseChange, positionPenalty, randomInt, rngNext, selectBestLineup, shouldRetirePlayer,
   environmentForPack, environmentForTier, environmentIncidentOccurs,
@@ -56,12 +57,13 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
   const challengedCoach = { ...coach, reputation: Math.min(100, coach.reputation + careerChallenge.reputationBonus) };
   const assignments = selectBestLineup(generated.players, FORMATIONS["4-2-3-1"]);
   const generatedWorld = createWorldSnapshot(LEAGUE_PACKS, pack.id, 2026, seed, TIER_OVR); seed = generatedWorld.seed;
+  const fixtures = buildSchedule(teams.map(team => team.id), 2026, pack.tier);
   const ambition = 58 + Math.round(careerChallenge.pressureBonus * .4);
   return {
     boardGoal: createBoardGoal(teams, clubTeam.id, "2026/27", ambition),
     build: BUILD, seed, coach: challengedCoach,
     club: { id: clubTeam.id, name: clubTeam.name, association: pack.association, district: pack.district, competition: pack.competition, group: pack.group, tier: pack.tier },
-    season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures: buildSchedule(teams.map((team) => team.id), 2026, pack.tier), players: generated.players,
+    season: "2026/27", date: "2026-07-13", round: 1, teams, fixtures, players: generated.players,
     tactic: { formation: "4-2-3-1", mentality: "Zrównoważona", tempo: "Normalne", pressing: "Średni", line: "Średnia", width: "Standardowa", buildUp: "Mieszane", passingRisk: "Umiarkowane", assignments },
     training: { sessions: defaultMicrocycle(environment.trainingSessions), readiness: Math.min(environment.readinessCap, 62), completedRound: null, preset: "BALANCED" }, squadPolicy: "BALANCED", teamPlan: "STRONGEST",
     pressures: { board: 18 + careerChallenge.pressureBonus, fans: 20 + Math.round(careerChallenge.pressureBonus * .8), media: Math.round((12 + careerChallenge.pressureBonus) * environment.mediaScale), dressing: 15, personal: 16 + Math.round(careerChallenge.pressureBonus * .7) }, burnout: 8 + Math.round(careerChallenge.pressureBonus * .15), lastBurnoutChange: 0,
@@ -71,8 +73,8 @@ export function createGame(coach: Coach, pack: LeaguePack, clubName: string, goa
     president: { ambition, patience: Math.max(22, 54 - Math.round(careerChallenge.pressureBonus * .65)), ego: 46, footballKnowledge: 52, financialCaution: 68, fanPressureSensitivity: 55, mediaPressureSensitivity: 41, riskTolerance: 43, localPatriotism: pack.tier >= 7 ? 82 : 55, unpredictability: 28 },
     presidentName: `Prezes ${LAST_NAMES[(seed + 11) % LAST_NAMES.length]}`,
     finances: { monthlySalary: Math.max(1800, 14000 - pack.tier * 1200), personalFunds: 9000 },
-    developmentGoals: DEVELOPMENT_GOALS.filter((goal) => goals.includes(goal.id)).map((goal) => ({ ...goal, progress: 0 })),
-    seasonEvidence: { formationsWithPoints: [], youthStarters: [], analysisRounds: [], tacticalRounds: [], pressureRounds: [], positiveDecisions: [] },
+    developmentGoals: goalsForSeason(seasonMatchCount(fixtures, clubTeam.id), goals).slice(0, 2),
+    seasonEvidence: emptySeasonEvidence(),
     history: [`13.07.2026 — ${coach.name} podpisał kontrakt z ${clubName}. Profil: ${coach.profile}. Świat kariery: humor ${worldHumor}/100.`],
     inbox: [welcomeIssue(clubName, coach.name.split(" ")[0], careerChallenge.expectation, environment.status, environment.work)],
     employmentStatus: "employed", jobOffers: [],

@@ -1064,3 +1064,5 @@ button, [role="button"] { border-radius: 0 !important; }
 .selection-reason { margin-top: .6rem; font-size: .8rem; line-height: 1.5; }
 .roster-cards > .player-card { min-width: 0; }
 .player-card header strong { overflow-wrap: anywhere; }
+
+.goal-progress-list .development-detail { display: block; margin-bottom: .45rem; font-size: .75rem; line-height: 1.5; overflow-wrap: anywhere; }

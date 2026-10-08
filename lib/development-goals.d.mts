@@ -1,0 +1,14 @@
+export type DevelopmentGoal = { id: string; label: string; description: string; progress: number; target: number; winterProgress?: number; winterDetail?: string; rulesVersion?: 2; seasonMatches?: number; distinctPlayers?: number; formationsRequired?: number; repeatsPerFormation?: number };
+export type SeasonEvidence = { formationsWithPoints: string[]; youthStarters: string[]; analysisRounds: number[]; tacticalRounds: number[]; pressureRounds: number[]; positiveDecisions: string[]; version?: 2; peopleRounds?: number[]; youthRounds?: number[]; motivationRounds?: number[]; reputationRounds?: number[]; formationPointRounds?: Record<string, number[]>; legacyCounts?: Partial<Record<string, number>>; legacyFormationCounts?: Record<string, number> };
+export const DEVELOPMENT_GOALS: { id: string; label: string; description: string }[];
+export function seasonMatchCount(fixtures: {home:string;away:string}[], clubId:string):number;
+export function goalsForSeason(matches:number, selected?:string[]):DevelopmentGoal[];
+export function emptySeasonEvidence():SeasonEvidence;
+export function developmentProgress(goal:DevelopmentGoal, evidence:SeasonEvidence):number;
+export function developmentGoalComplete(goal:DevelopmentGoal, evidence:SeasonEvidence):boolean;
+export function refreshDevelopmentGoals(goals:DevelopmentGoal[], evidence:SeasonEvidence):DevelopmentGoal[];
+export function goalProgressText(goal:DevelopmentGoal, evidence:SeasonEvidence):string;
+export function goalProgressPercent(goal:DevelopmentGoal, evidence:SeasonEvidence):number;
+export function recordMatchEvidence(previous:SeasonEvidence, round:number, context:Parameters<typeof import('./game-rules.mjs').goalSatisfied>[1], formation:string, youthIds:string[]):SeasonEvidence;
+export function recordPeopleEvidence(previous:SeasonEvidence, round:number, eventId:string, positive:boolean):SeasonEvidence;
+export function migrateDevelopmentState(goals:DevelopmentGoal[], previous:SeasonEvidence|undefined, fixtures:{home:string;away:string;round:number;played:boolean;homeGoals?:number;awayGoals?:number}[], clubId:string):{developmentGoals:DevelopmentGoal[];seasonEvidence:SeasonEvidence};

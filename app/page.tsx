@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  BUILD, DEVELOPMENT_GOALS, effectiveOVR, FORMATIONS, GameState, LEAGUE_PACKS,
+  BUILD, effectiveOVR, FORMATIONS, GameState, LEAGUE_PACKS,
   License, CoachProfile, POLICY_EFFECTS, SAVE_KEY, Screen, Team, Fixture, LICENSE_CHALLENGES, TIER_OVR,
   buildMatchStrength, buildSchedule, capReadiness, defaultMicrocycle, diagnoseMatchOutcome, dismissalProbability, environmentForPack, evaluateMicrocycle, goalSatisfied, highestEligibleCoachingExperience, highestEligibleStartingLicense, injuryRiskFromFatigue, licenseCoversCompetition, licenseCoversTier, naturalRecoveryForGap, normalizeStartingLicense, offseasonBurnout, positionPenalty, pressureDeltaForResult, requiredLicenseForCompetition, requiredLicenseForTier, rngNext, selectLineupForPlan, simulateMatchPlan, sortedTable, startingLicenseEligibility, trainingTacticSynergy, TEAM_PLANS, teamLiveStrength, updateTeamResult, weeklyBurnoutDelta,
 } from "./game-data";
@@ -19,6 +19,7 @@ import { createWorldSnapshot, evolveWorldSnapshot, simulateWorldToDate } from ".
 import { generateMatchMoments, resolveMatchMoment as resolveMomentEffect } from "../lib/match-moments.mjs";
 
 import { gameActions } from "./game-actions";
+import { seasonMatchCount } from "../lib/development-goals.mjs";
 import { storeCareer, readCareer, resumeScreen, storeCreatorDraft, readCreatorDraft, clearCreatorDraft, CreatorDraftSave } from "./save-storage";
 
 const COMPETITION_ORDER = ["Ekstraklasa", "I liga", "II liga", "III liga", "IV liga", "V liga", "Klasa okręgowa", "Klasa A", "Klasa B", "Klasa C"];
@@ -118,7 +119,7 @@ export default function App() {
   if (screen === "start") return <>{saveError && <div role="alert">{saveError}</div>}<StartScreen hasSave={hasSave} onNew={startNewCareer} onLoad={loadGame} hasDraft={Boolean(pendingDraft)} onResumeDraft={resumeCreator} /></>;
   if (screen === "creator") return <>{saveError && <div role="alert">{saveError}</div>}<Creator stage={creatorStage} setStage={setCreatorStage} questionIndex={questionIndex} setQuestionIndex={setQuestionIndex} draft={draft} setDraft={setDraft} onNext={startClubStep} onBack={() => go("start")} /></>;
   if (screen === "club") return <ClubPicker draft={draft} competitionOptions={competitionOptions} selectedCompetition={selectedCompetition} associations={associations} districts={districts} packs={packs} pack={selectedPack} selectedAssociation={selectedAssociation} selectedDistrict={selectedDistrict} selectedPackId={selectedPackId} selectedClub={selectedClub} onCompetition={chooseCompetition} onAssociation={chooseAssociation} onDistrict={chooseDistrict} onPack={choosePack} onClub={setSelectedClub} onBack={() => go("creator")} onNext={() => go("goals")} />;
-  if (screen === "goals") return <GoalPicker selected={selectedGoals} setSelected={setSelectedGoals} season={game?.season ?? "2026/27"} onBack={() => go(game ? "dashboard" : "club")} onConfirm={game ? confirmNewSeasonGoals : finalizeCareer} />;
+  if (screen === "goals") return <GoalPicker selected={selectedGoals} setSelected={setSelectedGoals} season={game?.season ?? "2026/27"} seasonMatches={game ? seasonMatchCount(game.fixtures, game.club.id) : seasonMatchCount(buildSchedule(selectedPack.teams.map((_, index) => `team-${index}`), 2026, selectedPack.tier), `team-${selectedPack.teams.indexOf(selectedClub)}`)} onBack={() => go(game ? "dashboard" : "club")} onConfirm={game ? confirmNewSeasonGoals : finalizeCareer} />;
   if (!game) return <StartScreen hasSave={hasSave} onNew={startNewCareer} onLoad={loadGame} hasDraft={Boolean(pendingDraft)} onResumeDraft={resumeCreator} />;
   return <GameShell game={game} screen={screen} go={go} menuOpen={menuOpen} setMenuOpen={setMenuOpen} saveNow={saveNow} savedPulse={savedPulse}>{saveError && <div role="alert" className="save-error">{saveError}</div>}{screen === "dashboard" && <Dashboard game={game} go={go} resolveDecision={resolveDecision} prepareMatch={prepareMatch} beginNextSeason={beginNextSeason} dismissMatchReport={dismissMatchReport} />}{screen === "squad" && <Squad game={game} setGame={value => setGame(previous => previous ? typeof value === "function" ? value(previous) : value : previous)} go={go} />}{screen === "tactics" && <Tactics game={game} setGame={value => setGame(previous => previous ? typeof value === "function" ? value(previous) : value : previous)} />}{screen === "training" && <Training game={game} setGame={value => setGame(previous => previous ? typeof value === "function" ? value(previous) : value : previous)} applyTraining={applyTraining} />}{screen === "match" && <Match game={game} go={go} advanceMatch={advanceMatch} prepareMatch={prepareMatch} changeLiveInstruction={changeLiveInstruction} dismissMatchReport={dismissMatchReport} resolveMatchMoment={resolveMatchMoment} />}{screen === "table" && <TableScreen game={game} />}{screen === "jobs" && <Jobs game={game} acceptJob={acceptJob} stayAtClub={stayAtClub} />}{screen === "career" && <Career game={game} setGame={value => setGame(previous => previous ? typeof value === "function" ? value(previous) : value : previous)} retireCareer={retireCareer} />}</GameShell>;
 }

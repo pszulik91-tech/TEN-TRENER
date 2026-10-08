@@ -33,8 +33,8 @@ export type PostMatchReport = { verdict: string; summary: string; positives: str
 export type MatchMomentChoice = { id: string; label: string; preview: string; strength: number; fatigue: number; morale: number; pressure: number };
 export type MatchMoment = { id: string; minute: number; title: string; body: string; choices: MatchMomentChoice[]; resolvedChoiceId?: string; outcome?: string };
 export type MatchState = { fixture: Fixture; minute: number; homeGoals: number; awayGoals: number; plannedEvents: MatchEvent[]; shotsHome: number; shotsAway: number; possessionHome: number; completed: boolean; homeStrength?: number; awayStrength?: number; homeXg?: number; awayXg?: number; expectedHomeWin?: number; expectedDraw?: number; expectedAwayWin?: number; userStrengthFactors?: StrengthFactor[]; preparationReadiness?: number; preMatchPressure?: number; analysisAttempted?: boolean; analysisStartBalance?: number; lastInstructionMinute?: number; simulationSeed?: number; postMatchReport?: PostMatchReport; reportSeen?: boolean; coachMoments?: MatchMoment[]; activeMomentId?: string; coachImpact?: number; coachFatigue?: number; coachMorale?: number; pressingExposure?: { high: number; veryHigh: number; minute: number } };
-export type DevelopmentGoal = { id: string; label: string; description: string; progress: number; target: number; winterProgress?: number };
-export type SeasonEvidence = { formationsWithPoints: string[]; youthStarters: string[]; analysisRounds: number[]; tacticalRounds: number[]; pressureRounds: number[]; positiveDecisions: string[] };
+export type { DevelopmentGoal, SeasonEvidence } from "../lib/development-goals.mjs";
+import type { DevelopmentGoal, SeasonEvidence } from "../lib/development-goals.mjs";
 export type Coach = { name: string; age: number; region: string; playingExperience: string; coachingExperience: string; profile: CoachProfile; license: License; reputation: number; skills: Record<string, number> };
 export type Club = { id: string; name: string; association: string; district: string; competition: string; group: string; tier: number };
 export type Tactic = { formation: keyof typeof FORMATIONS; mentality: string; tempo: string; pressing: string; line: string; width: string; buildUp: string; passingRisk: string; assignments: Record<string, string> };
@@ -154,16 +154,7 @@ export function environmentForPack(pack: Pick<LeaguePack, "tier" | "competition"
   const profileTier = ({ Ekstraklasa: 1, "I liga": 2, "II liga": 3, "III liga": 4, "IV liga": 5, "V liga": 6, "Klasa okręgowa": 7, "Klasa A": 8, "Klasa B": 9, "Klasa C": 10 } as Record<string, number>)[pack.competition] ?? pack.tier;
   return { ...environmentForTier(profileTier), tier: pack.tier, label: pack.competition };
 }
-export const DEVELOPMENT_GOALS: Omit<DevelopmentGoal, "progress">[] = [
-  { id: "tactics", label: "Taktyka", description: "Rozpocznij 8 meczów z gotowością taktyczną minimum 72%.", target: 8 },
-  { id: "motivation", label: "Motywacja", description: "Rozpocznij 10 meczów ze średnim morale wyjściowej XI minimum 68.", target: 10 },
-  { id: "people", label: "Zarządzanie ludźmi", description: "Rozwiąż 4 problemy bez zwiększenia presji w szatni.", target: 4 },
-  { id: "analysis", label: "Analiza", description: "W 6 meczach wykonaj trening „Analiza rywala” i podejmij decyzję przy ławce po 30. minucie. Wynik nie warunkuje zaliczenia.", target: 6 },
-  { id: "pressure", label: "Odporność na presję", description: "Nie przegraj 5 meczów rozpoczynanych przy presji minimum 45%.", target: 5 },
-  { id: "adaptability", label: "Adaptacyjność", description: "Zdobądź punkty trzema różnymi formacjami.", target: 3 },
-  { id: "youth", label: "Rozwój młodych", description: "Wystaw od pierwszej minuty trzech różnych zawodników U21.", target: 3 },
-  { id: "reputation", label: "Reputacja / networking", description: "Wygraj 6 meczów ligowych — każdy wynik buduje widoczność trenera.", target: 6 },
-];
+export { DEVELOPMENT_GOALS } from "../lib/development-goals.mjs";
 export const POSITIONS: Position[] = ["BR", "PO", "ŚO", "LO", "DP", "ŚP", "PP", "ŚPO", "LP", "N"];
 export const PERSONALITIES = ["Professional", "Emotional", "Ambitious", "Loyal", "Fragile", "Hot Head", "Big Game Player", "Irregular"];
 export const FORMATIONS = {
