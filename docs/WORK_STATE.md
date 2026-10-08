@@ -1,9 +1,10 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: GAME-08A — realistyczna kondycja, wydajność i regeneracja zawodnika; DONE. Kod i testy opublikowane. STOP po GAME-08A.
+Aktualny zakres: GAME-08B — cele rozwojowe naprawdę sezonowe; DONE. Kod i testy opublikowane. STOP po GAME-08B.
 
 ## HEAD
+- HEAD kodu/testów po GAME-08B: `968a9337a38e69498f356e6ec87680bfab5f7b09` (main).
 - HEAD kodu/testów po GAME-08A: `1ecf03bf19bb012449b55214a7e46a094bfc7c26` (main).
 - HEAD kodu/testów po GAME-07: `944f5bf83155e10b974072d86c7f91ec02681a30` (main).
 - HEAD kodu/testów po GAME-06: `1c39f3fe43d0c5ab5ebe5c00b682845c6575d8a9` (main).
@@ -453,3 +454,54 @@ STOP: NEXT-03 DONE. Nie rozpoczynać nowych funkcji ani zmian SSO/konfiguracji.
 - GAME-08B niewykonane. Bez zmian celów rozwojowych, mentalności meczowej, transferów, rynku pracy, licencji, celów zarządu, CI, Netlify i SSO. Bez przebudowy silnika meczu.
 - BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
 - STOP po GAME-08A.
+
+
+## GAME-08B — cele rozwojowe naprawdę sezonowe: DONE (2026-10-08)
+
+- Commit kodu/testów na main: `968a9337a38e69498f356e6ec87680bfab5f7b09`. Opublikowano przez autoryzowany konektor GitHub. Zdalne drzewo `748957546fd9f54560d46dd4e772eea3fffdfa30` odpowiada lokalnie przetestowanemu commitowi `eeb636941fc79db633d52ee3d838fc9338092c3d`; git diff --exit-code HEAD origin/main PASS. Różne metadane commita, identyczna zawartość wszystkich plików.
+- Verify Pre-Alpha GAME-08A dla `1ecf03bf19bb012449b55214a7e46a094bfc7c26`: SUCCESS według aktualizacji użytkownika przed GAME-08B. CI GAME-08B nie sprawdzano.
+
+### Ustalenia przed implementacją
+
+- Stare stałe targety: Taktyka8, Motywacja10, Ludzie4 decyzje, Analiza6, Presja5, Adaptacja3 różne formacje, Młodzi3 różne U21, Reputacja6 wygranych. Ludzie mogli skończyć po kilku wcześnie rozwiązanych wydarzeniach, Młodzi nawet po jednym meczu, Adaptacja po trzech. Pozostałe pięć celów już dawało najwyżej jeden krok na mecz, lecz stałe wymagania były nierówne między krótką i długą ligą.
+- goalSatisfied kwalifikuje sportowe zdarzenie, nie całe ukończenie celu. Nadal wykorzystany dla Taktyki (gotowość>=72), Motywacji (morale XI>=68), Analizy (trening analizy + reakcja przy ławce), Presji (>=45 i brak porażki), Reputacji (wygrana). Pozostałe trzy cele zbierają obecnie dowody regularności zamiast dawnych jednorazowych warunków.
+- Stare seasonEvidence znało kolejki taktyki/analizy/presji, nazwiska U21, różne formacje i identyfikatory pozytywnych decyzji. Nie znało kolejek decyzji, powtórzeń formacji ani kolejek U21. GAME-07 omijał ogólną ścieżkę naliczania Ludzi.
+- Rzeczywiste spotkania klubu w aktualnych fixtures: katalog ma 10–34 meczów. Pauzy w grupach nieparzystych zwiększają numery kolejek, lecz nie liczbę spotkań klubu. Dwa cele wybierane przed pierwszym meczem i na początku kolejnego sezonu; winterProgress jest tylko snapshotem. Nagrody +1 umiejętności / +2 reputacji na końcu sezonu, maksymalnie dwa cele.
+
+### Zakres wykonany
+
+- Nowy mały moduł lib/development-goals.mjs z katalogiem i deterministycznymi wymaganiami tworzonymi z liczby spotkań konkretnego klubu. Minimum i maksimum ograniczają targety; dokładny opis aktualnego sezonu widoczny przed wyborem. Nadal wybiera się dokładnie 2 cele, osobno od celu sportowego zarządu.
+- Ludzie: pozytywne decyzje w różnych kolejkach, najwyżej jeden krok na kolejkę. Odpoczynek GAME-07 zalicza krok; dyspozycja i potwierdzenie follow-upu nie. Dotychczasowe wydarzenia, efekty decyzji i generator pozostają. Minimum6 uwzględnia sprawę szatni przeniesioną sprzed pierwszego meczu: pięć kroków mogłoby wtedy powstać po czterech meczach, sześć już nie. Bez sztucznej blokady kolejki.
+- Młodzi: wiele różnych kolejek z U21 w XI ORAZ co najmniej3 różnych U21. Wielu młodych w jednym meczu daje jeden krok regularności, ale wszystkie rzeczywiste nazwiska. Pasek nie pokazuje100% przy niespełnionym drugim warunku.
+- Adaptacja: trzy różne formacje, każda z2–4 punktowanymi meczami. Jeden mecz może zaliczyć tylko jedną formację. Progres ograniczony wymaganiem; Dashboard pokazuje liczbę ukończonych formacji i powtórzenia dla ustawień.
+- Pozostałe pięć celów zachowuje sportowe znaczenie i progi, targety skalowane terminarzem. Wszystkie cele naliczane z dowodów; nagroda wymaga rzeczywistego ukończenia, nie samego pola progress. Nie zwiększono nagród.
+- Nowe opcjonalne pola dowodów: peopleRounds, youthRounds, motivationRounds, reputationRounds, formationPointRounds i wersja reguł. Cele mają opcjonalne parametry sezonowe i winterDetail. Ocena zimowa zapisuje oba warunki i powtórzenia; save/load zachowuje dane. Nowy sezon / zmiana klubu resetuje dowody.
+- Migracja readCareer/migrateGame: aktywny sezon przelicza targety z fixtures. Znane kolejki zostają. Dawne decyzje bez kolejek dają jeden częściowy krok, jeżeli są pozytywne decyzje w dowodach; dawne U21 zachowują nazwiska i jeden częściowy krok regularności; dawne formacje po jednym sukcesie. Nie tworzono fikcyjnych numerów kolejek. Stary licznik morale zachowany jako agregat ograniczony rozegranymi meczami; wygrane odtworzone z wyników fixtures. Stare people4/4 i youth3/3 nie stają się automatycznie ukończone. seasonRecords, już przyznane umiejętności/reputacja i rozliczone sezony z pendingSeason pozostają bez zmian.
+
+### Balans i przykłady
+
+| Cel | 10 spotkań | 22 spotkania | 34 spotkania |
+|---|---|---|---|
+| Taktyka | 5 | 10 | 16 |
+| Motywacja | 5 | 11 | 17 |
+| Ludzie — różne kolejki decyzji | 6 | 7 | 10 |
+| Analiza | 5 | 8 | 12 |
+| Presja | 5 | 6 | 9 |
+| Adaptacja | 3×2 punktowane mecze | 3×2 | 3×4 |
+| Młodzi — kolejki + różni U21 | 5 + 3 | 9 + 3 | 14 + 3 |
+| Reputacja — wygrane | 5 | 7 | 11 |
+
+- Pełny raport wszystkich8 celów: docs/reports/development-goals-simulation.md i .json. Pokazuje targety, najwcześniejsze teoretyczne ukończenie i faktyczne ukończenie w kontrolowanej symulacji. W każdym przypadku dolna granica jest większa niż4 spotkania; dla Ludzi granica uwzględnia jedną sprawę przedsezonową, a pauzy mogą dodatkowo opóźnić numer kolejki ligowej.
+- Symulacja10/22/34 spotkań: 20% porażek, pomijane przygotowanie/analiza/U21 w co czwartej kolejce, morale poniżej progu w co trzeciej. Wszystkie cele osiągalne w tym scenariuszu. Presja>=45 w trzech z czterech kolejek jest założeniem sytuacji sportowej, nie gwarancją dla dowolnego klubu. To kontrolowana symulacja zachowań i progresu, nie nowy silnik meczu; właściwe pełne kariery sprawdza audit:release.
+- Częstotliwość Ludzi: istniejący generator z pamięcią, historią i limitem2 wydarzeń, po100 seedów dla każdego tier1/5/9 × długość10/22/34, bez wymuszania GAME-07. Przy świadomym wyborze pozytywnych decyzji krótkie sezony: 95/100,96/100,100/100 ukończeń; średnie i długie:100/100 dla każdego tieru.
+- Przykład22 spotkań, seed42, porównane osobno: po4 — Ludzie3/7 różnych kolejek; Młodzi3/9 kolejek i3/3 nazwiska; Adaptacja0/3 formacje z2 sukcesami,3/6 powtórzeń. Po11 — Ludzie7/7; Młodzi9/9 i3/3; Adaptacja3/3 i6/6. Po22 te trzy cele pozostają ukończone; w grze rozlicza się tylko dwa wybrane.
+
+### Weryfikacja i publikacja
+
+- npm test PASS: typecheck, produkcyjny build Vite, 178/178 regresji. Piętnaście nowych testów obejmuje sezonowe targety i pauzy, brak ukończenia wszystkich8 po4, ograniczenie Ludzi na kolejkę i sprawę przedsezonową, GAME-07, oba warunki U21 i powtórzenia formacji, zachowane kwalifikacje pozostałych5, limit progresu, rzeczywisty koniec meczu/zimę/save-load, stare zapisy, historyczne sezony, nagrody i reset nowego sezonu, UI wyboru/Dashboard i symulacje. git diff --check PASS.
+- Finalne npm run audit:release PASS:1264 mecze,53 sezony,1266 kontroli zapisów,4274 momenty,1826 decyzji,3766661 meczów świata,7 awansów,4 spadki,12 zmian klubu i53 rozliczenia. Długa kariera32 sezony, wszystkie szczeble, grupy z pauzami, odczyt końca sezonu i następny sezon PASS. Audit powtórzony po korekcie minimum Ludzi; raport docs/reports/playable-career-audit.json odświeżony.
+- Lokalny Node24.19.0; repo wymaga >=24.21.0 <25. Istniejące ostrzeżenia bundla/testowego renderera/HMR nie przerwały testów. Bez testu produkcji i ręcznego deploya.
+- Zmienione: app/game-actions.ts, app/game-data.ts, app/game-engine.ts, app/game-screens.tsx, app/globals.css, app/page.tsx, app/setup-screens.tsx, lib/development-goals.mjs i .d.mts, scripts/development-goals-simulation.mjs, tests/development-goals.test.mjs, docs/reports/development-goals-simulation.json i .md oraz docs/reports/playable-career-audit.json; następnie osobny checkpoint docs/WORK_STATE.md [skip ci].
+- Bez zmian GAME-08A/kondycji/urazów, celu sportowego zarządu, rynku pracy, licencji, silnika meczu, pressingu, mentalności, transferów, CI, Netlify i SSO. Bez nowych wydarzeń, atrybutów zawodnika ani przebudowy systemu rozwoju.
+- Dawne GAME-08 „trening problemu tygodnia” i GAME-09 niewykonane. BROKEN/BLOCKED: brak. NEXT: brak autoryzowanych kolejnych prac.
+- STOP po GAME-08B.
