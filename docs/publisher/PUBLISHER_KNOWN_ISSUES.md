@@ -1,6 +1,6 @@
 # Znane ograniczenia Publisher Preview
 
-Nie stwierdzono blokady w dotychczas przejrzanej głównej ścieżce produkcji. Finalna weryfikacja oddzielnego podglądu i CI: TEST_REPORT.md / DEPLOYMENT.md.
+Nie stwierdzono krytycznej blokady w dwóch rozegranych meczach Publisher Preview, kreatorze, zapisie i kontynuacji. Finalna weryfikacja oddzielnego podglądu i CI: TEST_REPORT.md / DEPLOYMENT.md.
 
 - Pre-Alpha: uproszczone awanse i spadki, brak baraży, pucharów i Europy; katalog nie stanowi oficjalnej symulacji regulaminów PZPN.
 - Prawdziwe nazwy klubów, lig, organizacji i import katalogu wymagają weryfikacji praw/proweniencji przed publicznym wykorzystaniem. Nie deklarujemy posiadania licencji (IP_AUDIT.md).
@@ -14,3 +14,5 @@ Nie stwierdzono blokady w dotychczas przejrzanej głównej ścieżce produkcji. 
 
 ## Backlog poza PUBLISHER-01
 Badanie pierwszej sesji z niezależnym testerem; kalibracja długich karier; narracja odnosząca się do czasu i danych; optymalizacja bundla po pomiarze; decyzja o neutralnym katalogu lub licencjach; docelowy pakiet PC. Brak automatycznie zatwierdzonych implementacji.
+
+- Nie zamknięto wizualnego QA drugiego rozmiaru laptopa i mobile: aktualne środowisko nie umożliwia zmiany viewportu. Plan15–20min wymaga jeszcze testu z niezależnym użytkownikiem.

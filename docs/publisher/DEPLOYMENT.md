@@ -6,4 +6,6 @@ Zweryfikowany bieżący produkcyjny deploy:6ac74f8bcdcf0b000854b3df, ready, HTTP
 
 Podglądy są chronione SSO zespołu(non_production); produkcja nie wymaga SSO. Repo jest publiczne. Link prywatnego podglądu nie zapewnia wydawcy dostępu bez jego sprawdzenia. Zalecenie: właściciel uzgadnia tymczasowy dostęp konkretnego odbiorcy albo osobny projekt z hasłem, jeśli plan to umożliwia; nie wyłączać istniejącej ochrony i nie udostępniać konta właściciela.
 
-Po powodzeniu CI i deploya dopisać dokładny SHA oraz potwierdzony URL. Preferować przypięty permalink konkretnego deploya do prezentacji; aktualizowany URL PR może zmienić build. Retencja deployów Netlify wymaga sprawdzenia przed późniejszym pitchem; gałąź pozwala odtworzyć wersję.
+Publikacja zakończona: commit kodu `6fbd4fd309885a67255c9898c356ec96b1c89264`, Verify Pre-Alpha SUCCESS #37, Netlify READY deploy `6acbfc31cfef520008c4d9c0`. Zweryfikowany URL: https://deploy-preview-1--ten-trener.netlify.app/ . Produkcja i main nie zostały zmienione. Draft PR#1: https://github.com/pszulik91-tech/TEN-TRENER/pull/1 .
+
+Alias PR jest aktualizowany przy kolejnych buildach. Nie rozwijać tej gałęzi podczas pokazu; końcowy checkpoint dokumentacyjny [skip ci] nie zmienia kodu. Konkretny deploy jest identyfikowany powyższym ID; nie zgadujemy niezweryfikowanego permalinku. Retencję Netlify sprawdzić przed późniejszym pitchem. Ochrona SSO pozostaje; link nie jest publicznym demo.

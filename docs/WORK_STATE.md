@@ -1,7 +1,18 @@
 # TEN TRENER — WORK_STATE
 
-Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: UX-01 — pokaż właściwą grę przed rozpoczęciem kariery; DONE. Kod i testy opublikowane. STOP po UX-01.
+Checkpoint: 2026-10-11. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: publisher/preview-0.1.1; main bez zmian.
+Aktualny zakres: PUBLISHER-01 — Publisher Preview opublikowany; gotowość90%, zamknięcie pełnej definicji ukończenia pozostaje częściowe (QA rozmiarów i niezależna sesja). STOP; nie rozpoczynać następnego etapu.
+
+## PUBLISHER-01 — checkpoint (2026-10-11)
+
+- Build0.1.1-publisher.1, Publisher Preview — Pre-Alpha. Kod: `6fbd4fd309885a67255c9898c356ec96b1c89264`; gałąź publisher/preview-0.1.1, draft PR#1 bez merge.
+- CI Verify Pre-Alpha SUCCESS #37/38175536928; Netlify READY deploy6acbfc31cfef520008c4d9c0, URL https://deploy-preview-1--ten-trener.netlify.app/ . SSO non_production zachowane. Produkcja pozostaje na2a7ef0871e859ce6405fd5e7a2bbac17a85301ce; main a8277ff73176c00314a5f8d6433340f6a117d5b3.
+- Zmiany prezentacyjne: identyfikacja buildu, wskazanie pierwszej sesji, uczciwa zapowiedź celu zarządu, neutralny status przed debiutem, kontrast Start, fokus Publisher Info, naprawa nakładki raportu. Bez zmian mechanik GAME-01–09.
+- Publisher Info: zakres prototypu, Pre-Alpha, partner wydawniczo-produkcyjny. Telemetria lokalna, opt-in, bez danych osobowych i backendu; eksport/wyczyszczenie. Automatyczna wysyłka nie wdrożona.
+- Testy208/208, TypeScript/build i HTTP PASS. audit:release PASS(1432mecze/53sezony/1434zapisy/14zmian klubu). Dwie realne sesje UI(produkcja2:1, Preview3:0 i kolejny mecz1:1), zapis-zamknięcie-wznowienie meczu oraz kariery; trzy dodatkowe ścieżki silnika tier9/6/2.
+- docs/publisher: summary, demo flow, known issues, IP audit, deployment, test report, lista i10rzeczywistych screenshotów. IP: realne nazwy/katalog/licencje i proweniencja wymagają weryfikacji; brak automatycznych usunięć i deklaracji clearance.
+- Ograniczenia: render wizualnie sprawdzony1363×936; brak możliwości zmiany viewportu w cloud browser, mobile/laptop osobno nieweryfikowane. Sesja15–20min jest rekomendowanym planem, nie niezależnym pomiarem. Zewnętrzny odbiorca wymaga sprawdzenia dostępu SSO. Gotowość90%, nie100%/pełne DONE.
+- Bez publicznego demo, wdrożenia produkcyjnego, zmian Netlify/SSO/CI, nowych mechanik lub kampanii. Następny etap wymaga zatwierdzenia.
 
 ## HEAD
 - HEAD kodu/testów po UX-01: `2a7ef0871e859ce6405fd5e7a2bbac17a85301ce` (main).

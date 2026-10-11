@@ -14,3 +14,6 @@ Używaj fikcyjnej nazwy trenera i prawdziwego stanu gry, bez dopisywania wynikó
 10. Publisher Info: etap projektu i oczekiwany rodzaj współpracy.
 
 Katalog screenshots/ zawiera tylko rzeczywiste przechwycenia, jeśli dostęp do oddzielnego buildu został potwierdzony. Nie przedstawiać screenów produkcji0.1.0 jako Publisher Preview0.1.1.
+
+## Wykonane przechwycenia
+10 plików publisher-01-start.jpg … publisher-10-info.jpg w screenshots/. Start i raport po poprawkach; kreator i pozostałe ekrany z wcześniejszych kandydatów tego samego build0.1.1-publisher.1, których zawartość nie została zmieniona. Raport dotyczy drugiego meczu1:1, Dashboard kolejki2. To rzeczywiste sesje Publisher Preview, bez retuszu lub fikcyjnych wyników. Netlify może pokazywać właścicielowi pasek Deploy Preview.
