@@ -24,3 +24,10 @@
 .start-screen .start-panel { padding: 1rem; }
 .start-screen .start-copy { margin: 1rem 0; }
 .start-screen .build-row { flex-wrap: wrap; }
+
+.publisher-session-hint { font-size:.85rem; line-height:1.5; color:#a9b7c2; min-width:0; }
+.publisher-metrics label { display:flex; align-items:center; gap:.6rem; }
+.publisher-metrics input { width:1.1rem; height:1.1rem; }
+.publisher-metrics > div { display:flex; flex-wrap:wrap; gap:.7rem; margin-top:.7rem; }
+.publisher-metrics button { border:1px solid currentColor; padding:.6rem; min-height:44px; }
+@media(min-width:960px){.publisher-session-hint{grid-column:1 / -1;}}

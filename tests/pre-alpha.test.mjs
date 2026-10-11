@@ -29,7 +29,7 @@ function finish(g) {
 }
 
 test('wydanie semantyczne nie zmienia klucza starych zapisów', async () => {
- const game=start();assert.match(VERSION,/^\d+\.\d+\.\d+$/);assert.match(BUILD,/Pre-Alpha/);assert.equal(SAVE_KEY,'ten-trener-save-v1');
+ const game=start();assert.match(VERSION,/^\d+\.\d+\.\d+(?:-publisher\.\d+)?$/);assert.match(BUILD,/Pre-Alpha/);assert.equal(SAVE_KEY,'ten-trener-save-v1');
  const loaded=await readCareer(JSON.stringify({...game,build:'TEN TRENER Build 2.5'}));
  assert.equal(loaded.build,BUILD);assert.equal(loaded.seed,game.seed);assert.deepEqual(loaded.world,JSON.parse(JSON.stringify(game.world)));
 });

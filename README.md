@@ -1,6 +1,6 @@
-# TEN TRENER — Pre-Alpha
+# TEN TRENER — Publisher Preview — Pre-Alpha
 
-**v0.1.0** · Niezależna gra menedżersko-symulacyjna o karierze trenera w realiach polskiej piłki. Rozwijasz człowieka: jego kompetencje, relacje i reputację. Kierujesz drużyną przez plan gry i decyzje, bez ręcznego zarządzania każdym zawodnikiem.
+**v0.1.1-publisher.1** · Niezależna gra menedżersko-symulacyjna o karierze trenera w realiach polskiej piłki. Rozwijasz człowieka: jego kompetencje, relacje i reputację. Kierujesz drużyną przez plan gry i decyzje, bez ręcznego zarządzania każdym zawodnikiem.
 
 To wydanie porządkuje dotychczasowy Build 2.5. Nowa numeracja dotyczy wydań webowych; nie oznacza rozpoczęcia projektu od zera. Kod, dane, historia Git i zgodność zapisów zostały zachowane.
 
@@ -8,10 +8,14 @@ To wydanie porządkuje dotychczasowy Build 2.5. Nowa numeracja dotyczy wydań we
 
 - Działający lokalnie prototyp statyczny React + TypeScript + Vite, bez wymaganego backendu i kont graczy.
 - Testy automatyczne i wielosezonowe: [raport](docs/reports/pre-alpha-0.1.0.md).
-- Projekt Netlify `ten-trener` utworzony, dostęp ograniczony do zalogowanego zespołu.
-- Prywatne repozytorium: `pszulik91-tech/TEN-TRENER`, gałąź `main`; pełna historia projektu została zaimportowana.
+- Produkcja Netlify `ten-trener` działa przez HTTPS. Ochrona zespołowa SSO dotyczy podglądów nieprodukcyjnych, nie obecnego publicznego adresu produkcji.
+- Repozytorium `pszulik91-tech/TEN-TRENER` jest aktualnie publiczne. Publisher Preview powstaje na oddzielnej gałęzi `publisher/preview-0.1.1`; produkcyjny `main` pozostaje bez zmian.
 - Stan CI i wdrożenia: [dokumentacja wdrożenia](docs/deployment.md).
 - Projekt nie jest premierą publiczną ani kompletną symulacją przepisów PZPN.
+
+## Publisher Preview
+
+Źródła do pitchu, przebieg sesji, ograniczenia i audyt IP: [docs/publisher](docs/publisher/PUBLISHER_SUMMARY.md). Podgląd nie jest publicznym demo ani finalnym produktem. Dobrowolny pomiar sesji zapisuje wyłącznie lokalny raport; eksport i przekazanie autorowi wymagają świadomego działania testera.
 
 ## Uruchomienie
 

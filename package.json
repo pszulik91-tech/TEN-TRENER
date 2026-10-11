@@ -1,6 +1,6 @@
 {
   "name": "ten-trener",
-  "version": "0.1.0",
+  "version": "0.1.1-publisher.1",
   "private": true,
   "engines": {
     "node": ">=24.21.0 <25"

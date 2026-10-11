@@ -2,6 +2,16 @@
 
 Wydania webowe stosują SemVer. Poprzednie numery Build 1.x–2.5 są historycznymi iteracjami, zachowanymi w Git.
 
+## [0.1.1-publisher.1] — 2026-10-11 — Publisher Preview / Pre-Alpha
+
+- Oddzielna gałąź prezentacyjna; produkcyjny main pozostaje na obecnym wydaniu.
+- Publisher Info, kierunek współpracy, krótka ścieżka pierwszej sesji oraz numer wersji.
+- Poprawione informacje o celu przed rozpoczęciem rozgrywek, bez zmiany mechanik.
+- Dobrowolna lokalna telemetria z eksportem; brak zewnętrznych trackerów i kont.
+- Materiały źródłowe do pitchu, audyt IP i plan screenshotów w docs/publisher/.
+- Korekta nieaktualnego README: produkcja jest dostępna online, repo publiczne, SSO chroni podglądy.
+- Stan weryfikacji i ograniczenia dostępu: docs/publisher/TEST_REPORT.md oraz DEPLOYMENT.md.
+
 ## [0.1.0] — 2026-10-06 — Pre-Alpha
 
 ### Added

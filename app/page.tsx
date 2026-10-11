@@ -1,4 +1,5 @@
 "use client";
+import {publisherEvent,observePublisherState} from "./publisher-preview";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -64,6 +65,8 @@ export default function App() {
   useEffect(() => { if (game) { let active = true; storeCareer(game).then(() => { if(active) { setHasSave(true); if (creatingCareer.current) { clearCreatorDraft(); setPendingDraft(null); creatingCareer.current = false; } setSaveError(""); } }).catch(() => { if(active) setSaveError("Przeglądarka nie przyjęła zapisu. Otwórz Wygląd i zapis i pobierz aktualną karierę."); }); return () => { active = false; }; } }, [game]);
   useEffect(() => { const restore = async () => { try { const raw = localStorage.getItem(SAVE_KEY); if(raw) { const loaded = await readCareer(raw); setGame(loaded); setScreen(resumeScreen(loaded)); } } catch { setSaveError("Nie można wczytać kariery."); } }; window.addEventListener("restore-career",restore);return()=>window.removeEventListener("restore-career",restore); }, []);
 
+  useEffect(()=>{observePublisherState(game);},[game]);
+
   const competitionOptions = useMemo(() => COMPETITION_ORDER.filter((competition) => LEAGUE_PACKS.some((pack) => pack.competition === competition)).map((competition) => ({ competition, available: licenseCoversCompetition(draft.license, competition), required: requiredLicenseForCompetition(competition) })), [draft.license]);
   const eligiblePacks = useMemo(() => LEAGUE_PACKS.filter((pack) => licenseCoversCompetition(draft.license, pack.competition)), [draft.license]);
   const competitionPacks = useMemo(() => eligiblePacks.filter((pack) => pack.competition === selectedCompetition), [eligiblePacks, selectedCompetition]);
@@ -79,7 +82,7 @@ export default function App() {
     catch { setSaveError("Nie można odczytać kariery. Zapis zachowano; możesz pobrać go w ustawieniach."); window.alert("Nie można odczytać kariery. Zapis nie został usunięty. Otwórz Wygląd i zapis."); }
   };
 
-  const startNewCareer = () => { try { clearCreatorDraft(); } catch { setSaveError("Nie można usunąć szkicu kreatora."); } setPendingDraft(null); setCreatorStage(0); setQuestionIndex(0); setGame(null); setDraft(initialCoachDraft()); setSelectedGoals([]); setClubStepVisited(false); go("creator"); };
+  const startNewCareer = () => { publisherEvent("new_career"); try { clearCreatorDraft(); } catch { setSaveError("Nie można usunąć szkicu kreatora."); } setPendingDraft(null); setCreatorStage(0); setQuestionIndex(0); setGame(null); setDraft(initialCoachDraft()); setSelectedGoals([]); setClubStepVisited(false); go("creator"); };
   const resumeCreator = () => {
     if (!pendingDraft) return;
     const s = pendingDraft;
@@ -91,6 +94,7 @@ export default function App() {
     if (!interviewProgress(draft).complete) return;
     if (clubStepVisited && eligiblePacks.some(pack => pack.id === selectedPackId && pack.teams.includes(selectedClub))) { go("club"); return; }
     setClubStepVisited(true);
+    publisherEvent("creator_completed");
     const available = LEAGUE_PACKS.filter((pack) => licenseCoversCompetition(draft.license, pack.competition));
     const bestTier = Math.min(...available.map((pack) => pack.tier)); const preferredAssociation = REGION_ASSOCIATION[draft.region];
     const defaultCompetition = draft.license === "Grassroots C" ? "Klasa B" : undefined;
