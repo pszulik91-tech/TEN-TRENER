@@ -114,7 +114,7 @@ export default function App() {
     const startingLicense = startingLicenseEligibility(draft.license, draft.playingExperience, coachingExperience, draft.age).eligible ? draft.license : highestEligibleStartingLicense(draft.playingExperience, coachingExperience, draft.age) as License;
     const derived = skillSet(draft.profile, draft.playingExperience, coachingExperience); const coach: Coach = { name: draft.name.trim(), age: draft.age, region: draft.region, playingExperience: draft.playingExperience, coachingExperience, profile: draft.profile, license: startingLicense, ...derived };
     creatingCareer.current = true;
-    setGame(createGame(coach, selectedPack, selectedClub, selectedGoals)); go("dashboard");
+    setGame(createGame(coach, selectedPack, selectedClub, selectedGoals)); publisherEvent("club_entered"); go("dashboard");
   };
   const saveNow = async () => { if (!game) return; try { await storeCareer(game); } catch { setSaveError("Brak miejsca na zapis. Pobierz kopię kariery."); return; } setHasSave(true); setSavedPulse(true); window.setTimeout(() => setSavedPulse(false), 1400); };
 

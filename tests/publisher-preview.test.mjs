@@ -45,3 +45,7 @@ test('pętla startowa i wskazówka pierwszej sesji używają palety, także w ja
  assert.match(css,/\.start-game-intro \.start-example\s*\{\s*color:#f4f2e8/);
  assert.match(css,/\.game-content > \.post-match-window-backdrop\s*\{\s*position:fixed; z-index:80/);
 });
+
+test('wejście do klubu po wznowieniu szkicu jest zapisane raz, bez fikcyjnego wznowienia kariery',()=>{
+ const t=createPublisherTelemetry(memory(),()=>0,'test');t.consent(true);t.record('club_entered');t.observe(state());t.observe(state());assert.deepEqual(events(t),['session_start','club_entered']);
+});
