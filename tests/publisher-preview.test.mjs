@@ -42,4 +42,5 @@ test('pętla startowa i wskazówka pierwszej sesji używają palety, także w ja
  const css=await readFile(new URL('../app/release.css',import.meta.url),'utf8');
  assert.match(css,/\.start-game-intro \.start-game-preview\s*\{\s*color:var\(--ink\)/);
  assert.match(css,/\.publisher-session-hint\s*\{\s*color:var\(--ink-soft\)/);
+ assert.match(css,/\.start-game-intro \.start-example\s*\{\s*color:#f4f2e8/);
 });
