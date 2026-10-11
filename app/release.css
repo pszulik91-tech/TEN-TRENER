@@ -39,3 +39,5 @@
 .start-game-intro .start-loop-arrow,
 .start-game-intro .publisher-session-hint { color:var(--ink-soft); }
 .start-game-intro .start-example { color:#f4f2e8; }
+/* Keep the report overlay above the generic .game-content > * rule. */
+.game-content > .post-match-window-backdrop { position:fixed; z-index:80; }

@@ -43,4 +43,5 @@ test('pętla startowa i wskazówka pierwszej sesji używają palety, także w ja
  assert.match(css,/\.start-game-intro \.start-game-preview\s*\{\s*color:var\(--ink\)/);
  assert.match(css,/\.publisher-session-hint\s*\{\s*color:var\(--ink-soft\)/);
  assert.match(css,/\.start-game-intro \.start-example\s*\{\s*color:#f4f2e8/);
+ assert.match(css,/\.game-content > \.post-match-window-backdrop\s*\{\s*position:fixed; z-index:80/);
 });
