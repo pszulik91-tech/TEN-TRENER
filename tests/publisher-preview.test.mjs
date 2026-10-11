@@ -37,3 +37,9 @@ test('Publisher Preview zachowuje prawdziwy onboarding i nie dodaje trackera sie
  const metrics=await readFile(new URL('../app/publisher-preview.tsx',import.meta.url),'utf8');assert.match(metrics,/Domyślnie wyłączony/);assert.match(metrics,/Eksportuj anonimowy raport/);
  const board=await readFile(new URL('../app/board-goal-panel.tsx',import.meta.url),'utf8');assert.match(board,/Przed pierwszym meczem/);
 });
+
+test('pętla startowa i wskazówka pierwszej sesji używają palety, także w jasnym motywie',async()=>{
+ const css=await readFile(new URL('../app/release.css',import.meta.url),'utf8');
+ assert.match(css,/\.start-game-intro \.start-game-preview\s*\{\s*color:var\(--ink\)/);
+ assert.match(css,/\.publisher-session-hint\s*\{\s*color:var\(--ink-soft\)/);
+});

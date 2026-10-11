@@ -31,3 +31,10 @@
 .publisher-metrics > div { display:flex; flex-wrap:wrap; gap:.7rem; margin-top:.7rem; }
 .publisher-metrics button { border:1px solid currentColor; padding:.6rem; min-height:44px; }
 @media(min-width:960px){.publisher-session-hint{grid-column:1 / -1;}}
+/* The start overview follows all four palettes, including the light default. */
+.start-game-intro .start-game-preview { color:var(--ink); }
+.start-game-intro .start-game-preview > h2,
+.start-game-intro .start-week-loop svg { color:var(--brand); }
+.start-game-intro .start-week-loop p,
+.start-game-intro .start-loop-arrow,
+.start-game-intro .publisher-session-hint { color:var(--ink-soft); }
