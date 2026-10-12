@@ -48,3 +48,7 @@ Niezależny autorski fikcyjny katalog115grup/1398klubów zastępuje import przy 
 Po testach środowisko plikowe/przeglądarkowe rozłączyło się przy końcowym checkpointcie. Kod, CI i deploy pozostały dostępne. Dokumentację odtworzono z obserwowanych wyników i publikowano atomowo przez autoryzowany GitHub connector. Nowych screenshotów/surowego logu90pomiarów nie udało się odczytać do publikacji po rozłączeniu; były wykonane i zapisane lokalnie. Nie deklarujemy ich obecności w repo. Historyczne screenshoty PUBLISHER-01 pozostają oznaczone jako poprzedni wariant danych.
 
 STOP po PUBLISHER-01.1; bez PUBLISHER-02.
+
+
+## Recovery verification — 2026-10-12
+Recovered the original raw DISPLAY_QA.json (90 observations) and six original screenshots in screenshots/publisher-01.1/. They are now retained in Git; earlier statements that these files were unavailable describe the previous interrupted publication. No new gameplay session or display test was claimed. Current unauthenticated HTTP request without cookies returned 401. Netlify API confirms non-production team SSO, no password, and READY deployment 6acc4ee02ffa6200080bf763 for code 949003c66c7f7417cb28848bcdd3beff8ae9c2d2. CI Verify Pre-Alpha #43 is completed/success. Source code and build configuration match that tested artifact. External-access blocker and NO-GO remain; no RC1 designation, main merge or PUBLISHER-02.

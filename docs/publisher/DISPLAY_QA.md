@@ -18,3 +18,7 @@ States: Start; creator introduction/experience/single question; welcome; club pi
 Final native Info check on last deployed artifact:top46.796875,bottom889.1875 in height936; notice link present. No app style/layout redesign needed. Initial transition captures and premature navigation were corrected by observing settled/correct state.
 
 Raw log/screenshots were generated locally before environment disconnection, but could not be retrieved for Git publication afterwards; this summary reconstructs actual returned measurements, not new tests. See RC_READINESS.md.
+
+
+## Recovery verification — 2026-10-12
+Recovered the original raw DISPLAY_QA.json (90 observations) and six original screenshots in screenshots/publisher-01.1/. They are now retained in Git; earlier statements that these files were unavailable describe the previous interrupted publication. No new gameplay session or display test was claimed. Current unauthenticated HTTP request without cookies returned 401. Netlify API confirms non-production team SSO, no password, and READY deployment 6acc4ee02ffa6200080bf763 for code 949003c66c7f7417cb28848bcdd3beff8ae9c2d2. CI Verify Pre-Alpha #43 is completed/success. Source code and build configuration match that tested artifact. External-access blocker and NO-GO remain; no RC1 designation, main merge or PUBLISHER-02.
