@@ -8,7 +8,7 @@ test('statyczny build ma wejście, polskie metadane i wszystkie lokalne zasoby',
   const directory = new URL('../dist/', import.meta.url);
   const html = await readFile(new URL('index.html', directory), 'utf8');
   assert.match(html, /lang="pl"/);
-  assert.match(html, /TEN TRENER — Publisher Preview — Pre-Alpha/);
+  assert.match(html, /TEN TRENER — Publisher Preview RC1 — Pre-Alpha/);
   assert.match(html, /noindex, nofollow/);
   assert.match(html, /id="root"/);
   const assets = [...html.matchAll(/(?:src|href)="(\/(?:assets\/[^\"]+|favicon.svg))"/g)].map(match => match[1]);
