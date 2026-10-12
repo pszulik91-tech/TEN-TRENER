@@ -1,7 +1,7 @@
 {
-  "runAt": "2026-10-08T05:20:13.756Z",
+  "runAt": "2026-10-12T02:29:46.422Z",
   "harness": "production-actions",
-  "build": "TEN TRENER — Pre-Alpha v0.1.0",
+  "build": "TEN TRENER — Publisher Preview — Pre-Alpha v0.1.1-publisher.2",
   "checks": {
     "matches": 1432,
     "seasons": 53,

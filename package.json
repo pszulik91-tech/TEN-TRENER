@@ -1,6 +1,6 @@
 {
   "name": "ten-trener",
-  "version": "0.1.0",
+  "version": "0.1.1-publisher.2",
   "private": true,
   "engines": {
     "node": ">=24.21.0 <25"
@@ -76,5 +76,5 @@
     "wrangler": "4.92.0"
   },
   "type": "module",
-  "description": "TEN TRENER \u2014 Pre-Alpha. Kariera trenera w realiach polskiej pi\u0142ki."
+  "description": "TEN TRENER — Pre-Alpha. Kariera trenera w realiach polskiej piłki."
 }

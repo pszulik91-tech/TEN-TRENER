@@ -1,7 +1,30 @@
 # TEN TRENER — WORK_STATE
 
-Checkpoint: 2026-10-08. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: main.
-Aktualny zakres: UX-01 — pokaż właściwą grę przed rozpoczęciem kariery; DONE. Kod i testy opublikowane. STOP po UX-01.
+Checkpoint: 2026-10-12. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: publisher/preview-0.1.1; main bez zmian.
+Aktualny zakres: PUBLISHER-01.1 — techniczne testy i bezpieczny kandydat opublikowane; RC1/GO BLOCKED przez Free/SSO. Gotowość95%. STOP; bez PUBLISHER-02.
+
+## PUBLISHER-01.1 — checkpoint (2026-10-12)
+
+- Build0.1.1-publisher.2, Pre-Alpha. Kod/artefakt 949003c66c7f7417cb28848bcdd3beff8ae9c2d2; branch publisher/preview-0.1.1. CI#43/38198500193SUCCESS; Netlify6acc4ee02ffa6200080bf763READY, dokładnie ten SHA. https://deploy-preview-1--ten-trener.netlify.app/ . Bez RC1/tagu/merge/zmiany produkcji; main a8277ff73176c00314a5f8d6433340f6a117d5b3.
+- Jedyny bloker GO: anonimowy odbiorca widzi Netlify team login. Free/no Password potwierdzone w UI; Pro/hosting wymaga decyzji właściciela (ACCESS_DECISION.md). Bez zakupu, wyłączenia ochrony lub kont graczy.
+-15stanów×6viewportów=90pomiarów:1920×1080,1366×768,1440×900,1280×720,390×844,412×915 PASS bez overflow. Prawdziwa aplikacja w ramce CSS, nie fizyczne urządzenia. Tymczasowy QA usunięty z dist.
+- Świeża techniczna sesja agenta:kariera2:43,decyzja3:03,mecz3:18,koniec4:08,total6:04; nie niezależny test człowieka. Save-close-reopen-continue PASS. EXTERNAL_TEST.md:8pytań do realnego testu15–20min.
+- IP: niezależny fikcyjny115group/1398club katalog przy buildzie, neutralne widoczne etykiety, oryginalna baza zachowana/wykluczona z dist. Oddzielne zapisy. Proceduralne herby/nowyfavicon/fonty systemowe; notices bibliotek/CSS. Nie pełny clearance:znak/autorstwo/vendorCSS/komercyjna dystrybucja nadal do sprawdzenia. GAME-01–09 bez zmian reguł.
+-213/213PASS,typecheck/build/HTTP PASS;audit1432matches/53seasons/1434saves/14jobChanges/53settlementsPASS;truepublisher-mode tier2/5/9 silnik/saves/foreignguardPASS.
+- Telemetria defaultoff; lokalne allowlisted kroki/czas, bez name/IP/fingerprint/auto transfer. Dobrowolny eksport i return sprawdzone; plików testera nie publikowano.
+- Przy końcowym checkpointcie rozłączyło się środowisko plikowe/browser. Kod/CI/deploy dostępne; dokumenty odtworzono z obserwowanych wyników i publikowano przez GitHub connector. Nowe screenshoty/surowe logi zapisane lokalnie nie zostały odzyskane do publikacji; nie deklarować ich w repo. DISPLAY_QA.md ma rzeczywiste obserwacje.
+- RC_READINESS/ACCESS_DECISION/EXTERNAL_TEST/OSS_INVENTORY/DEMO_TIMING/DISPLAY_QA gotowe;95%,NO-GO,STOP po PUBLISHER-01.1.
+
+## PUBLISHER-01 — checkpoint (2026-10-11)
+
+- Build0.1.1-publisher.1, Publisher Preview — Pre-Alpha. Kod: `6fbd4fd309885a67255c9898c356ec96b1c89264`; gałąź publisher/preview-0.1.1, draft PR#1 bez merge.
+- CI Verify Pre-Alpha SUCCESS #37/38175536928; Netlify READY deploy6acbfc31cfef520008c4d9c0, URL https://deploy-preview-1--ten-trener.netlify.app/ . SSO non_production zachowane. Produkcja pozostaje na2a7ef0871e859ce6405fd5e7a2bbac17a85301ce; main a8277ff73176c00314a5f8d6433340f6a117d5b3.
+- Zmiany prezentacyjne: identyfikacja buildu, wskazanie pierwszej sesji, uczciwa zapowiedź celu zarządu, neutralny status przed debiutem, kontrast Start, fokus Publisher Info, naprawa nakładki raportu. Bez zmian mechanik GAME-01–09.
+- Publisher Info: zakres prototypu, Pre-Alpha, partner wydawniczo-produkcyjny. Telemetria lokalna, opt-in, bez danych osobowych i backendu; eksport/wyczyszczenie. Automatyczna wysyłka nie wdrożona.
+- Testy208/208, TypeScript/build i HTTP PASS. audit:release PASS(1432mecze/53sezony/1434zapisy/14zmian klubu). Dwie realne sesje UI(produkcja2:1, Preview3:0 i kolejny mecz1:1), zapis-zamknięcie-wznowienie meczu oraz kariery; trzy dodatkowe ścieżki silnika tier9/6/2.
+- docs/publisher: summary, demo flow, known issues, IP audit, deployment, test report, lista i10rzeczywistych screenshotów. IP: realne nazwy/katalog/licencje i proweniencja wymagają weryfikacji; brak automatycznych usunięć i deklaracji clearance.
+- Ograniczenia: render wizualnie sprawdzony1363×936; brak możliwości zmiany viewportu w cloud browser, mobile/laptop osobno nieweryfikowane. Sesja15–20min jest rekomendowanym planem, nie niezależnym pomiarem. Zewnętrzny odbiorca wymaga sprawdzenia dostępu SSO. Gotowość90%, nie100%/pełne DONE.
+- Bez publicznego demo, wdrożenia produkcyjnego, zmian Netlify/SSO/CI, nowych mechanik lub kampanii. Następny etap wymaga zatwierdzenia.
 
 ## HEAD
 - HEAD kodu/testów po UX-01: `2a7ef0871e859ce6405fd5e7a2bbac17a85301ce` (main).
@@ -27,7 +50,7 @@ Aktualny zakres: UX-01 — pokaż właściwą grę przed rozpoczęciem kariery; 
 - Commit checkpointu sprawdzony po zapisie: `729e13dfcec892713be445069a93023b1964ddac`.
 - Aktualny commit dokumentacyjny: commit ostatniej aktualizacji tego pliku; dokładny SHA: `git log -1 --format=%H -- docs/WORK_STATE.md`. SHA własnego commita nie można wpisać do jego treści bez utworzenia kolejnego commita.
 
-## CI / Node / build
+## CI / Node / build — historical main
 - Node: `24.21.0`, potwierdzony w .nvmrc.
 - Najnowszy Verify Pre-Alpha dla zweryfikowanego HEAD: SUCCESS, run #9, ID 37612829295.
 - Wynik: https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37612829295
@@ -605,3 +628,7 @@ Tier5 (półprofesjonalne),4 sesje, przerwa7 dni i naturalna regeneracja12 p.p.;
 - Kod opublikowany: `2a7ef0871e859ce6405fd5e7a2bbac17a85301ce`; zdalne drzewo `fb8a5c4869797f536611b4e8ba142446f77f7271` identyczne z lokalną, przetestowaną wersją. Następnie osobny checkpoint tego pliku [skip ci].
 - Pliki kodu: app/setup-screens.tsx, app/globals.css, tests/start-game-intro.test.mjs. Bez zmian GAME-01–09, mechanik, treningu, zawodników, celów, licencji, rynku pracy, silnika i zapisów; CI / Netlify / SSO bez zmian. Node lokalny 24.19.0; istniejące ostrzeżenia nie przerwały testów. audit:release nie wymagany ani uruchamiany w onboardingowym UX-01.
 - NEXT: brak autoryzowanych kolejnych prac. STOP po UX-01.
+
+
+## Recovery verification — 2026-10-12
+Recovered the original raw DISPLAY_QA.json (90 observations) and six original screenshots in screenshots/publisher-01.1/. They are now retained in Git; earlier statements that these files were unavailable describe the previous interrupted publication. No new gameplay session or display test was claimed. Current unauthenticated HTTP request without cookies returned 401. Netlify API confirms non-production team SSO, no password, and READY deployment 6acc4ee02ffa6200080bf763 for code 949003c66c7f7417cb28848bcdd3beff8ae9c2d2. CI Verify Pre-Alpha #43 is completed/success. Source code and build configuration match that tested artifact. External-access blocker and NO-GO remain; no RC1 designation, main merge or PUBLISHER-02.

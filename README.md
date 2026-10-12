@@ -1,6 +1,6 @@
-# TEN TRENER — Pre-Alpha
+# TEN TRENER — Publisher Preview — Pre-Alpha
 
-**v0.1.0** · Niezależna gra menedżersko-symulacyjna o karierze trenera w realiach polskiej piłki. Rozwijasz człowieka: jego kompetencje, relacje i reputację. Kierujesz drużyną przez plan gry i decyzje, bez ręcznego zarządzania każdym zawodnikiem.
+**v0.1.1-publisher.2** · Niezależna gra menedżersko-symulacyjna o karierze trenera w realiach polskiej piłki. Rozwijasz człowieka: jego kompetencje, relacje i reputację. Kierujesz drużyną przez plan gry i decyzje, bez ręcznego zarządzania każdym zawodnikiem.
 
 To wydanie porządkuje dotychczasowy Build 2.5. Nowa numeracja dotyczy wydań webowych; nie oznacza rozpoczęcia projektu od zera. Kod, dane, historia Git i zgodność zapisów zostały zachowane.
 
@@ -8,10 +8,14 @@ To wydanie porządkuje dotychczasowy Build 2.5. Nowa numeracja dotyczy wydań we
 
 - Działający lokalnie prototyp statyczny React + TypeScript + Vite, bez wymaganego backendu i kont graczy.
 - Testy automatyczne i wielosezonowe: [raport](docs/reports/pre-alpha-0.1.0.md).
-- Projekt Netlify `ten-trener` utworzony, dostęp ograniczony do zalogowanego zespołu.
-- Prywatne repozytorium: `pszulik91-tech/TEN-TRENER`, gałąź `main`; pełna historia projektu została zaimportowana.
+- Produkcja Netlify `ten-trener` działa przez HTTPS. Ochrona zespołowa SSO dotyczy podglądów nieprodukcyjnych, nie obecnego publicznego adresu produkcji.
+- Repozytorium `pszulik91-tech/TEN-TRENER` jest aktualnie publiczne. Publisher Preview powstaje na oddzielnej gałęzi `publisher/preview-0.1.1`; produkcyjny `main` pozostaje bez zmian.
 - Stan CI i wdrożenia: [dokumentacja wdrożenia](docs/deployment.md).
 - Projekt nie jest premierą publiczną ani kompletną symulacją przepisów PZPN.
+
+## Publisher Preview
+
+Źródła do pitchu, przebieg sesji, ograniczenia i audyt IP: [docs/publisher](docs/publisher/PUBLISHER_SUMMARY.md). Podgląd nie jest publicznym demo ani finalnym produktem. Dobrowolny pomiar sesji zapisuje wyłącznie lokalny raport; eksport i przekazanie autorowi wymagają świadomego działania testera.
 
 ## Uruchomienie
 
@@ -61,7 +65,7 @@ Pełna mapa danych i ograniczeń: [audyt](docs/architecture-audit.md).
 
 ## Zapis gry
 
-Autosave używa `localStorage` pod niezmienionym kluczem `ten-trener-save-v1`; większy stan jest kompresowany. Ustawienia pozwalają eksportować/importować plik. Zachowany jest odczyt wcześniejszego JSON.
+Standardowa gra używa `ten-trener-save-v1`; fikcyjny publisher używa `ten-trener-publisher-fictional-v1`. Źródłowe zapisy nie są usuwane; ta edycja wczytuje wyłącznie kariery fikcyjnego katalogu; większy stan jest kompresowany. Ustawienia pozwalają eksportować/importować plik. Zachowany jest odczyt wcześniejszego JSON.
 
 **Zapis nie przenosi się automatycznie między domenami.** Przed przejściem ze starego adresu do Netlify pobierz kopię w starej grze, a następnie wczytaj ją w ustawieniach nowej. Tryb prywatny i czyszczenie danych przeglądarki mogą usunąć lokalny zapis.
 
@@ -80,3 +84,6 @@ Dostępne: kreator i osiem pytań profilu, cztery licencje, 16 województw, 407 
 W produkcji: pełne oficjalne baraże, Puchar Polski, Europa, weryfikacja obsady lig i długoterminowego balansu. Liczba wpisów nie jest potwierdzeniem aktualności ani unikalności wszystkich rzeczywistych klubów. Gracze piłkarscy i część postaci są generowani.
 
 Repozytorium zawiera kod projektu i zależności na ich własnych licencjach. Nie dodano licencji open-source ani zgody na redystrybucję nazwy/treści gry.
+
+## PUBLISHER-01.1
+213testsPASS,CI#43SUCCESS. Publisher115groups/1398clubs;407groups/5517entries opisane powyżej dotyczą źródłowej bazy main. Six CSSviewportsPASS,agentwalkthrough6:04. RC1/GO withheld:Free/SSO blocks external account-free access. [Readiness](docs/publisher/RC_READINESS.md), [access decision](docs/publisher/ACCESS_DECISION.md), [external test](docs/publisher/EXTERNAL_TEST.md). No independent human test yet.

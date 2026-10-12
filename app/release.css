@@ -24,3 +24,20 @@
 .start-screen .start-panel { padding: 1rem; }
 .start-screen .start-copy { margin: 1rem 0; }
 .start-screen .build-row { flex-wrap: wrap; }
+
+.publisher-session-hint { font-size:.85rem; line-height:1.5; color:#a9b7c2; min-width:0; }
+.publisher-metrics label { display:flex; align-items:center; gap:.6rem; }
+.publisher-metrics input { width:1.1rem; height:1.1rem; }
+.publisher-metrics > div { display:flex; flex-wrap:wrap; gap:.7rem; margin-top:.7rem; }
+.publisher-metrics button { border:1px solid currentColor; padding:.6rem; min-height:44px; }
+@media(min-width:960px){.publisher-session-hint{grid-column:1 / -1;}}
+/* The start overview follows all four palettes, including the light default. */
+.start-game-intro .start-game-preview { color:var(--ink); }
+.start-game-intro .start-game-preview > h2,
+.start-game-intro .start-week-loop svg { color:var(--brand); }
+.start-game-intro .start-week-loop p,
+.start-game-intro .start-loop-arrow,
+.start-game-intro .publisher-session-hint { color:var(--ink-soft); }
+.start-game-intro .start-example { color:#f4f2e8; }
+/* Keep the report overlay above the generic .game-content > * rule. */
+.game-content > .post-match-window-backdrop { position:fixed; z-index:80; }

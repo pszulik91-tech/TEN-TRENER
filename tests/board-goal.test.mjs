@@ -109,7 +109,9 @@ test('Dashboard, Kariera i rozliczenie pokazują dokładną granicę oraz oddzie
   assert.match(arrival,/Cel sportowy zarządu/);assert.match(arrival,new RegExp(`${g.boardGoal.maxPlace}\\. miejscu lub wyżej`));assert.match(arrival,/Twoje dwa cele rozwojowe/);
   const entered=act(g,'resolveDecision','welcome','ack');
   const dashboard=renderToStaticMarkup(React.createElement(Dashboard,{game:entered,go:noop,resolveDecision:noop,prepareMatch:noop,beginNextSeason:noop,dismissMatchReport:noop}));
-  assert.match(dashboard,/Cel sportowy zarządu/);assert.match(dashboard,new RegExp(`${g.boardGoal.maxPlace}\\. miejscu lub wyżej`));assert.match(dashboard,/Aktualna pozycja/);assert.match(dashboard,/Cele rozwojowe/);
+  assert.match(dashboard,/Cel sportowy zarządu/);assert.match(dashboard,new RegExp(`${g.boardGoal.maxPlace}\\. miejscu lub wyżej`));assert.match(dashboard,/Przed pierwszym meczem/);
+  const played={...entered,teams:entered.teams.map(t=>t.id===entered.club.id?{...t,played:1}:t)};
+  const inSeason=renderToStaticMarkup(React.createElement(Dashboard,{game:played,go:noop,resolveDecision:noop,prepareMatch:noop,beginNextSeason:noop,dismissMatchReport:noop}));assert.match(inSeason,/Aktualna pozycja/);assert.match(dashboard,/Cele rozwojowe/);
   const career=renderToStaticMarkup(React.createElement(Career,{game:g,setGame:noop,retireCareer:noop}));assert.match(career,/Cel sportowy zarządu/);
   const final=act({...g,newSeasonPending:true},'beginNextSeason');const html=renderToStaticMarkup(React.createElement(Jobs,{game:final,acceptJob:noop,stayAtClub:noop}));
   assert.match(html,/CEL ZARZĄDU: (WYKONANY|NIEWYKONANY)/);assert.match(html,/Pozycja końcowa/);assert.match(html,/Wymagane:/);

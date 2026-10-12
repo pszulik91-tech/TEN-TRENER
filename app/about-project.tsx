@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { PublisherMetrics } from "./publisher-preview";
 import { BUILD, PROJECT_DESCRIPTION, RELEASE_STAGE } from "./build-info";
 
 export function AboutButton() {
-  return <button className="about-link" onClick={() => window.dispatchEvent(new Event("open-about-project"))}>O PROJEKCIE</button>;
+  return <button className="about-link" onClick={() => window.dispatchEvent(new Event("open-about-project"))}>O PROJEKCIE / PUBLISHER INFO</button>;
 }
 
 export function AboutProject() {
@@ -14,14 +15,14 @@ export function AboutProject() {
     window.addEventListener("open-about-project", show);
     return () => window.removeEventListener("open-about-project", show);
   }, []);
-  useEffect(() => { if (open) dialog.current?.showModal(); else dialog.current?.close(); }, [open]);
+  useEffect(() => { if (open) { dialog.current?.showModal(); dialog.current?.querySelector<HTMLElement>("#about-title")?.focus(); } else dialog.current?.close(); }, [open]);
   return <dialog ref={dialog} className="about-project" onCancel={() => setOpen(false)} onClose={() => setOpen(false)} aria-labelledby="about-title">
-    <header><span className="eyebrow">{RELEASE_STAGE} · wersja testowa</span><h2 id="about-title">TEN TRENER</h2><p>{BUILD}</p></header>
+    <header><span className="eyebrow">{RELEASE_STAGE} · wersja testowa</span><h2 id="about-title" tabIndex={-1}>TEN TRENER</h2><p>{BUILD}</p></header>
     <div className="about-content"><p>{PROJECT_DESCRIPTION}</p>
       <h3>Już możesz zagrać</h3><ul><li>Stwórz trenera i wybierz pierwszy klub.</li><li>Poprowadź treningi, wybierz plan drużyny i reaguj podczas meczów.</li><li>Rozwiązuj problemy szatni, zarządu i mediów.</li><li>Rozwijaj umiejętności i licencje, zmieniaj kluby i rozgrywaj kolejne sezony.</li><li>Zapisuj karierę i przenoś ją przez kopię do pliku.</li></ul>
-      <h3>Jeszcze w produkcji</h3><p>Oficjalne baraże, Puchar Polski i rozgrywki europejskie. Awanse i spadki działają według uproszczonych zasad. Zmiana klubu jest dostępna latem. Trwa weryfikacja składów lig oraz balansu długich karier.</p>
-      <h3>Twój zapis</h3><p>Kariera jest zapisywana w tej przeglądarce. Przed zmianą urządzenia, adresu gry lub usunięciem danych przeglądarki pobierz kopię w ustawieniach.</p>
-      <p>Wersja do testów. Nie jest to premiera gry.</p>
+      <h3>Dane demonstracyjne</h3><p>Kluby i katalog rozgrywek w tej wersji są fikcyjne. Nazwy licencji są roboczymi etykietami; prototyp nie jest oficjalnym produktem żadnej federacji. Finalne dane i rozwiązania licencyjne należą do dalszej produkcji.</p><h3>Jeszcze w produkcji</h3><p>Oficjalne baraże, Puchar Polski i rozgrywki europejskie. Awanse i spadki działają według uproszczonych zasad. Zmiana klubu jest dostępna latem. Trwa weryfikacja składów lig oraz balansu długich karier.</p>
+      <h3>Czego szukamy</h3><p>Szukamy partnera wydawniczo-produkcyjnego, który pomoże rozwinąć obecny grywalny prototyp do pełnej gry PC poprzez wsparcie developerskie, produkcyjne, marketingowe, dystrybucyjne oraz ewentualne finansowanie dalszych prac.</p><p>To gra o pracy i wielosezonowej karierze trenera, a nie zarządzaniu całym klubem. Obecna wersja jest prototypem Pre-Alpha, nie finalnym produktem.</p><h3>Twój zapis</h3><p>Kariera jest zapisywana w tej przeglądarce. Przed zmianą urządzenia, adresu gry lub usunięciem danych przeglądarki pobierz kopię w ustawieniach.</p>
+      <p>Wersja do testów. Nie jest to premiera gry.</p><PublisherMetrics /><p><a href="/THIRD_PARTY_NOTICES.txt" target="_blank" rel="noreferrer">Licencje wykorzystanych bibliotek</a></p>
     </div><footer><button className="primary-cta" onClick={() => setOpen(false)}>Wróć do gry</button></footer>
   </dialog>;
 }

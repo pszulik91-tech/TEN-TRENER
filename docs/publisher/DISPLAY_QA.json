@@ -1,0 +1,1070 @@
+[
+  {
+    "screen": "creator",
+    "label": "1920×1080",
+    "dialogs": [],
+    "height": 1080,
+    "scroll": 1920,
+    "scrollHeight": 1080,
+    "title": "Jak mamy pana przedstawić?",
+    "width": 1920
+  },
+  {
+    "screen": "creator",
+    "label": "1366×768",
+    "dialogs": [],
+    "height": 768,
+    "scroll": 1351,
+    "scrollHeight": 784,
+    "title": "Jak mamy pana przedstawić?",
+    "width": 1351
+  },
+  {
+    "screen": "creator",
+    "label": "1440×900",
+    "dialogs": [],
+    "height": 900,
+    "scroll": 1440,
+    "scrollHeight": 900,
+    "title": "Jak mamy pana przedstawić?",
+    "width": 1440
+  },
+  {
+    "screen": "creator",
+    "label": "1280×720",
+    "dialogs": [],
+    "height": 720,
+    "scroll": 1265,
+    "scrollHeight": 784,
+    "title": "Jak mamy pana przedstawić?",
+    "width": 1265
+  },
+  {
+    "screen": "creator",
+    "label": "390×844",
+    "dialogs": [],
+    "height": 844,
+    "scroll": 375,
+    "scrollHeight": 1081,
+    "title": "Jak mamy pana przedstawić?",
+    "width": 375
+  },
+  {
+    "screen": "creator",
+    "label": "412×915",
+    "dialogs": [],
+    "height": 915,
+    "scroll": 397,
+    "scrollHeight": 1010,
+    "title": "Jak mamy pana przedstawić?",
+    "width": 397
+  },
+  {
+    "screen": "creator-experience",
+    "label": "1920×1080",
+    "dialogs": [],
+    "height": 1080,
+    "scroll": 1905,
+    "scrollHeight": 1484,
+    "title": "Co wpisujemy do życiorysu?",
+    "width": 1905
+  },
+  {
+    "screen": "creator-experience",
+    "label": "1366×768",
+    "dialogs": [],
+    "height": 768,
+    "scroll": 1351,
+    "scrollHeight": 1484,
+    "title": "Co wpisujemy do życiorysu?",
+    "width": 1351
+  },
+  {
+    "screen": "creator-experience",
+    "label": "1440×900",
+    "dialogs": [],
+    "height": 900,
+    "scroll": 1425,
+    "scrollHeight": 1484,
+    "title": "Co wpisujemy do życiorysu?",
+    "width": 1425
+  },
+  {
+    "screen": "creator-experience",
+    "label": "1280×720",
+    "dialogs": [],
+    "height": 720,
+    "scroll": 1265,
+    "scrollHeight": 1484,
+    "title": "Co wpisujemy do życiorysu?",
+    "width": 1265
+  },
+  {
+    "screen": "creator-experience",
+    "label": "390×844",
+    "dialogs": [],
+    "height": 844,
+    "scroll": 375,
+    "scrollHeight": 1813,
+    "title": "Co wpisujemy do życiorysu?",
+    "width": 375
+  },
+  {
+    "screen": "creator-experience",
+    "label": "412×915",
+    "dialogs": [],
+    "height": 915,
+    "scroll": 397,
+    "scrollHeight": 1730,
+    "title": "Co wpisujemy do życiorysu?",
+    "width": 397
+  },
+  {
+    "screen": "creator-question",
+    "label": "1920×1080",
+    "dialogs": [],
+    "height": 1080,
+    "scroll": 1920,
+    "scrollHeight": 1080,
+    "title": "Co robisz w przerwie?",
+    "width": 1920
+  },
+  {
+    "screen": "creator-question",
+    "label": "1366×768",
+    "dialogs": [],
+    "height": 768,
+    "scroll": 1351,
+    "scrollHeight": 883,
+    "title": "Co robisz w przerwie?",
+    "width": 1351
+  },
+  {
+    "screen": "creator-question",
+    "label": "1440×900",
+    "dialogs": [],
+    "height": 900,
+    "scroll": 1440,
+    "scrollHeight": 900,
+    "title": "Co robisz w przerwie?",
+    "width": 1440
+  },
+  {
+    "screen": "creator-question",
+    "label": "1280×720",
+    "dialogs": [],
+    "height": 720,
+    "scroll": 1265,
+    "scrollHeight": 883,
+    "title": "Co robisz w przerwie?",
+    "width": 1265
+  },
+  {
+    "screen": "creator-question",
+    "label": "390×844",
+    "dialogs": [],
+    "height": 844,
+    "scroll": 375,
+    "scrollHeight": 1108,
+    "title": "Co robisz w przerwie?",
+    "width": 375
+  },
+  {
+    "screen": "creator-question",
+    "label": "412×915",
+    "dialogs": [],
+    "height": 915,
+    "scroll": 397,
+    "scrollHeight": 1087,
+    "title": "Co robisz w przerwie?",
+    "width": 397
+  },
+  {
+    "screen": "club",
+    "label": "1920×1080",
+    "dialogs": [],
+    "height": 1080,
+    "scroll": 1905,
+    "scrollHeight": 1615,
+    "title": "Pierwsza szatnia",
+    "width": 1905
+  },
+  {
+    "screen": "club",
+    "label": "1366×768",
+    "dialogs": [],
+    "height": 768,
+    "scroll": 1351,
+    "scrollHeight": 1615,
+    "title": "Pierwsza szatnia",
+    "width": 1351
+  },
+  {
+    "screen": "club",
+    "label": "1440×900",
+    "dialogs": [],
+    "height": 900,
+    "scroll": 1425,
+    "scrollHeight": 1615,
+    "title": "Pierwsza szatnia",
+    "width": 1425
+  },
+  {
+    "screen": "club",
+    "label": "1280×720",
+    "dialogs": [],
+    "height": 720,
+    "scroll": 1265,
+    "scrollHeight": 1615,
+    "title": "Pierwsza szatnia",
+    "width": 1265
+  },
+  {
+    "screen": "club",
+    "label": "390×844",
+    "dialogs": [],
+    "height": 844,
+    "scroll": 375,
+    "scrollHeight": 2936,
+    "title": "Pierwsza szatnia",
+    "width": 375
+  },
+  {
+    "screen": "club",
+    "label": "412×915",
+    "dialogs": [],
+    "height": 915,
+    "scroll": 397,
+    "scrollHeight": 2893,
+    "title": "Pierwsza szatnia",
+    "width": 397
+  },
+  {
+    "screen": "welcome",
+    "label": "1920×1080",
+    "dialogs": [],
+    "height": 1080,
+    "scroll": 1920,
+    "scrollHeight": 1080,
+    "title": "Witamy w Klub Śląski 08-01.",
+    "width": 1920
+  },
+  {
+    "screen": "welcome",
+    "label": "1366×768",
+    "dialogs": [],
+    "height": 768,
+    "scroll": 1351,
+    "scrollHeight": 994,
+    "title": "Witamy w Klub Śląski 08-01.",
+    "width": 1351
+  },
+  {
+    "screen": "welcome",
+    "label": "1440×900",
+    "dialogs": [],
+    "height": 900,
+    "scroll": 1425,
+    "scrollHeight": 995,
+    "title": "Witamy w Klub Śląski 08-01.",
+    "width": 1425
+  },
+  {
+    "screen": "welcome",
+    "label": "1280×720",
+    "dialogs": [],
+    "height": 720,
+    "scroll": 1265,
+    "scrollHeight": 991,
+    "title": "Witamy w Klub Śląski 08-01.",
+    "width": 1265
+  },
+  {
+    "screen": "welcome",
+    "label": "390×844",
+    "dialogs": [],
+    "height": 844,
+    "scroll": 375,
+    "scrollHeight": 1396,
+    "title": "Witamy w Klub Śląski 08-01.",
+    "width": 375
+  },
+  {
+    "screen": "welcome",
+    "label": "412×915",
+    "dialogs": [],
+    "height": 915,
+    "scroll": 397,
+    "scrollHeight": 1345,
+    "title": "Witamy w Klub Śląski 08-01.",
+    "width": 397
+  },
+  {
+    "screen": "start-final",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1920,
+    "scrollHeight": 1080,
+    "title": "TENTRENER",
+    "width": 1920
+  },
+  {
+    "screen": "start-final",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 919,
+    "title": "TENTRENER",
+    "width": 1351
+  },
+  {
+    "screen": "start-final",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 919,
+    "title": "TENTRENER",
+    "width": 1425
+  },
+  {
+    "screen": "start-final",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 919,
+    "title": "TENTRENER",
+    "width": 1265
+  },
+  {
+    "screen": "start-final",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 1385,
+    "title": "TENTRENER",
+    "width": 375
+  },
+  {
+    "screen": "start-final",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 1364,
+    "title": "TENTRENER",
+    "width": 397
+  },
+  {
+    "screen": "dashboard-final",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1905,
+    "scrollHeight": 1409,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 1905
+  },
+  {
+    "screen": "dashboard-final",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 1409,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 1351
+  },
+  {
+    "screen": "dashboard-final",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 1409,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 1425
+  },
+  {
+    "screen": "dashboard-final",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 1409,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 1265
+  },
+  {
+    "screen": "dashboard-final",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 1760,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 375
+  },
+  {
+    "screen": "dashboard-final",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 1700,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 397
+  },
+  {
+    "screen": "opponent",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1905,
+    "scrollHeight": 1163,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 1905
+  },
+  {
+    "screen": "opponent",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 1163,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 1351
+  },
+  {
+    "screen": "opponent",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 1163,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 1425
+  },
+  {
+    "screen": "opponent",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 1163,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 1265
+  },
+  {
+    "screen": "opponent",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 1431,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 375
+  },
+  {
+    "screen": "opponent",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 1395,
+    "title": "Trener, decyzja należy do ciebie.",
+    "width": 397
+  },
+  {
+    "screen": "match",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1920,
+    "scrollHeight": 1080,
+    "width": 1920
+  },
+  {
+    "screen": "match",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 909,
+    "width": 1351
+  },
+  {
+    "screen": "match",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 911,
+    "width": 1425
+  },
+  {
+    "screen": "match",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 927,
+    "width": 1265
+  },
+  {
+    "screen": "match",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 1557,
+    "width": 375
+  },
+  {
+    "screen": "match",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 1628,
+    "width": 397
+  },
+  {
+    "screen": "decision",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1920,
+    "scrollHeight": 1080,
+    "width": 1920
+  },
+  {
+    "screen": "decision",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 909,
+    "width": 1351
+  },
+  {
+    "screen": "decision",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 911,
+    "width": 1425
+  },
+  {
+    "screen": "decision",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 927,
+    "width": 1265
+  },
+  {
+    "screen": "decision",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 1557,
+    "width": 375
+  },
+  {
+    "screen": "decision",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 1628,
+    "width": 397
+  },
+  {
+    "screen": "report",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 1080,
+        "top": 0,
+        "width": 1920
+      }
+    ],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1920,
+    "scrollHeight": 1080,
+    "width": 1920
+  },
+  {
+    "screen": "report",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 768,
+        "top": 0,
+        "width": 1351
+      }
+    ],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 909,
+    "width": 1351
+  },
+  {
+    "screen": "report",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 900,
+        "top": 0,
+        "width": 1425
+      }
+    ],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 911,
+    "width": 1425
+  },
+  {
+    "screen": "report",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 720,
+        "top": 0,
+        "width": 1265
+      }
+    ],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 927,
+    "width": 1265
+  },
+  {
+    "screen": "report",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 844,
+        "top": 0,
+        "width": 375
+      }
+    ],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 1557,
+    "width": 375
+  },
+  {
+    "screen": "report",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 915,
+        "top": 0,
+        "width": 397
+      }
+    ],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 1628,
+    "width": 397
+  },
+  {
+    "screen": "career",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1905,
+    "scrollHeight": 1971,
+    "title": "Trener Pokazowy",
+    "width": 1905
+  },
+  {
+    "screen": "career",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 1987,
+    "title": "Trener Pokazowy",
+    "width": 1351
+  },
+  {
+    "screen": "career",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 1971,
+    "title": "Trener Pokazowy",
+    "width": 1425
+  },
+  {
+    "screen": "career",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 1987,
+    "title": "Trener Pokazowy",
+    "width": 1265
+  },
+  {
+    "screen": "career",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 3158,
+    "title": "Trener Pokazowy",
+    "width": 375
+  },
+  {
+    "screen": "career",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 3067,
+    "title": "Trener Pokazowy",
+    "width": 397
+  },
+  {
+    "screen": "publisher-info",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 1026,
+        "top": 54,
+        "width": 640
+      }
+    ],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1905,
+    "scrollHeight": 1971,
+    "title": "Trener Pokazowy",
+    "width": 1905
+  },
+  {
+    "screen": "publisher-info",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 729.59375,
+        "top": 38.40625,
+        "width": 640
+      }
+    ],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 1987,
+    "title": "Trener Pokazowy",
+    "width": 1351
+  },
+  {
+    "screen": "publisher-info",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 855,
+        "top": 45,
+        "width": 640
+      }
+    ],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 1971,
+    "title": "Trener Pokazowy",
+    "width": 1425
+  },
+  {
+    "screen": "publisher-info",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 684,
+        "top": 36,
+        "width": 640
+      }
+    ],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 1987,
+    "title": "Trener Pokazowy",
+    "width": 1265
+  },
+  {
+    "screen": "publisher-info",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 801.796875,
+        "top": 42.203125,
+        "width": 337
+      }
+    ],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 3158,
+    "title": "Trener Pokazowy",
+    "width": 375
+  },
+  {
+    "screen": "publisher-info",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [
+      {
+        "bottom": 869.25,
+        "top": 45.75,
+        "width": 359
+      }
+    ],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 3067,
+    "title": "Trener Pokazowy",
+    "width": 397
+  },
+  {
+    "screen": "training-final",
+    "label": "1920×1080",
+    "settled": true,
+    "dialogs": [],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1905,
+    "scrollHeight": 1432,
+    "title": "Wybierz plan tygodnia",
+    "width": 1905
+  },
+  {
+    "screen": "training-final",
+    "label": "1366×768",
+    "settled": true,
+    "dialogs": [],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 1468,
+    "title": "Wybierz plan tygodnia",
+    "width": 1351
+  },
+  {
+    "screen": "training-final",
+    "label": "1440×900",
+    "settled": true,
+    "dialogs": [],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 1468,
+    "title": "Wybierz plan tygodnia",
+    "width": 1425
+  },
+  {
+    "screen": "training-final",
+    "label": "1280×720",
+    "settled": true,
+    "dialogs": [],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 1468,
+    "title": "Wybierz plan tygodnia",
+    "width": 1265
+  },
+  {
+    "screen": "training-final",
+    "label": "390×844",
+    "settled": true,
+    "dialogs": [],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 2780,
+    "title": "Wybierz plan tygodnia",
+    "width": 375
+  },
+  {
+    "screen": "training-final",
+    "label": "412×915",
+    "settled": true,
+    "dialogs": [],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 2711,
+    "title": "Wybierz plan tygodnia",
+    "width": 397
+  },
+  {
+    "screen": "team-final",
+    "label": "1920×1080",
+    "dialogs": [],
+    "height": 1080,
+    "innerWidth": 1920,
+    "scroll": 1905,
+    "scrollHeight": 3351,
+    "title": "Wybierasz pomysł, sztab układa ludzi",
+    "width": 1905
+  },
+  {
+    "screen": "team-final",
+    "label": "1366×768",
+    "dialogs": [],
+    "height": 768,
+    "innerWidth": 1366,
+    "scroll": 1351,
+    "scrollHeight": 3545,
+    "title": "Wybierasz pomysł, sztab układa ludzi",
+    "width": 1351
+  },
+  {
+    "screen": "team-final",
+    "label": "1440×900",
+    "dialogs": [],
+    "height": 900,
+    "innerWidth": 1440,
+    "scroll": 1425,
+    "scrollHeight": 3519,
+    "title": "Wybierasz pomysł, sztab układa ludzi",
+    "width": 1425
+  },
+  {
+    "screen": "team-final",
+    "label": "1280×720",
+    "dialogs": [],
+    "height": 720,
+    "innerWidth": 1280,
+    "scroll": 1265,
+    "scrollHeight": 3572,
+    "title": "Wybierasz pomysł, sztab układa ludzi",
+    "width": 1265
+  },
+  {
+    "screen": "team-final",
+    "label": "390×844",
+    "dialogs": [],
+    "height": 844,
+    "innerWidth": 390,
+    "scroll": 375,
+    "scrollHeight": 7344,
+    "title": "Wybierasz pomysł, sztab układa ludzi",
+    "width": 375
+  },
+  {
+    "screen": "team-final",
+    "label": "412×915",
+    "dialogs": [],
+    "height": 915,
+    "innerWidth": 412,
+    "scroll": 397,
+    "scrollHeight": 7250,
+    "title": "Wybierasz pomysł, sztab układa ludzi",
+    "width": 397
+  }
+]
