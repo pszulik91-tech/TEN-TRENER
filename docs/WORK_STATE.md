@@ -3,6 +3,15 @@
 Checkpoint: 2026-10-12. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: publisher/preview-0.1.1; main bez zmian.
 Aktualny zakres: PUBLISHER-01.1 — techniczne testy i bezpieczny kandydat opublikowane; RC1/GO BLOCKED przez Free/SSO. Gotowość95%. STOP; bez PUBLISHER-02.
 
+## PUBLISHER-01.2 — checkpoint (2026-10-12)
+
+- Osobna gałąź publisher/rc1-0.1.1; kod RC1 0711515aa24289dfd8cab88abb35ac3d93958fe4. Safe Mode bez zmian mechanik. Build0.1.1-publisher.rc1 przygotowany, NIE wdrożony.
+- Osobny manual-only site bez loginu; wdrożony zweryfikowany publisher.2, deploy6accc13a4c908a2fca524e7c READY. Anonimowe Start/refresh/kreator/SPA fallback PASS po Sign out Netlify.
+- noindex meta potwierdzone w DOM; robots Disallow:/ w paczce; Netlify przetworzył2reguły nagłówków i1redirect. Pełny HTTP asset/header check ograniczony przez proxy timeout/ERR_BLOCKED_BY_CLIENT.
+- TypeScript/build/regresja213/213/HTTP PASS. CI#44/38242341881 dla kodu RC1 in_progress/pending.
+- Finalny upload RC1 zablokowany: przy ponownym logowaniu wybrano GitLab, następnie odmówiono secure credential request. Nie ponawiano. Live nadal publisher.2; READY FOR EXTERNAL HUMAN TEST:NO dla RC1.
+- RC1_STATUS.md zawiera wznowienie/testera/known issues. URL pominięty w repo zgodnie z instrukcją. Bez zakupu/merge/main/PUBLISHER-02/zmiany oryginalnego preview i produkcji. STOP.
+
 ## PUBLISHER-01.1 — checkpoint (2026-10-12)
 
 - Build0.1.1-publisher.2, Pre-Alpha. Kod/artefakt 949003c66c7f7417cb28848bcdd3beff8ae9c2d2; branch publisher/preview-0.1.1. CI#43/38198500193SUCCESS; Netlify6acc4ee02ffa6200080bf763READY, dokładnie ten SHA. https://deploy-preview-1--ten-trener.netlify.app/ . Bez RC1/tagu/merge/zmiany produkcji; main a8277ff73176c00314a5f8d6433340f6a117d5b3.
