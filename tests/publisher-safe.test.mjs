@@ -19,7 +19,11 @@ test('publisher build excludes imported catalogue and historical public assets',
  const config=await readFile(new URL('../vite.web.config.ts',import.meta.url),'utf8');assert.match(config,/publisher-catalog/);assert.match(config,/publicDir: "publisher-public"/);
  const assets=await readdir(new URL('../dist/assets/',import.meta.url));const js=(await Promise.all(assets.filter(p=>p.endsWith('.js')).map(p=>readFile(new URL('../dist/assets/'+p,import.meta.url),'utf8')))).join('');
  assert.doesNotMatch(js,/Lech Poznań|Legia Warszawa|RegioWyniki|90minut\.pl|snapshot 2026\/27/);assert.match(js,/Fikcyjny katalog demonstracyjny/);assert.match(js,/ten-trener-publisher-fictional-v1/);
- const exported=await readdir(new URL('../dist/',import.meta.url));assert(!exported.includes('qa'));assert(!exported.includes('beta-report.html'));
+ const exported=await readdir(new URL('../dist/',import.meta.url));assert(!exported.includes('qa'));assert(!exported.includes('qa-display.html'));assert(!exported.includes('beta-report.html'));
 });
 
 test("fictional club picker retains the coach region preference",()=>{assert.equal(publisherAssociation("Śląskie"),"Region Śląski");assert(packs.some(p=>p.association===publisherAssociation("Śląskie")&&p.competition==="Klasa A"));assert.equal(publisherAssociation("unknown"),undefined);assert.equal(publisherLabel("Teraz wybierzesz prawdziwy klub"),"Teraz wybierzesz klub demonstracyjny");});
+
+test('fictional build uses the real career engine, isolated saves and rejects source-catalogue imports',async()=>{
+ const {spawnSync}=await import('node:child_process');const r=spawnSync(process.execPath,['--import','./scripts/publisher-safe-loader.mjs','scripts/publisher-safe-audit.mjs'],{cwd:new URL('..',import.meta.url),encoding:'utf8',timeout:30000});assert.equal(r.status,0,r.stderr);assert.equal(r.stdout.trim().split('\n').length,3);
+});
