@@ -1,7 +1,19 @@
 # TEN TRENER — WORK_STATE
 
-Checkpoint: 2026-10-11. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: publisher/preview-0.1.1; main bez zmian.
-Aktualny zakres: PUBLISHER-01 — Publisher Preview opublikowany; gotowość90%, zamknięcie pełnej definicji ukończenia pozostaje częściowe (QA rozmiarów i niezależna sesja). STOP; nie rozpoczynać następnego etapu.
+Checkpoint: 2026-10-12. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: publisher/preview-0.1.1; main bez zmian.
+Aktualny zakres: PUBLISHER-01.1 — techniczne testy i bezpieczny kandydat opublikowane; RC1/GO BLOCKED przez Free/SSO. Gotowość95%. STOP; bez PUBLISHER-02.
+
+## PUBLISHER-01.1 — checkpoint (2026-10-12)
+
+- Build0.1.1-publisher.2, Pre-Alpha. Kod/artefakt 949003c66c7f7417cb28848bcdd3beff8ae9c2d2; branch publisher/preview-0.1.1. CI#43/38198500193SUCCESS; Netlify6acc4ee02ffa6200080bf763READY, dokładnie ten SHA. https://deploy-preview-1--ten-trener.netlify.app/ . Bez RC1/tagu/merge/zmiany produkcji; main a8277ff73176c00314a5f8d6433340f6a117d5b3.
+- Jedyny bloker GO: anonimowy odbiorca widzi Netlify team login. Free/no Password potwierdzone w UI; Pro/hosting wymaga decyzji właściciela (ACCESS_DECISION.md). Bez zakupu, wyłączenia ochrony lub kont graczy.
+-15stanów×6viewportów=90pomiarów:1920×1080,1366×768,1440×900,1280×720,390×844,412×915 PASS bez overflow. Prawdziwa aplikacja w ramce CSS, nie fizyczne urządzenia. Tymczasowy QA usunięty z dist.
+- Świeża techniczna sesja agenta:kariera2:43,decyzja3:03,mecz3:18,koniec4:08,total6:04; nie niezależny test człowieka. Save-close-reopen-continue PASS. EXTERNAL_TEST.md:8pytań do realnego testu15–20min.
+- IP: niezależny fikcyjny115group/1398club katalog przy buildzie, neutralne widoczne etykiety, oryginalna baza zachowana/wykluczona z dist. Oddzielne zapisy. Proceduralne herby/nowyfavicon/fonty systemowe; notices bibliotek/CSS. Nie pełny clearance:znak/autorstwo/vendorCSS/komercyjna dystrybucja nadal do sprawdzenia. GAME-01–09 bez zmian reguł.
+-213/213PASS,typecheck/build/HTTP PASS;audit1432matches/53seasons/1434saves/14jobChanges/53settlementsPASS;truepublisher-mode tier2/5/9 silnik/saves/foreignguardPASS.
+- Telemetria defaultoff; lokalne allowlisted kroki/czas, bez name/IP/fingerprint/auto transfer. Dobrowolny eksport i return sprawdzone; plików testera nie publikowano.
+- Przy końcowym checkpointcie rozłączyło się środowisko plikowe/browser. Kod/CI/deploy dostępne; dokumenty odtworzono z obserwowanych wyników i publikowano przez GitHub connector. Nowe screenshoty/surowe logi zapisane lokalnie nie zostały odzyskane do publikacji; nie deklarować ich w repo. DISPLAY_QA.md ma rzeczywiste obserwacje.
+- RC_READINESS/ACCESS_DECISION/EXTERNAL_TEST/OSS_INVENTORY/DEMO_TIMING/DISPLAY_QA gotowe;95%,NO-GO,STOP po PUBLISHER-01.1.
 
 ## PUBLISHER-01 — checkpoint (2026-10-11)
 
@@ -38,7 +50,7 @@ Aktualny zakres: PUBLISHER-01 — Publisher Preview opublikowany; gotowość90%,
 - Commit checkpointu sprawdzony po zapisie: `729e13dfcec892713be445069a93023b1964ddac`.
 - Aktualny commit dokumentacyjny: commit ostatniej aktualizacji tego pliku; dokładny SHA: `git log -1 --format=%H -- docs/WORK_STATE.md`. SHA własnego commita nie można wpisać do jego treści bez utworzenia kolejnego commita.
 
-## CI / Node / build
+## CI / Node / build — historical main
 - Node: `24.21.0`, potwierdzony w .nvmrc.
 - Najnowszy Verify Pre-Alpha dla zweryfikowanego HEAD: SUCCESS, run #9, ID 37612829295.
 - Wynik: https://github.com/pszulik91-tech/TEN-TRENER/actions/runs/37612829295

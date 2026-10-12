@@ -21,3 +21,6 @@ Na debiut polecana jest Klasa B, dowolny dostępny klub z najbliższym spotkanie
 Nie oczekuj formalnych ofert latem już po pierwszym meczu. Rynek wyjaśnia warunki i rozróżnia zimową obserwację oraz ofertę letnią; pusty rynek na początku kariery jest poprawnym stanem. Nie rozgrywaj całego sezonu tylko po to, żeby pokazać licencję, ofertę lub nagrodę.
 
 Zapis należy do konkretnej domeny i przeglądarki. Przed zmianą adresu/urządzenia użyj eksportu w ustawieniach; nowy Deploy Preview nie przejmie automatycznie zapisu produkcji.
+
+## PUBLISHER-01.1
+Safe0.1.1-publisher.2 has fictional clubs. DefaultŚląskie→KlubŚląski09-01/KlasaB. Agent measured6:04(DEMO_TIMING.json), not human session. Real15–20min test:EXTERNAL_TEST.md. Hosting access blocked pending owner decision. Above original club example is historical, not current safe catalogue.

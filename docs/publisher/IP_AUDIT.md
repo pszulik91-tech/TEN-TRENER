@@ -24,3 +24,18 @@ Bez zmian automatycznych danych. Najmniejszy kolejny wariant to neutralny katalo
 - Zebrać pochodzenie/zgody do danych i SVG, warunki źródeł, notices zależności oraz potwierdzenie praw od autorów. Przed publiczną lub komercyjną publikacją przekazać do specjalistycznej weryfikacji.
 
 Wnioski o ryzyku są oceną techniczną na podstawie zawartości repozytorium, nie orzeczeniem o legalności. Nie dodano afiliacji, nowych assetów ani danych biznesowych.
+
+## PUBLISHER-01.1 — applied solutions
+
+|Element|Needed for concept?|Publisher solution|Remaining check|
+|---|---|---|---|
+|Actual club names/imported database|No; sporting model yes|Independent authored fictional115groups/1398clubs, build alias excludes imported lists. Original source retained.|Source still public/main; no rights granted to it.|
+|Official crests|No; identity yes|Procedural CSS/SVG with fictional initials.|Original code authorship.|
+|League/federation brands|Levels/locality yes; brands no|Fictional regions/groups,neutral visible national/federation labels; generic division categories and technical keys preserved.|No affiliation/licensing claim.|
+|Licences|Progression yes|Basic/B/A/professional labels; costs/time/eligibility unchanged.|Final real-world naming/production decision.|
+|People|Individual identity yes|Existing generated names/traits, no imported authentic rosters.|Coincidental names possible.|
+|External graphics/photos|No|Publisher publicDir excludes historical SVG/QA; new geometric TT favicon,existing CSS pitch/crests; no photos.|TEN TRENER mark/code/template authorship before commercial release.|
+|Fonts/music/video|No|System fonts,no binaries/audio/video/remote fonts found.|Device fonts not distributed.|
+|Libraries/CSS|Yes for UI|Installed browser dependency closure and CSS notices distributed; OSS_INVENTORY.md.|Historical vendored CSS lacks provenance header; recheck exact commercial distribution/transitive notices.|
+
+Info explicitly states fictional data/provisional labels/not official federation product. Internal rule/schema keys may still contain original abbreviations; display does not claim licence. Separate namespace prevents accidental loading of source saves; ordinary foreign catalogue imports rejected, source saves not deleted. Technical risk reduction, not legal clearance. Historical publisher screenshots show earlier source-catalogue variant and are not part of safe build. New safe screenshots were captured locally but not recovered for Git publication after environment disconnection.

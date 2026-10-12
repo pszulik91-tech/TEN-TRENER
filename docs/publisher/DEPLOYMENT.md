@@ -9,3 +9,6 @@ Podglądy są chronione SSO zespołu(non_production); produkcja nie wymaga SSO. 
 Publikacja zakończona: commit kodu `6fbd4fd309885a67255c9898c356ec96b1c89264`, Verify Pre-Alpha SUCCESS #37, Netlify READY deploy `6acbfc31cfef520008c4d9c0`. Zweryfikowany URL: https://deploy-preview-1--ten-trener.netlify.app/ . Produkcja i main nie zostały zmienione. Draft PR#1: https://github.com/pszulik91-tech/TEN-TRENER/pull/1 .
 
 Alias PR jest aktualizowany przy kolejnych buildach. Nie rozwijać tej gałęzi podczas pokazu; końcowy checkpoint dokumentacyjny [skip ci] nie zmienia kodu. Konkretny deploy jest identyfikowany powyższym ID; nie zgadujemy niezweryfikowanego permalinku. Retencję Netlify sprawdzić przed późniejszym pitchem. Ochrona SSO pozostaje; link nie jest publicznym demo.
+
+## PUBLISHER-01.1
+Build0.1.1-publisher.2; final code/artifact 949003c66c7f7417cb28848bcdd3beff8ae9c2d2;CI#43SUCCESS;Netlify6acc4ee02ffa6200080bf763READY and exactSHA verified. Same alias https://deploy-preview-1--ten-trener.netlify.app/. No RC1 designation or public release; Free/SSO blocks external account-free access. ACCESS_DECISION.md gives owner options. Final dist excludes QA helper; old preview deploys remain team-protected. Keep development and owner-approved password publisher hosting separate. Docs checkpoint[skip ci] changes no build code. Main/production unchanged.

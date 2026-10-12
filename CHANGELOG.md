@@ -2,6 +2,16 @@
 
 Wydania webowe stosują SemVer. Poprzednie numery Build 1.x–2.5 są historycznymi iteracjami, zachowanymi w Git.
 
+## [0.1.1-publisher.2] — 2026-10-12 — RC readiness candidate / NO-GO
+
+- Independent fictional catalogue/neutral displayed labels, source database and rules preserved.
+- Isolated publisher saves/drafts and foreign-catalogue import guard.
+- Regional entry/honest fictional copy corrected; geometric favicon; historical public assets excluded; dependency/CSS notices.
+- Six CSS viewports,actual agent path6:04,save/continue,telemetry verified;213testsPASS.
+- Temporary QA harness excluded from final artifact.
+- RC1 withheld:Free/SSO requires owner hosting decision; no purchase,main merge or PUBLISHER-02.
+- Final checkpoint recovered via GitHub after local environment disconnection; new local QA image/log files could not be recovered for publication.
+
 ## [0.1.1-publisher.1] — 2026-10-11 — Publisher Preview / Pre-Alpha
 
 - Oddzielna gałąź prezentacyjna; produkcyjny main pozostaje na obecnym wydaniu.

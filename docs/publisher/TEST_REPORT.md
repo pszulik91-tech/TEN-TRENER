@@ -1,3 +1,7 @@
+# Latest verification
+
+PUBLISHER-01.1:213/213PASS,CI#43SUCCESS,six CSS viewportsPASS,agent6:04,save/continue/telemetryPASS. External access BLOCKED by Free/SSO. Full RC_READINESS.md; DISPLAY_QA.md for observed measurements. Local archive not recovered after environment disconnection. Below preserved PUBLISHER-01 history.
+
 # Weryfikacja Publisher Preview
 
 Data: 2026-10-11. Build0.1.1-publisher.1. Bazowy main:a8277ff73176c00314a5f8d6433340f6a117d5b3, produkcyjny kod:2a7ef0871e859ce6405fd5e7a2bbac17a85301ce.

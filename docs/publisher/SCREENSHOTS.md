@@ -17,3 +17,6 @@ Katalog screenshots/ zawiera tylko rzeczywiste przechwycenia, jeśli dostęp do 
 
 ## Wykonane przechwycenia
 10 plików publisher-01-start.jpg … publisher-10-info.jpg w screenshots/. Start i raport po poprawkach; kreator i pozostałe ekrany z wcześniejszych kandydatów tego samego build0.1.1-publisher.1, których zawartość nie została zmieniona. Raport dotyczy drugiego meczu1:1, Dashboard kolejki2. To rzeczywiste sesje Publisher Preview, bez retuszu lub fikcyjnych wyników. Netlify może pokazywać właścicielowi pasek Deploy Preview.
+
+## PUBLISHER-01.1 archive status
+Actual safe-build screenshots of all tested states were captured locally, including standalone final Info. Environment disconnected before their Git upload; do not claim new screenshots present in repo. Existing screenshots are historical source-catalogue captures, not safe edition marketing materials. DISPLAY_QA.md summarizes observed layouts. Recapture on recovery/owner-approved hosting, without implementing another stage.

@@ -1,6 +1,6 @@
 # TEN TRENER — Publisher Preview
 
-Build: 0.1.1-publisher.1 • Pre-Alpha • branch publisher/preview-0.1.1.
+Build: 0.1.1-publisher.2 • Pre-Alpha • branch publisher/preview-0.1.1.
 
 ## Elevator pitch
 TEN TRENER to gra menedżersko-symulacyjna o wielosezonowej karierze trenera piłkarskiego w realiach polskich boisk. Przygotowujesz drużynę, reagujesz z ławki i prowadzisz ludzi; wyniki, relacje, presja i warsztat wpływają na dalszą pracę i dostępne kluby.
@@ -24,3 +24,5 @@ Grywalny prototyp Pre-Alpha, nie produkt ukończony. Brak wizualizacji meczu 2D,
 Partnera wydawniczo-produkcyjnego, który pomoże rozwinąć grywalny prototyp do pełnej gry PC przez wsparcie developerskie, produkcyjne, marketingowe, dystrybucyjne oraz ewentualne finansowanie dalszych prac. Brak deklaracji budżetu, sprzedaży, daty premiery lub skali zespołu bez uzgodnienia z właścicielem projektu.
 
 Materiały to źródła do dalszego pitchu, nie finalny deck. Przed udostępnieniem sprawdź dostęp odbiorcy do chronionego podglądu oraz IP_AUDIT.md.
+
+PUBLISHER-01.1 uses an independent fictional catalogue/neutral labels; no official data rights advertised. Existing career mechanics and Polish setting remain. NO-GO/RC1 withheld pending external access decision. See RC_READINESS.md.
