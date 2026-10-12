@@ -1,7 +1,7 @@
 # TEN TRENER — WORK_STATE
 
 Checkpoint:2026-10-12. Branch brand/publisher-pack (based on98b41b0); main unchanged.
-Current:BRAND-01 source/UI integration tested; visual QA/deployment blocked by auto-review of renewed Netlify login. PUBLISHER-02 NOT STARTED until BRAND-01 fully checked.
+Current:BRAND-01 source/UI integration tested. Renewed GitHub login authorized and SUCCESS. Deployment/visual QA now blocked by Netlify exhausted monthly credits; production upload unavailable. Free billing cycle endsOct24; operational credits keep existing sites online but cannot fund production deploys. No paid operation. See docs/publisher/NETLIFY_CREDIT_BLOCKER.md. PUBLISHER-02 NOT STARTED until BRAND-01 fully checked.
 Owner confirms accepted external human test/PUBLISHER-01 GO; historical NO-GO below superseded for business acceptance. Pre-brand CI#44 SUCCESS on0711515. Isolated live site still publisher.2/deploy6accc13a4c908a2fca524e7c. URL withheld from public repo. See docs/publisher/BRAND_01.md.
 
 ## PUBLISHER-01.2 — checkpoint (2026-10-12)
