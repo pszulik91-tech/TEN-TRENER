@@ -18,3 +18,6 @@ Owner designates this supplied asset as official current-stage identity. This is
 Owner explicitly confirms accepted external human test and PUBLISHER-01 GO on2026-10-12. No tester identity/raw feedback/timing supplied; no invented metrics. This overrides historical NO-GO/human-test-pending notes for business acceptance, but does not prove a newer RC1 deployment.
 CI#44 completed SUCCESS for pre-branding code0711515. Current isolated Netlify deployment remains6accc13a4c908a2fca524e7c/publisher.2; original site production6ac74f8bcdcf0b000854b3df and non-production SSO preserved. RC1 URL omitted from public repository.
 PUBLISHER-02 NOT STARTED: owner requires full BRAND-01 checks first. No publisher contacted, Steam action, mechanics change or main merge. STOP pending access/visual acceptance.
+
+## Updated blocker after explicit owner authorization
+Renewed Netlify GitHub login SUCCESS. Auto-review/login block resolved. Final deployment now blocked by exhausted monthly production credits; upload absent, paid upgrade suggested. Billing period endsOct24. No payment/plan change performed. NETLIFY_CREDIT_BLOCKER.md is authoritative. Requested responsive online QA still pending; PUBLISHER-02 not started.
