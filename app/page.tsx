@@ -1,4 +1,6 @@
 "use client";
+import { PUBLISHER_SAFE } from "./publisher-mode";
+import { publisherAssociation } from "../lib/publisher-catalog.mjs";
 import {publisherEvent,observePublisherState} from "./publisher-preview";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -96,13 +98,13 @@ export default function App() {
     setClubStepVisited(true);
     publisherEvent("creator_completed");
     const available = LEAGUE_PACKS.filter((pack) => licenseCoversCompetition(draft.license, pack.competition));
-    const bestTier = Math.min(...available.map((pack) => pack.tier)); const preferredAssociation = REGION_ASSOCIATION[draft.region];
+    const bestTier = Math.min(...available.map((pack) => pack.tier)); const preferredAssociation = (PUBLISHER_SAFE ? publisherAssociation(draft.region) : REGION_ASSOCIATION[draft.region]);
     const defaultCompetition = draft.license === "Grassroots C" ? "Klasa B" : undefined;
     const local = available.filter(pack => pack.association === preferredAssociation);
     const first = (bestTier <= 3 ? available.find(pack => pack.tier === bestTier) : undefined) ?? local.find(pack => pack.competition === defaultCompetition && pack.district === "Rybnik") ?? local.find(pack => pack.competition === defaultCompetition) ?? local.sort((a,b) => a.tier-b.tier)[0] ?? available.find(pack => pack.tier === bestTier) ?? available[0];
     setSelectedCompetition(first.competition); setSelectedAssociation(first.association); setSelectedDistrict(first.district); setSelectedPackId(first.id); setSelectedClub(first.teams[0]); go("club");
   };
-  const chooseCompetition = (value: string) => { const available = eligiblePacks.filter((pack) => pack.competition === value); const preferredAssociation = REGION_ASSOCIATION[draft.region]; const first = available.find((pack) => pack.association === preferredAssociation) ?? available[0]; setSelectedCompetition(value); setSelectedAssociation(first.association); setSelectedDistrict(first.district); setSelectedPackId(first.id); setSelectedClub(first.teams[0]); };
+  const chooseCompetition = (value: string) => { const available = eligiblePacks.filter((pack) => pack.competition === value); const preferredAssociation = (PUBLISHER_SAFE ? publisherAssociation(draft.region) : REGION_ASSOCIATION[draft.region]); const first = available.find((pack) => pack.association === preferredAssociation) ?? available[0]; setSelectedCompetition(value); setSelectedAssociation(first.association); setSelectedDistrict(first.district); setSelectedPackId(first.id); setSelectedClub(first.teams[0]); };
   const chooseAssociation = (value: string) => { const first = eligiblePacks.find((pack) => pack.competition === selectedCompetition && pack.association === value) as LeaguePack; setSelectedAssociation(value); setSelectedDistrict(first.district); setSelectedPackId(first.id); setSelectedClub(first.teams[0]); };
   const chooseDistrict = (value: string) => { const first = eligiblePacks.find((pack) => pack.competition === selectedCompetition && pack.association === selectedAssociation && pack.district === value) as LeaguePack; setSelectedDistrict(value); setSelectedPackId(first.id); setSelectedClub(first.teams[0]); };
   const choosePack = (value: string) => { const pack = eligiblePacks.find((item) => item.id === value) as LeaguePack; setSelectedPackId(value); setSelectedClub(pack.teams[0]); };

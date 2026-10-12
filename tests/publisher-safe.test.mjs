@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
-import {VERIFIED_LEAGUE_PACKS as packs, LEAGUE_CATALOG_STATS as stats} from '../lib/publisher-catalog.mjs';
+import {VERIFIED_LEAGUE_PACKS as packs, LEAGUE_CATALOG_STATS as stats, publisherAssociation} from '../lib/publisher-catalog.mjs';
 import {publisherLabel} from '../lib/publisher-labels.mjs';
 import {licenseCoversCompetition} from '../lib/game-rules.mjs';
 test('publisher uses independently generated fictional clubs at every existing tier',async()=>{
@@ -21,3 +21,5 @@ test('publisher build excludes imported catalogue and historical public assets',
  assert.doesNotMatch(js,/Lech Poznań|Legia Warszawa|RegioWyniki|90minut\.pl|snapshot 2026\/27/);assert.match(js,/Fikcyjny katalog demonstracyjny/);assert.match(js,/ten-trener-publisher-fictional-v1/);
  const exported=await readdir(new URL('../dist/',import.meta.url));assert(!exported.includes('qa'));assert(!exported.includes('beta-report.html'));
 });
+
+test("fictional club picker retains the coach region preference",()=>{assert.equal(publisherAssociation("Śląskie"),"Region Śląski");assert(packs.some(p=>p.association===publisherAssociation("Śląskie")&&p.competition==="Klasa A"));assert.equal(publisherAssociation("unknown"),undefined);assert.equal(publisherLabel("Teraz wybierzesz prawdziwy klub"),"Teraz wybierzesz klub demonstracyjny");});
