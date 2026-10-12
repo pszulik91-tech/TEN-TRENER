@@ -1,0 +1,2 @@
+# RC1 CI observation
+2026-10-12: Verify Pre-Alpha #44 /38242341881 on code0711515aa24289dfd8cab88abb35ac3d93958fe4: build-and-test completed SUCCESS; careers IN_PROGRESS at final bounded observation. Do not label whole workflow SUCCESS until careers completes. Final-labelled deployment still blocked by declined Netlify reauthentication; isolated live candidate remains publisher.2. Existing site protection and production deploy unchanged. URL omitted from public repository.
