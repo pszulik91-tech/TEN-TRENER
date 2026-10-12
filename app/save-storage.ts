@@ -1,3 +1,4 @@
+import { PUBLISHER_SAFE } from './publisher-mode';
 import type { GameState } from './game-data';
 import { SAVE_KEY, LICENSES, PROFILE_NOTE, PSYCH_QUESTIONS, DEVELOPMENT_GOALS, LEAGUE_PACKS, licenseCoversCompetition } from './game-data';
 import { encodeSave, decodeSave } from '../lib/save-codec.mjs';
@@ -15,6 +16,7 @@ export async function storeCareer(game: GameState) {
 export async function readCareer(raw: string) {
   const parsed = await decodeSave(raw) as GameState;
   if (!parsed?.coach?.name || !parsed.club?.id || !Array.isArray(parsed.fixtures) || !Array.isArray(parsed.players) || !Number.isFinite(parsed.seed)) throw new Error('Niepoprawny zapis');
+  if (PUBLISHER_SAFE && !LEAGUE_PACKS.some(pack => pack.teams.includes(parsed.club.name))) throw new Error("Ten podgląd wczytuje tylko kariery z fikcyjnego katalogu publisher.");
   return migrateGame(parsed);
 }
 export function resumeScreen(game: GameState) {

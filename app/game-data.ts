@@ -1,3 +1,4 @@
+import { PUBLISHER_SAFE } from "./publisher-mode";
 import type { MarketOffer } from "../lib/job-market.mjs";
 import type { BoardGoal } from "../lib/board-goal.mjs";
 import {
@@ -60,7 +61,7 @@ export type GameState = {
   careerStats: CareerStats; seasonRecords: SeasonRecord[];
 };
 
-export const SAVE_KEY = "ten-trener-save-v1";
+export const SAVE_KEY = PUBLISHER_SAFE ? "ten-trener-publisher-fictional-v1" : "ten-trener-save-v1";
 export { BUILD } from "./build-info";
 export const DATABASE_STATS = LEAGUE_CATALOG_STATS;
 export const LICENSES: License[] = ["Grassroots C", "UEFA B", "UEFA A", "UEFA PRO"];
