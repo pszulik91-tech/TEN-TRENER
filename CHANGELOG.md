@@ -2,6 +2,12 @@
 
 Wydania webowe stosują SemVer. Poprzednie numery Build 1.x–2.5 są historycznymi iteracjami, zachowanymi w Git.
 
+## [0.1.1-publisher.rc1] — 2026-10-12 — BRAND-01 candidate
+
+- Owner-supplied official logo on Start/Publisher Info; unchanged source retained, optimized WebP and original-monogram favicon/app icon.
+- Publisher Safe Mode and gameplay unchanged; isolated branch, no main merge.
+- Owner accepted human test/PUBLISHER-01 GO. Build/typecheck/213tests/HTTP PASS. Branding visual QA and deployment blocked at renewed Netlify login; not full BRAND-01 DONE; PUBLISHER-02 not started.
+
 ## [0.1.1-publisher.2] — 2026-10-12 — RC readiness candidate / NO-GO
 
 - Independent fictional catalogue/neutral displayed labels, source database and rules preserved.

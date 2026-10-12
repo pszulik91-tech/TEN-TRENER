@@ -1,7 +1,8 @@
 # TEN TRENER — WORK_STATE
 
-Checkpoint: 2026-10-12. Repozytorium: pszulik91-tech/TEN-TRENER. Branch: publisher/preview-0.1.1; main bez zmian.
-Aktualny zakres: PUBLISHER-01.1 — techniczne testy i bezpieczny kandydat opublikowane; RC1/GO BLOCKED przez Free/SSO. Gotowość95%. STOP; bez PUBLISHER-02.
+Checkpoint:2026-10-12. Branch brand/publisher-pack (based on98b41b0); main unchanged.
+Current:BRAND-01 source/UI integration tested; visual QA/deployment blocked by auto-review of renewed Netlify login. PUBLISHER-02 NOT STARTED until BRAND-01 fully checked.
+Owner confirms accepted external human test/PUBLISHER-01 GO; historical NO-GO below superseded for business acceptance. Pre-brand CI#44 SUCCESS on0711515. Isolated live site still publisher.2/deploy6accc13a4c908a2fca524e7c. URL withheld from public repo. See docs/publisher/BRAND_01.md.
 
 ## PUBLISHER-01.2 — checkpoint (2026-10-12)
 

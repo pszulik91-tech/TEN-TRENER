@@ -16,7 +16,7 @@ for (const mode of ['dev','preview']) {
     }
     assert.ok(response?.ok,`${mode}: server not responding: ${output}`);
     const html=await response.text();assert.match(html,/TEN TRENER — Pre-Alpha/);
-    const assets=[...html.matchAll(/(?:src|href)="(\/(?:assets\/[^\"]+|src\/main.tsx|favicon.svg))"/g)].map(m=>m[1]);
+    const assets=[...html.matchAll(/(?:src|href)="(\/(?:assets\/[^\"]+|src\/main.tsx|branding\/[^\"]+))"/g)].map(m=>m[1]);
     assert.ok(assets.length>=2);
     for(const asset of assets){const result=await fetch(origin+asset);assert.equal(result.status,200,asset);assert.ok((await result.text()).length>0);}
     console.log(`${mode}: HTTP 200, page and ${assets.length} resources OK`);

@@ -15,3 +15,6 @@ Po sesji:
 8. Kojarzysz grę bardziej z karierą trenera czy zarządzaniem całym klubem?
 
 Organizator zapisuje także czas, problemy urządzenia i dostępu. Nie odpowiada za testera. Test pozostaje do wykonania przez człowieka; audyt agenta nie jest niezależnym badaniem.
+
+## Owner acceptance — 2026-10-12
+Owner confirms external human test performed and accepted; PUBLISHER-01 is GO. Tester's identity, raw feedback, exact duration and export were not supplied; do not invent them. Instructions above remain for future sessions. Acceptance does not itself establish the final RC1 deployment/branding QA state.

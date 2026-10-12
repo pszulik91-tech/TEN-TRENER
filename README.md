@@ -1,6 +1,6 @@
 # TEN TRENER — Publisher Preview — Pre-Alpha
 
-**v0.1.1-publisher.2** · Niezależna gra menedżersko-symulacyjna o karierze trenera w realiach polskiej piłki. Rozwijasz człowieka: jego kompetencje, relacje i reputację. Kierujesz drużyną przez plan gry i decyzje, bez ręcznego zarządzania każdym zawodnikiem.
+**v0.1.1-publisher.rc1** · Niezależna gra menedżersko-symulacyjna o karierze trenera w realiach polskiej piłki. Rozwijasz człowieka: jego kompetencje, relacje i reputację. Kierujesz drużyną przez plan gry i decyzje, bez ręcznego zarządzania każdym zawodnikiem.
 
 To wydanie porządkuje dotychczasowy Build 2.5. Nowa numeracja dotyczy wydań webowych; nie oznacza rozpoczęcia projektu od zera. Kod, dane, historia Git i zgodność zapisów zostały zachowane.
 
@@ -87,3 +87,6 @@ Repozytorium zawiera kod projektu i zależności na ich własnych licencjach. Ni
 
 ## PUBLISHER-01.1
 213testsPASS,CI#43SUCCESS. Publisher115groups/1398clubs;407groups/5517entries opisane powyżej dotyczą źródłowej bazy main. Six CSSviewportsPASS,agentwalkthrough6:04. RC1/GO withheld:Free/SSO blocks external account-free access. [Readiness](docs/publisher/RC_READINESS.md), [access decision](docs/publisher/ACCESS_DECISION.md), [external test](docs/publisher/EXTERNAL_TEST.md). No independent human test yet.
+
+## Current checkpoint — BRAND-01 (2026-10-12)
+Owner accepted human test and PUBLISHER-01 GO. Official supplied logo integrated on branch brand/publisher-pack;213testsPASS. Visual responsive QA and branded deployment await authorized Netlify login. PUBLISHER-02 not started until BRAND-01 is fully checked. [Current status](docs/publisher/BRAND_01.md). Historical NO-GO notes above describe previous checkpoints. No RC1 URL published here.

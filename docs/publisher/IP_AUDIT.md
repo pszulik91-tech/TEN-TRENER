@@ -39,3 +39,6 @@ Wnioski o ryzyku są oceną techniczną na podstawie zawartości repozytorium, n
 |Libraries/CSS|Yes for UI|Installed browser dependency closure and CSS notices distributed; OSS_INVENTORY.md.|Historical vendored CSS lacks provenance header; recheck exact commercial distribution/transitive notices.|
 
 Info explicitly states fictional data/provisional labels/not official federation product. Internal rule/schema keys may still contain original abbreviations; display does not claim licence. Separate namespace prevents accidental loading of source saves; ordinary foreign catalogue imports rejected, source saves not deleted. Technical risk reduction, not legal clearance. Historical publisher screenshots show earlier source-catalogue variant and are not part of safe build. New safe screenshots were captured locally but not recovered for Git publication after environment disconnection.
+
+## BRAND-01 — logo supplied by owner (2026-10-12)
+Official current-stage logo: branding/ten-trener-logo-master.png. Asset prepared for TEN TRENER and supplied by project owner; byte-identical original preserved. Technical WebP/icon derivatives only. No registered trademark or independently verified exclusivity claimed. Remaining commercial clearance of mark/artwork follows the existing audit. Details:BRAND_01.md.

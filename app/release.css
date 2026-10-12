@@ -41,3 +41,9 @@
 .start-game-intro .start-example { color:#f4f2e8; }
 /* Keep the report overlay above the generic .game-content > * rule. */
 .game-content > .post-match-window-backdrop { position:fixed; z-index:80; }
+
+/* Official owner-supplied artwork; no effects or transforms on the image. */
+.start-game-intro .start-panel h1.official-brand { font-size:initial!important; line-height:1; margin:.5rem 0; }
+.official-brand img { display:block; width:min(100%,320px); height:auto; aspect-ratio:1; object-fit:contain; background:#eef0ef; border-radius:8px; }
+.publisher-info-logo { display:block; width:min(100%,160px); height:auto; aspect-ratio:1; object-fit:contain; background:#eef0ef; border-radius:6px; margin-bottom:.7rem; }
+@media(max-width:600px){.official-brand img{width:min(100%,250px);margin-inline:auto;}}

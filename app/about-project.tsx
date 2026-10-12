@@ -17,7 +17,7 @@ export function AboutProject() {
   }, []);
   useEffect(() => { if (open) { dialog.current?.showModal(); dialog.current?.querySelector<HTMLElement>("#about-title")?.focus(); } else dialog.current?.close(); }, [open]);
   return <dialog ref={dialog} className="about-project" onCancel={() => setOpen(false)} onClose={() => setOpen(false)} aria-labelledby="about-title">
-    <header><span className="eyebrow">{RELEASE_STAGE} · wersja testowa</span><h2 id="about-title" tabIndex={-1}>TEN TRENER</h2><p>{BUILD}</p></header>
+    <header><img className="publisher-info-logo" src="/branding/ten-trener-logo-768.webp" alt="Oficjalne logo TEN TRENER" /><span className="eyebrow">{RELEASE_STAGE} · wersja testowa</span><h2 id="about-title" tabIndex={-1}>TEN TRENER</h2><p>{BUILD}</p></header>
     <div className="about-content"><p>{PROJECT_DESCRIPTION}</p>
       <h3>Już możesz zagrać</h3><ul><li>Stwórz trenera i wybierz pierwszy klub.</li><li>Poprowadź treningi, wybierz plan drużyny i reaguj podczas meczów.</li><li>Rozwiązuj problemy szatni, zarządu i mediów.</li><li>Rozwijaj umiejętności i licencje, zmieniaj kluby i rozgrywaj kolejne sezony.</li><li>Zapisuj karierę i przenoś ją przez kopię do pliku.</li></ul>
       <h3>Dane demonstracyjne</h3><p>Kluby i katalog rozgrywek w tej wersji są fikcyjne. Nazwy licencji są roboczymi etykietami; prototyp nie jest oficjalnym produktem żadnej federacji. Finalne dane i rozwiązania licencyjne należą do dalszej produkcji.</p><h3>Jeszcze w produkcji</h3><p>Oficjalne baraże, Puchar Polski i rozgrywki europejskie. Awanse i spadki działają według uproszczonych zasad. Zmiana klubu jest dostępna latem. Trwa weryfikacja składów lig oraz balansu długich karier.</p>

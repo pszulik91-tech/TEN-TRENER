@@ -11,7 +11,7 @@ test('statyczny build ma wejście, polskie metadane i wszystkie lokalne zasoby',
   assert.match(html, /TEN TRENER — Publisher Preview RC1 — Pre-Alpha/);
   assert.match(html, /noindex, nofollow/);
   assert.match(html, /id="root"/);
-  const assets = [...html.matchAll(/(?:src|href)="(\/(?:assets\/[^\"]+|favicon.svg))"/g)].map(match => match[1]);
+  const assets = [...html.matchAll(/(?:src|href)="(\/(?:assets\/[^\"]+|branding\/[^\"]+))"/g)].map(match => match[1]);
   assert.ok(assets.some(asset => asset.endsWith('.js')));
   assert.ok(assets.some(asset => asset.endsWith('.css')));
   for (const asset of assets) assert.ok((await stat(new URL('.' + asset, directory))).size > 0, path.basename(asset));
